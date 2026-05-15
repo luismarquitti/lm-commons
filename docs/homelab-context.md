@@ -138,7 +138,7 @@ ESTADO ATUAL
 
 | Projeto | Descrição | Onde roda |
 |---|---|---|
-| **Openclaw** | Framework de IA principal | lm-claw (Bare-metal) |
+| **Openclaw** | Framework de IA principal + Obsidian Vault | lm-claw (Bare-metal) |
 | **SwMaster** | Assistente de dev | lm-claw (via OpenClaw) |
 
 ---

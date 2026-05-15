@@ -205,6 +205,22 @@
         opts: defaults,nofail
         state: mounted
 
+- name: OpenClaw — PKM / Obsidian Vault
+  hosts: lm-claw
+  become: false
+  tags: [vault, pkm]
+  tasks:
+    - name: Clonar repositório do Obsidian Vault para o workspace
+      ansible.builtin.git:
+        repo: "{{ obsidian_vault_repo }}"
+        dest: "{{ obsidian_vault_dest }}"
+        version: main
+        force: true
+      register: vault_clone
+      until: vault_clone is success
+      retries: 3
+      delay: 5
+
 # NOTA: A instalação do OpenClaw em si (pnpm install -g openclaw, openclaw configure,
 # openclaw gateway install) é feita manualmente pois requer autenticação OAuth interativa.
 # Ver docs/openclaw-manual-config-log.md para o passo-a-passo completo.

@@ -48,6 +48,10 @@ base_packages:
 # Proxmox VE Helper Scripts base URL
 pve_helper_scripts_url: "https://github.com/community-scripts/ProxmoxVE/raw/main/ct"
 
+# OpenClaw / PKM (Obsidian Vault)
+obsidian_vault_repo: "https://github.com/luismarquitti/obsidian-vault.git"
+obsidian_vault_dest: "/home/luismarquitti/.openclaw/workspace/obsidian-vault"
+
 # LXC defaults
 lxc_default_gateway: "192.168.3.1"
 lxc_default_dns: "8.8.8.8"
