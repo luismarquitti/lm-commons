@@ -35,12 +35,36 @@
           - zstd
         state: present
 
-    - name: Instalar Node.js (LTS)
+    - name: Instalar NVM para o usuário luismarquitti
       ansible.builtin.shell: |
-        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-        apt-get install -y nodejs
+        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
       args:
-        creates: /usr/bin/node
+        creates: /home/luismarquitti/.nvm/nvm.sh
+      become_user: luismarquitti
+
+    - name: Instalar Node.js LTS via NVM
+      ansible.builtin.shell: |
+        export NVM_DIR="$HOME/.nvm"
+        source "$NVM_DIR/nvm.sh"
+        nvm install --lts
+        nvm use --lts
+        nvm alias default node
+      args:
+        executable: /bin/bash
+        creates: /home/luismarquitti/.nvm/alias/default
+      become_user: luismarquitti
+
+    - name: Criar symlinks do node no PATH do sistema
+      ansible.builtin.shell: |
+        export NVM_DIR="/home/luismarquitti/.nvm"
+        source "$NVM_DIR/nvm.sh"
+        NVM_NODE=$(nvm which current)
+        ln -sf "$NVM_NODE" /usr/local/bin/node
+        ln -sf "$NVM_NODE" /usr/bin/node
+        ln -sf "$(dirname $NVM_NODE)/npm" /usr/local/bin/npm
+        ln -sf "$(dirname $NVM_NODE)/npx" /usr/local/bin/npx
+      args:
+        executable: /bin/bash
 
     - name: Instalar Ollama
       ansible.builtin.shell: |
@@ -68,7 +92,12 @@
       register: ollama_pull
       changed_when: "'success' in ollama_pull.stdout"
 
-- name: Openclaw — Configurar Tailscale
-  import_playbook: 04-tailscale.yml
-  vars:
-    ansible_limit: openclaw-prod
+# NOTA: Tailscale dentro do LXC openclaw-prod requer investigação adicional.
+# tailscaled falha sem nesting=1 ou keyctl=1 nas features do LXC (pct config 200).
+# Por ora o gateway funciona sem exposição Tailscale direta — acesso via Telegram/loopback.
+# Descomentar após validar features necessárias no LXC:
+#
+# - name: Openclaw — Configurar Tailscale
+#   import_playbook: 04-tailscale.yml
+#   vars:
+#     ansible_limit: openclaw-prod
