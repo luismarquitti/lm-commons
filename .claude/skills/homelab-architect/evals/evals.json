@@ -1,0 +1,47 @@
+{
+  "skill_name": "homelab-architect",
+  "evals": [
+    {
+      "id": 1,
+      "name": "proxmox-node-addition",
+      "prompt": "Preciso adicionar um novo nó ao meu cluster Proxmox (IP 192.168.3.51) para rodar serviços de mídia (Plex/Jellyfin). Como devo planejar o armazenamento e qual playbook do Ansible devo usar para prepará-lo?",
+      "expected_output": "Uma recomendação de arquitetura de armazenamento (ZFS vs LVM) baseada no uso de mídia e a indicação do playbook `ansible/playbooks/01-storage.yml` (ou similar) com instruções de configuração.",
+      "files": ["/home/luismarquitti/home-lab/ansible/playbooks/01-storage.yml"],
+      "assertions": [
+        {
+          "name": "mentions-zfs-or-lvm",
+          "description": "A resposta deve recomendar especificamente ZFS ou LVM para o armazenamento de mídia."
+        },
+        {
+          "name": "identifies-storage-playbook",
+          "description": "A resposta deve identificar o playbook `01-storage.yml` como a ferramenta correta."
+        },
+        {
+          "name": "explains-architectural-why",
+          "description": "A resposta deve explicar o *porquê* da escolha arquitetural (ex: redundância, performance de IO)."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "documentation-sync",
+      "prompt": "Acabei de rodar o playbook `05-lxc-deploy.yml` para criar um novo container 'Paperless-ngx' no IP 192.168.3.15. Como devo atualizar o arquivo `homelab-implementation-report.html` para refletir essa mudança?",
+      "expected_output": "Instruções específicas para adicionar uma nova linha na tabela de hardware, atualizar o diagrama de arquitetura (seção de LXCs) e possivelmente atualizar o plano de endereçamento no HTML.",
+      "files": ["/home/luismarquitti/home-lab/homelab-implementation-report.html"],
+      "assertions": [
+        {
+          "name": "identifies-html-table",
+          "description": "O agente deve mencionar a atualização da tabela de hardware/IPs no HTML."
+        },
+        {
+          "name": "mentions-arch-diagram",
+          "description": "O agente deve mencionar a atualização do diagrama de arquitetura (tags arch-node)."
+        },
+        {
+          "name": "suggests-correct-ip",
+          "description": "O agente deve usar o IP 192.168.3.15 nas instruções de atualização."
+        }
+      ]
+    }
+  ]
+}

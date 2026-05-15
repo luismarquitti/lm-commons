@@ -1,0 +1,97 @@
+{
+  "skill_name": "living-docs",
+  "evals": [
+    {
+      "id": 1,
+      "name": "eval-migration-update",
+      "prompt": "Acabei de migrar o OpenClaw para bare-metal no Optiplex — o hostname agora é `lm-claw`, IP `192.168.3.30`, rodando Debian diretamente (sem Proxmox). Olha quais docs precisam ser atualizados e me mostra exatamente o que mudaria.",
+      "expected_output": "Identifies relevant living docs (at minimum homelab-implementation-report.html and docs/homelab-context.md), lists specific proposed changes for each file (lm-claw hostname, 192.168.3.30 IP, bare-metal/Debian instead of LXC/Proxmox), and asks for approval before applying.",
+      "assertions": [
+        {
+          "id": "identifies-html-report",
+          "text": "Identifies homelab-implementation-report.html as a file needing updates",
+          "type": "presence"
+        },
+        {
+          "id": "identifies-context-md",
+          "text": "Identifies docs/homelab-context.md as a file needing updates",
+          "type": "presence"
+        },
+        {
+          "id": "mentions-lm-claw",
+          "text": "Mentions 'lm-claw' as the new hostname in the proposed changes",
+          "type": "presence"
+        },
+        {
+          "id": "mentions-bare-metal",
+          "text": "Mentions bare-metal or Debian as the new deployment type (not LXC/Proxmox)",
+          "type": "presence"
+        },
+        {
+          "id": "requests-approval",
+          "text": "Asks for user approval before making any changes (does not auto-edit files)",
+          "type": "presence"
+        },
+        {
+          "id": "no-unauthorized-edits",
+          "text": "Does not actually modify any documentation files without approval",
+          "type": "absence"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "eval-doc-audit",
+      "prompt": "Quais arquivos de documentação do projeto estão desatualizados em relação ao estado atual da infraestrutura? Faz um diagnóstico.",
+      "expected_output": "Scans the project for living docs, reads current infra state (CLAUDE.md, hosts.yml), identifies specific discrepancies in each doc (stale IPs, old hostnames, outdated architecture descriptions), and presents a prioritized list of what needs updating.",
+      "assertions": [
+        {
+          "id": "scans-multiple-files",
+          "text": "Examines at least 3 different documentation files",
+          "type": "presence"
+        },
+        {
+          "id": "references-hosts-yml",
+          "text": "Cross-references ansible/inventory/hosts.yml or CLAUDE.md as source of truth",
+          "type": "presence"
+        },
+        {
+          "id": "identifies-specific-discrepancies",
+          "text": "Lists specific outdated content (not just 'this file might be outdated' but concrete examples)",
+          "type": "presence"
+        },
+        {
+          "id": "prioritizes-findings",
+          "text": "Organizes findings in a useful way (by file, by severity, or by impact)",
+          "type": "presence"
+        }
+      ],
+      "files": []
+    },
+    {
+      "id": 3,
+      "name": "eval-proactive-suggestion",
+      "prompt": "O playbook `07-openclaw-deploy.yml` rodou com sucesso agora. O lm-claw está online com OpenClaw e Ollama funcionando na porta 11434. O Tailscale também foi configurado no host bare-metal.",
+      "expected_output": "Responds with confirmation/summary of what was done, AND proactively suggests updating the living docs at the end of the response — without being asked. Should mention which specific files would benefit from an update.",
+      "assertions": [
+        {
+          "id": "proactive-suggestion-present",
+          "text": "Includes an unprompted suggestion to update the documentation at the end of the response",
+          "type": "presence"
+        },
+        {
+          "id": "names-specific-docs",
+          "text": "Names specific documentation files that should be updated (not just 'the docs')",
+          "type": "presence"
+        },
+        {
+          "id": "asks-not-assumes",
+          "text": "Asks if the user wants the docs updated rather than just updating them automatically",
+          "type": "presence"
+        }
+      ],
+      "files": []
+    }
+  ]
+}

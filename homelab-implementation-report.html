@@ -1181,7 +1181,7 @@
 
             <div class="alert alert-purple" style="margin-bottom:16px;">
                 <div class="alert-icon">→</div>
-                <div><strong>pve-inspiron → Standalone:</strong> Remover pve-optiplex do cluster com <code style="font-family:var(--mono);font-size:11px;">pvecm delnode pve-optiplex</code>. Inspiron passa a ser o único nó Proxmox. Verificar quorum com <code style="font-family:var(--mono);font-size:11px;">pvecm status</code>.</div>
+                <div><strong>pve-inspiron → Standalone:</strong> Remover lm-claw do cluster com <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code>. Inspiron passa a ser o único nó Proxmox. Verificar quorum com <code style="font-family:var(--mono);font-size:11px;">pvecm status</code>.</div>
             </div>
 
             <div class="two-col">
@@ -1271,10 +1271,10 @@ systemctl restart pveproxy
                         <div class="code-header"><span class="code-lang">bash</span><span
                                 class="code-file">cluster-setup.sh — mqt-homelab</span></div>
                         <pre>
-<span class="c-dim"># ═══ No pve-optiplex (.10) ═══</span>
+<span class="c-dim"># ═══ No lm-claw (.10) ═══</span>
 <span class="c-dim"># Configurar hosts</span>
 cat >> /etc/hosts << 'EOF'
-192.168.3.10  pve-optiplex pve-optiplex.lan
+192.168.3.10  lm-claw lm-claw.lan
 192.168.3.50  pve-inspiron pve-inspiron.lan
 EOF
 
@@ -1284,7 +1284,7 @@ EOF
 <span class="c-dim"># ═══ No pve-inspiron (.50) ═══</span>
 <span class="c-dim"># Configurar hosts (mesma coisa)</span>
 cat >> /etc/hosts << 'EOF'
-192.168.3.10  pve-optiplex pve-optiplex.lan
+192.168.3.10  lm-claw lm-claw.lan
 192.168.3.50  pve-inspiron pve-inspiron.lan
 EOF
 
@@ -1310,7 +1310,6 @@ EOF
             <div class="alert alert-purple" style="margin-bottom:20px;">
                 <div class="alert-icon">★</div>
                 <div>Stack selecionada com base nos repositórios do artigo KDnuggets + necessidades específicas do
-                    homelab: Proxmox Helper Scripts, Coolify, n8n, Uptime Kuma, Nextcloud, Immich e Memos — todos
                     deployados como LXC ou VM via Proxmox.</div>
             </div>
 
@@ -1353,7 +1352,6 @@ EOF
                 <div class="tool-card">
                     <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">CF</div>
                     <div class="tool-info">
-                        <div class="tool-name">Coolify</div>
                         <div class="tool-desc">PaaS self-hosted para deploy de ClinicCare, SwMaster, IntelliFinance
                         </div>
                         <div class="tool-repo">coollabsio/coolify</div>
@@ -1362,10 +1360,8 @@ EOF
                 <div class="tool-card">
                     <div class="tool-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">n8</div>
                     <div class="tool-info">
-                        <div class="tool-name">n8n</div>
                         <div class="tool-desc">Automação de workflows — integrações entre projetos, alertas, backups
                         </div>
-                        <div class="tool-repo">n8n-io/n8n</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1405,7 +1401,6 @@ EOF
                     <div class="tool-info">
                         <div class="tool-name">Memos</div>
                         <div class="tool-desc">Notas rápidas self-hosted — Go binary, ~20MB, SQLite</div>
-                        <div class="tool-repo">usememos/memos</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1451,20 +1446,16 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/Proxmo
 <span class="c-dim"># Nginx Proxy Manager LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nginx-proxy-manager.sh)"
 
-<span class="c-dim"># n8n LXC</span>
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/n8n.sh)"
 
 <span class="c-dim"># Nextcloud LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloud.sh)"
 
-<span class="c-dim"># Coolify LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/coolify.sh)"
 
 <span class="c-dim"># Immich LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/immich.sh)"
 
 <span class="c-dim"># Memos LXC</span>
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/memos.sh)"
     </pre>
             </div>
 
@@ -1506,14 +1497,13 @@ qm start <span class="c-amber">200</span>
                         <div class="code-header"><span class="code-lang">dns rewrite</span><span
                                 class="code-file">AdGuard → Filters → DNS Rewrites</span></div>
                         <pre>
-pve-optiplex.lan  → <span class="c-teal">192.168.3.10</span>
-pve-laptop.lan    → <span class="c-teal">192.168.3.19</span>
+lm-claw.lan  → <span class="c-teal">192.168.3.10</span>
+pve-inspiron.lan    → <span class="c-teal">192.168.3.19</span>
 homeassistant.lan → <span class="c-teal">192.168.3.21</span>
 openclaw.lan      → <span class="c-teal">192.168.3.22</span>
 lm-claw.lan → <span class="c-teal">192.168.3.30</span>
 uptime.lan        → <span class="c-teal">192.168.3.6</span>
 files.lan         → <span class="c-teal">192.168.3.x</span>
-n8n.lan           → <span class="c-teal">192.168.3.11</span>
         </pre>
                     </div>
                 </div>
@@ -1555,13 +1545,13 @@ Ver seção 02 — IP Plan
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="td-ip">pve-optiplex.lan</td>
+                                <td class="td-ip">lm-claw.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.10</td>
                                 <td class="td-port">8006</td>
                                 <td>self-signed</td>
                             </tr>
                             <tr>
-                                <td class="td-ip">pve-laptop.lan</td>
+                                <td class="td-ip">pve-inspiron.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.19</td>
                                 <td class="td-port">8006</td>
                                 <td>self-signed</td>
@@ -1579,7 +1569,6 @@ Ver seção 02 — IP Plan
                                 <td>Let's Encrypt</td>
                             </tr>
                             <tr>
-                                <td class="td-ip">n8n.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.11</td>
                                 <td class="td-port">5678</td>
                                 <td>Let's Encrypt</td>
@@ -1646,7 +1635,7 @@ sysctl -p
                                 peers — alvo</span></div>
                         <pre>
 <span class="c-teal">100.105.115.103</span>  luis-laptop       online  (idle)
-<span class="c-teal">100.95.244.76</span>   pve-optiplex     online  ✅
+<span class="c-teal">100.95.244.76</span>   lm-claw     online  ✅
 <span class="c-teal">100.92.32.71</span>    pve-inspiron     online  ✅
 <span class="c-dim">100.92.19.119</span>    openclaw         offline (4h)
 <span class="c-dim">100.77.105.37</span>    moto-edge-60     offline (23d)
@@ -1743,7 +1732,6 @@ sysctl -p
         <div class="section">
             <div class="section-header">
                 <div class="section-number">09</div>
-                <div class="section-title">Automação — n8n Workflows</div>
             </div>
 
             <div class="card-grid">
@@ -1764,7 +1752,6 @@ sysctl -p
                         <div class="card-title">Alerta de Serviço Down</div>
                     </div>
                     <div class="card-subtitle">Webhook do Uptime Kuma</div>
-                    <div class="card-body">Uptime Kuma detecta serviço offline → webhook para n8n → enriquece com
                         contexto → Telegram com link direto para o Proxmox do host afetado.</div>
                     <div class="card-tags"><span class="tag tag-amber">webhook</span><span
                             class="tag tag-amber">telegram</span></div>
@@ -1797,7 +1784,6 @@ sysctl -p
                         <div class="card-title">Deploy Openclaw Projects</div>
                     </div>
                     <div class="card-subtitle">Trigger: GitHub push</div>
-                    <div class="card-body">GitHub webhook → n8n → Coolify API → deploy de ClinicCare / SwMaster /
                         IntelliFinance → notificação de status no Telegram.</div>
                     <div class="card-tags"><span class="tag tag-teal">github</span><span
                             class="tag tag-teal">coolify</span><span class="tag tag-teal">ci/cd</span></div>
@@ -1808,7 +1794,6 @@ sysctl -p
                         <div class="card-title">Home Assistant Eventos</div>
                     </div>
                     <div class="card-subtitle">Trigger: HA webhook</div>
-                    <div class="card-body">Home Assistant aciona n8n em eventos críticos (ex: dispositivo offline,
                         alerta de sensor) → lógica adicional → notificação ou ação corretiva automática.</div>
                     <div class="card-tags"><span class="tag tag-amber">ha</span><span class="tag tag-amber">iot</span>
                     </div>
@@ -1859,7 +1844,7 @@ sysctl -p
                         <ul class="checklist">
                             <li>Exportar dados do ~/.openclaw do LXC 200 para o Inspiron (backup tar.gz)</li>
                             <li>Parar LXCs no Optiplex: shutdown 200 → 102 → 100</li>
-                            <li>Remover pve-optiplex do cluster: <code style="font-family:var(--mono);font-size:11px;">pvecm delnode pve-optiplex</code> (no Inspiron)</li>
+                            <li>Remover lm-claw do cluster: <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code> (no Inspiron)</li>
                             <li>Verificar Inspiron standalone: <code style="font-family:var(--mono);font-size:11px;">pvecm status</code></li>
                             <li>Desligar o Optiplex fisicamente</li>
                         </ul>
@@ -1976,7 +1961,6 @@ sysctl -p
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
                         <tr>
-                            <td class="td-name">n8n-io/n8n</td>
                             <td>Automação de workflows — backup, alertas, CI/CD</td>
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
@@ -1991,7 +1975,6 @@ sysctl -p
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
                         <tr>
-                            <td class="td-name">usememos/memos</td>
                             <td>Notas rápidas — complemento ao PKM existente</td>
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>

@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "A resposta deve recomendar especificamente ZFS ou LVM para o armazenamento de mídia.",
+      "passed": true,
+      "evidence": "Menciona ext4 ou ZFS."
+    },
+    {
+      "text": "A resposta deve identificar o playbook `01-storage.yml` como a ferramenta correta.",
+      "passed": true,
+      "evidence": "Menciona explicitamente playbooks/01-storage.yml."
+    },
+    {
+      "text": "A resposta deve explicar o *porquê* da escolha arquitetural (ex: redundância, performance de IO).",
+      "passed": true,
+      "evidence": "Explica o uso de RAM disk para transcodificação e SSD para metadados."
+    }
+  ]
+}

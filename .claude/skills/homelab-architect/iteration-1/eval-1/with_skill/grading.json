@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "A resposta deve recomendar especificamente ZFS ou LVM para o armazenamento de mídia.",
+      "passed": true,
+      "evidence": "Menciona ZFS na seção Camada 2."
+    },
+    {
+      "text": "A resposta deve identificar o playbook `01-storage.yml` como a ferramenta correta.",
+      "passed": true,
+      "evidence": "Identifica o playbook 01-storage.yml nas instruções de Ansible."
+    },
+    {
+      "text": "A resposta deve explicar o *porquê* da escolha arquitetural (ex: redundância, performance de IO).",
+      "passed": true,
+      "evidence": "Explica a importância do SSD para metadados/DB para evitar gargalos."
+    }
+  ]
+}

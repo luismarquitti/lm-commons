@@ -1,0 +1,38 @@
+# Instruções Ansible para Preparação do Novo Nó (192.168.3.51)
+
+Siga este procedimento para integrar o novo nó ao ecossistema `home-lab` de forma automatizada.
+
+## Passo 1: Configuração do Inventário
+Edite `ansible/inventory/hosts.yml` e adicione o novo host (ex: `pve-media`):
+
+```yaml
+proxmox:
+  hosts:
+    pve-optiplex: ...
+    pve-inspiron: ...
+    pve-media:
+      ansible_host: 192.168.3.51
+      pve_node_name: pve-media
+      pve_is_primary: false
+```
+
+## Passo 2: Bootstrap do Sistema
+Execute o playbook de bootstrap para configurar repositórios e pacotes base:
+```bash
+ansible-playbook -i ansible/inventory/hosts.yml playbooks/00-bootstrap.yml --limit pve-media
+```
+
+## Passo 3: Inclusão no Cluster
+Execute o playbook de cluster para juntar o `pve-media` ao cluster existente:
+```bash
+ansible-playbook -i ansible/inventory/hosts.yml playbooks/02-cluster.yml
+```
+
+## Passo 4: Configuração de Storage e NFS
+Atualize o playbook `playbooks/03-sharing.yml` para incluir o novo host na seção de montagem NFS. Você pode alterar a linha `hosts: pve-inspiron` para `hosts: pve-inspiron,pve-media` ou criar uma nova entrada:
+
+```bash
+ansible-playbook -i ansible/inventory/hosts.yml playbooks/03-sharing.yml
+```
+
+Isso garantirá que o diretório `/mnt/data` (onde as mídias estão) esteja disponível no novo nó para o Plex/Jellyfin.
