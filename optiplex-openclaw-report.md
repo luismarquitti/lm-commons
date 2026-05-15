@@ -1,7 +1,7 @@
 # Report: Expansão de Recursos para o OpenClaw-Prod
 
 **Data:** 15/05/2026  
-**Contexto:** Análise de opções para aumentar a memória disponível ao `openclaw-prod`, incluindo a hipótese de remover o Proxmox do Dell Optiplex e instalar o OpenClaw diretamente no hardware.
+**Contexto:** Análise de opções para aumentar a memória disponível ao `lm-claw`, incluindo a hipótese de remover o Proxmox do Dell Optiplex e instalar o OpenClaw diretamente no hardware.
 
 ---
 
@@ -27,7 +27,7 @@
 |---|---|---|---|
 | 100 | adguard | 1 | 512 MB |
 | 102 | nginx-proxy | 1 | 1.024 MB |
-| 200 | openclaw-prod | 3 | **12.288 MB** |
+| 200 | lm-claw | 3 | **12.288 MB** |
 
 **pve-inspiron** — 3.8GB RAM usada de 8GB:
 
@@ -64,13 +64,13 @@ Com 12GB disponíveis sobram menos de 800MB de margem — insuficiente para pico
 
 O Optiplex 7040 suporta até **64GB DDR4** e possui dois slots livres (DIMM3 e DIMM4). Adicionar dois pentes aumenta a RAM total sem tocar na arquitetura.
 
-| Configuração | RAM total | openclaw-prod pode ter | Custo estimado |
+| Configuração | RAM total | lm-claw pode ter | Custo estimado |
 |---|---|---|---|
 | + 2×8GB DDR4 2133 | **32 GB** | até 28 GB | R$150–250 |
 | + 2×16GB DDR4 2133 | **48 GB** | até 44 GB | R$300–500 |
 | + 2×8GB (upgrade os 2×8 para 2×16) | **32 GB** | até 28 GB | R$150–250 |
 
-Com 32GB, o `openclaw-prod` poderia ter **26–28GB** — comportando `gemma4:e2b` + `deepseek-coder-v2:16b` + `gemma3:4b` + embedding simultaneamente, com ampla margem.
+Com 32GB, o `lm-claw` poderia ter **26–28GB** — comportando `gemma4:e2b` + `deepseek-coder-v2:16b` + `gemma3:4b` + embedding simultaneamente, com ampla margem.
 
 **Vantagens:**
 - Zero downtime — upgrade de RAM não requer reinstalação
@@ -87,7 +87,7 @@ Com 32GB, o `openclaw-prod` poderia ter **26–28GB** — comportando `gemma4:e2
 
 ### Opção B — Migrar AdGuard e Nginx para o Inspiron e expandir LXC no Optiplex
 
-Sem comprar hardware, é possível liberar mais RAM para o `openclaw-prod` movendo os serviços menores para o pve-inspiron.
+Sem comprar hardware, é possível liberar mais RAM para o `lm-claw` movendo os serviços menores para o pve-inspiron.
 
 **Situação no Inspiron após migração:**
 
@@ -100,11 +100,11 @@ Sem comprar hardware, é possível liberar mais RAM para o `openclaw-prod` moven
 
 Ficam apenas ~600MB livres no Inspiron — margem perigosamente baixa.
 
-No Optiplex, o `openclaw-prod` poderia ser expandido para **~14.5GB** (16GB − 1.5GB para Proxmox host).
+No Optiplex, o `lm-claw` poderia ser expandido para **~14.5GB** (16GB − 1.5GB para Proxmox host).
 
 **Vantagens:**
 - Sem custo de hardware
-- openclaw-prod ganha ~2.5GB adicionais
+- lm-claw ganha ~2.5GB adicionais
 
 **Desvantagens:**
 - pve-inspiron fica sem margem operacional (risco de OOM sob pico)
@@ -230,7 +230,7 @@ ssh root@192.168.3.10 "pct list"
 # Todos devem retornar ao status 'running'
 ```
 
-### Fase 4 — Reconfigurar o openclaw-prod com mais RAM
+### Fase 4 — Reconfigurar o lm-claw com mais RAM
 
 **4.1 — Expandir memória do LXC 200**
 
@@ -254,10 +254,10 @@ Distribuição recomendada com 32GB:
 |---|---|
 | adguard (100) | 512 MB (sem alteração) |
 | nginx-proxy (102) | 1.024 MB (sem alteração) |
-| openclaw-prod (200) | **26.624 MB** (~26 GB) |
+| lm-claw (200) | **26.624 MB** (~26 GB) |
 | Proxmox host reserva | ~4 GB |
 
-**4.2 — Verificar memória disponível no openclaw-prod**
+**4.2 — Verificar memória disponível no lm-claw**
 ```bash
 ssh -i ~/.ssh/id_ed25519 luismarquitti@192.168.3.30 "free -h"
 ```
@@ -321,7 +321,7 @@ openclaw doctor 2>&1 | grep -E 'Doctor complete|error|warn'
 
 **7.1 — Atualizar `group_vars/all.yml` com o novo limite de memória**
 
-No arquivo `ansible/inventory/group_vars/all.yml`, atualizar o valor de memória do LXC `openclaw-prod` para refletir a nova alocação.
+No arquivo `ansible/inventory/group_vars/all.yml`, atualizar o valor de memória do LXC `lm-claw` para refletir a nova alocação.
 
 **7.2 — Atualizar `homelab-context.md` e `openclaw-manual-config-log.md`** com o novo estado de hardware.
 
@@ -339,7 +339,7 @@ Se algo der errado durante o upgrade de hardware:
 
 A remoção do Proxmox do Optiplex entregaria apenas +4GB de RAM efetiva sobre a configuração atual, ao custo de eliminar toda a flexibilidade de virtualização, saturar o pve-inspiron e criar um ponto único de falha para todos os demais serviços do home lab. O ganho não justifica o risco.
 
-O upgrade de RAM (Opção A) é a alternativa correta: entrega 2× a 4× mais memória, mantém a arquitetura intacta, tem rollback trivial e o custo é modesto. Com 32GB no Optiplex, o `openclaw-prod` passa a ter RAM suficiente para rodar três modelos Ollama simultaneamente — resolvendo não apenas o problema imediato, mas dando margem de crescimento para os próximos anos.
+O upgrade de RAM (Opção A) é a alternativa correta: entrega 2× a 4× mais memória, mantém a arquitetura intacta, tem rollback trivial e o custo é modesto. Com 32GB no Optiplex, o `lm-claw` passa a ter RAM suficiente para rodar três modelos Ollama simultaneamente — resolvendo não apenas o problema imediato, mas dando margem de crescimento para os próximos anos.
 
 ---
 

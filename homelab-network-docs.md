@@ -16,18 +16,15 @@ Modem do Provedor (192.168.0.1)
 Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
    │         └── Halo H60XS — SATÉLITE (192.168.3.250) ←── Quarto principal
    │
-   ├─[Cabeado]──► Dell Optiplex 7040 / pve-optiplex (192.168.3.10) — Proxmox VE Principal
-   │                   ├── LXC: Openclaw-Prod (192.168.3.30)
-   │                   ├── LXC: AdGuard (192.168.3.5)
-   │                   └── LXC: Nginx-Proxy (192.168.3.7)
+   ├─[Cabeado]──► Dell Optiplex 7040 / lm-claw (192.168.3.30) — Bare-Metal Debian
+   │                   └── OpenClaw + Ollama (direto no hardware)
    │
-   ├─[Cabeado]──► Dell Inspiron 14R / pve-inspiron (192.168.3.50) — Proxmox VE Secundário
+   ├─[Cabeado]──► Dell Inspiron 14R / pve-inspiron (192.168.3.50) — Proxmox VE (único nó)
    │                   ├── VM: Home Assistant (192.168.3.22)
    │                   ├── LXC: PostgreSQL (192.168.3.20)
-   │                   ├── LXC: Coolify (192.168.3.8)
-   │                   ├── LXC: Uptime Kuma (192.168.3.6)
-   │                   ├── LXC: n8n (192.168.3.11)
-   │                   └── LXC: memos (192.168.3.12)
+   │                   ├── LXC: AdGuard (192.168.3.5)
+   │                   ├── LXC: Nginx-Proxy (192.168.3.7)
+   │                   └── LXC: Uptime Kuma (192.168.3.6)
    │
    └─[Wi-Fi 5G]─► LUIS-LAPTOP / Lenovo Win11 Pro (192.168.3.14)
 ```
@@ -59,30 +56,26 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 
 ## 3. Servidores Físicos
 
-### 3.1 Dell Optiplex 7040 — `pve-optiplex` ← Host Principal
+### 3.1 Dell Optiplex 7040 — `lm-claw` ← Bare-Metal OpenClaw
 
 | Campo | Valor |
 |---|---|
-| IP LAN | `192.168.3.10` |
+| IP LAN | `192.168.3.30` |
 | MAC | `74-86-7A-FA-8E-C8` |
 | Conexão | Cabeado |
-| SO | Proxmox VE |
-| Interface Proxmox | `https://192.168.3.10:8006` |
-| IP Tailscale | `100.95.244.76` (hostname: `pve-optiplex`) |
-| Status Tailscale | 🟢 Online |
-| Status | ✅ Host Principal |
+| SO | Debian 12 (bare-metal, sem Proxmox) |
+| Acesso SSH | `ssh luismarquitti@192.168.3.30` |
+| Status | ✅ Bare-Metal OpenClaw + Ollama |
 
-**VMs / LXCs hospedados:**
+**Serviços:**
 
 | IP | Hostname | Serviço | Tipo | Status |
 |---|---|---|---|---|
-| `192.168.3.30` | openclaw-prod | Openclaw (IA framework principal) | LXC | ✅ Ativa |
-| `192.168.3.5` | adguard | AdGuard DNS | LXC | ✅ Ativa |
-| `192.168.3.7` | nginx-proxy | Nginx Reverse Proxy | LXC | ✅ Ativa |
+| `192.168.3.30` | lm-claw | OpenClaw + Ollama (IA framework) | bare-metal | ✅ Ativa |
 
 ---
 
-### 3.2 Dell Inspiron 14R — `pve-inspiron` ← Host Secundário
+### 3.2 Dell Inspiron 14R — `pve-inspiron` ← Único Nó Proxmox
 
 | Campo | Valor |
 |---|---|
@@ -93,7 +86,7 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 | Interface Proxmox | `https://192.168.3.50:8006` |
 | IP Tailscale | `100.71.89.124` (hostname: `openclaw-proxmox`) |
 | Status Tailscale | 🟢 Online |
-| Status | ✅ Host Secundário |
+| Status | ✅ Único nó Proxmox |
 
 **VMs / LXCs hospedados:**
 
@@ -137,9 +130,9 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 
 | IP | Nome | Tipo | Host físico | ID | Status |
 |---|---|---|---|---|---|
-| `192.168.3.30` | openclaw-prod | LXC | Optiplex `.10` | 200 | ✅ Ativa |
-| `192.168.3.5` | adguard | LXC | Optiplex `.10` | 100 | ✅ Ativa |
-| `192.168.3.7` | nginx-proxy | LXC | Optiplex `.10` | 102 | ✅ Ativa |
+| `192.168.3.30` | lm-claw | bare-metal | Optiplex (sem Proxmox) | — | ✅ Ativa |
+| `192.168.3.5` | adguard | LXC | Inspiron `.50` | 100 | ✅ Ativa |
+| `192.168.3.7` | nginx-proxy | LXC | Inspiron `.50` | 102 | ✅ Ativa |
 | `192.168.3.22` | homeassistant-server | VM | Inspiron `.50` | 151 | ✅ Ativa |
 | `192.168.3.20` | postgres-db | LXC | Inspiron `.50` | 104 | ✅ Ativa |
 | `192.168.3.8` | coolify | LXC | Inspiron `.50` | 103 | ✅ Ativa |
@@ -204,10 +197,9 @@ Todos gerenciados pelo Home Assistant. Maioria na banda 2.4GHz (protocolo Tuya/S
 
 | Serviço | Acesso LAN | Acesso Tailscale | Observação |
 |---|---|---|---|
-| Proxmox — Optiplex | `https://192.168.3.10:8006` | `https://100.95.244.76:8006` | Host Principal |
-| Proxmox — Inspiron | `https://192.168.3.50:8006` | `https://100.71.89.124:8006` | Host Secundário |
-| Home Assistant (definitiva) | `http://192.168.3.22:8123` | via Tailscale | VM no Proxmox Inspiron |
-| Openclaw Prod | `ssh 192.168.3.30` | — | LXC no Proxmox Optiplex |
+| Proxmox — Inspiron | `https://192.168.3.50:8006` | `https://100.71.89.124:8006` | Único nó Proxmox |
+| lm-claw (OpenClaw) | `ssh luismarquitti@192.168.3.30` | — | Bare-metal Debian no Optiplex |
+| Home Assistant | `http://192.168.3.22:8123` | via Tailscale | VM no Proxmox Inspiron |
 | Mercusys Halo | `http://192.168.3.1` | — | Gerenciamento mesh |
 | Tailscale Admin | `https://login.tailscale.com/admin` | — | Gerenciar peers |
 | Uptime Kuma | `http://192.168.3.6:3001` | — | LXC no Inspiron |

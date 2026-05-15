@@ -4,7 +4,7 @@
 # ============================================================
 # Arquitetura pós-migração bare-metal (15/05/2026):
 #   - pve-inspiron: único nó Proxmox (adguard, nginx-proxy, uptime-kuma, postgres, homeassistant VM)
-#   - openclaw-prod: Dell Optiplex bare-metal Debian (sem Proxmox)
+#   - lm-claw: Dell Optiplex bare-metal Debian (sem Proxmox)
 #
 # Uso completo (inspiron + openclaw):
 #   ansible-playbook playbooks/site.yml

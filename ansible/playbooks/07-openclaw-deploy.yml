@@ -16,7 +16,7 @@
 # ============================================================
 
 - name: OpenClaw — Configurar Sistema Base
-  hosts: openclaw-prod
+  hosts: lm-claw
   become: true
   tags: [base]
   tasks:
@@ -71,14 +71,14 @@
       ansible.builtin.blockinfile:
         path: /etc/hosts
         block: |
-          192.168.3.30  openclaw-prod openclaw-prod.lan
+          192.168.3.30  lm-claw lm-claw.lan
           192.168.3.50  pve-inspiron pve-inspiron.lan
           192.168.3.5   adguard adguard.lan
         marker: "# {mark} ANSIBLE MANAGED — homelab"
 
     - name: Configurar hostname
       ansible.builtin.hostname:
-        name: openclaw-prod
+        name: lm-claw
 
   handlers:
     - name: restart networking
@@ -88,7 +88,7 @@
 
 
 - name: OpenClaw — Instalar Node.js via NVM
-  hosts: openclaw-prod
+  hosts: lm-claw
   become: false
   tags: [node, nvm]
   tasks:
@@ -124,7 +124,7 @@
 
 
 - name: OpenClaw — Instalar Ollama
-  hosts: openclaw-prod
+  hosts: lm-claw
   become: true
   tags: [ollama]
   tasks:
@@ -149,7 +149,7 @@
 
 
 - name: OpenClaw — Instalar e Configurar Tailscale
-  hosts: openclaw-prod
+  hosts: lm-claw
   become: true
   tags: [tailscale]
   tasks:
@@ -172,7 +172,7 @@
 
 
 - name: OpenClaw — Garantir diretórios e permissões
-  hosts: openclaw-prod
+  hosts: lm-claw
   become: true
   tags: [dirs]
   tasks:
@@ -196,14 +196,6 @@
         owner: root
         group: root
         mode: "0755"
-
-    - name: Montar HDD 1TB (dados pessoais) — NTFS
-      ansible.posix.mount:
-        path: /mnt/data
-        src: /dev/sdc1
-        fstype: ntfs-3g
-        opts: defaults,nofail,uid=1000,gid=1000
-        state: mounted
 
     - name: Montar HDD 298GB (storage openclaw) — ext4
       ansible.posix.mount:

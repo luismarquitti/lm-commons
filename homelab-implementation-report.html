@@ -878,7 +878,7 @@
                             <div class="arch-nodes-grid" style="gap:6px;">
                                 <div class="arch-node" style="font-size:10px;padding:10px 14px;border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.06);">
                                     <div class="node-label">Bare Metal — Debian 12</div>
-                                    <div class="node-name" style="color:var(--teal);">openclaw-prod</div>
+                                    <div class="node-name" style="color:var(--teal);">lm-claw</div>
                                     <div class="node-ip">192.168.3.30</div>
                                 </div>
                                 <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
@@ -891,18 +891,13 @@
                                     <div class="node-name">qwen3:8b</div>
                                     <div class="node-ip">coding</div>
                                 </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
-                                    <div class="node-label">Storage</div>
-                                    <div class="node-name">HDD 1TB</div>
-                                    <div class="node-ip">/mnt/data</div>
-                                </div>
                             </div>
                         </div>
 
                         <!-- Inspiron Proxmox -->
                         <div class="arch-group" style="border-color:rgba(124,109,250,0.3);margin:0;">
                             <div class="arch-group-label" style="color:var(--purple)">Dell Inspiron 14R — Proxmox (standalone)</div>
-                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-3337U · 8GB DDR3 · SSD 224GB</div>
+                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-3337U · 8GB DDR3 · SSD 224GB · HDD 1TB</div>
                             <div class="arch-nodes-grid" style="gap:6px;">
                                 <div class="arch-node" style="font-size:10px;padding:8px 12px;">
                                     <div class="node-label">LXC 100</div>
@@ -929,6 +924,11 @@
                                     <div class="node-name">Home Assistant</div>
                                     <div class="node-ip">.22 — IoT</div>
                                 </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(124,109,250,0.2);">
+                                    <div class="node-label">Storage</div>
+                                    <div class="node-name">HDD 1TB</div>
+                                    <div class="node-ip">\\192.168.3.50\data</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -945,7 +945,7 @@
                             <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
                             <div class="arch-node" style="border-color:rgba(0,212,170,0.3)">
                                 <div class="node-label">Bare Metal</div>
-                                <div class="node-name">openclaw-prod</div>
+                                <div class="node-name">lm-claw</div>
                                 <div class="node-ip">192.168.3.30</div>
                             </div>
                             <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
@@ -991,10 +991,10 @@
                         <tr>
                             <td class="td-ip">192.168.3.30</td>
                             <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
-                            <td class="td-name">openclaw-prod</td>
+                            <td class="td-name">lm-claw</td>
                             <td>Dell Optiplex 7040 — Bare Metal Debian 12, OpenClaw + Ollama</td>
                             <td><span class="td-badge badge-wired">wired</span></td>
-                            <td>NVMe 238GB (OS) + HDD 298GB (openclaw-storage) + HDD 1TB (dados)</td>
+                            <td>NVMe 238GB (OS) + HDD 298GB (openclaw-storage)</td>
                         </tr>
                         <tr>
                             <td class="td-ip">192.168.3.50</td>
@@ -1002,7 +1002,7 @@
                             <td class="td-name">pve-inspiron</td>
                             <td>Dell Inspiron 14R — Proxmox standalone (único nó)</td>
                             <td><span class="td-badge badge-wired">wired</span></td>
-                            <td>SSD 224GB (OS + LXCs + VM)</td>
+                            <td>SSD 224GB (OS + LXCs + VM) + HDD 1TB (Samba \\192.168.3.50\data)</td>
                         </tr>
                         <tr>
                             <td class="td-ip">192.168.3.14</td>
@@ -1031,10 +1031,10 @@
                         <tr>
                             <td class="td-ip">192.168.3.30</td>
                             <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
-                            <td class="td-name">openclaw-prod</td>
+                            <td class="td-name">lm-claw</td>
                             <td>OpenClaw — bare metal no Optiplex, Ollama local (gemma4:e2b + qwen3:8b)</td>
                             <td><span class="td-badge badge-wired">bare-metal</span></td>
-                            <td>NVMe 238GB + HDD 298GB + HDD 1TB</td>
+                            <td>NVMe 238GB + HDD 298GB</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1059,7 +1059,7 @@
                         <tr style="background:rgba(0,212,170,0.04);">
                             <td class="td-ip">—</td>
                             <td><span class="td-badge badge-wired">BARE</span></td>
-                            <td class="td-name">openclaw-prod</td>
+                            <td class="td-name">lm-claw</td>
                             <td>Dell Optiplex 7040</td>
                             <td>4 cores</td>
                             <td>16 GB</td>
@@ -1123,7 +1123,7 @@
 
             <div class="alert alert-teal" style="margin-top:16px;">
                 <div class="alert-icon">✓</div>
-                <div><strong>Dell Optiplex 7040</strong> — bare metal Debian 12 em 192.168.3.30. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 1TB montado em /mnt/data.</div>
+                <div><strong>Dell Optiplex 7040 (lm-claw)</strong> — bare metal Debian 12 em 192.168.3.30. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 298GB montado em /mnt/openclaw-storage. HDD 1TB movido para pve-inspiron (Samba).</div>
             </div>
 
             <div class="alert alert-teal" style="margin-top:8px;">
@@ -1155,7 +1155,7 @@
 192.168.3.14    luis-laptop          <span class="c-dim"># Lenovo (reserva DHCP)</span>
 192.168.3.20    postgres-db          <span class="c-dim"># LXC — banco relacional central (no pve-inspiron)</span>
 192.168.3.22    homeassistant-server <span class="c-dim"># VM — Home Assistant (no pve-inspiron)</span>
-192.168.3.30    openclaw-prod        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
+192.168.3.30    lm-claw        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
 192.168.3.50    pve-inspiron         <span class="c-dim"># Proxmox standalone (único nó)</span>
 
 <span class="c-dim"># DISPOSITIVOS IoT (automação Home Assistant)</span>
@@ -1176,7 +1176,7 @@
                 <div class="alert-icon">✓</div>
                 <div><strong>Optiplex 7040 → Bare Metal:</strong> Instalar Debian 12 via USB no NVMe 238GB. IP estático: <code
                         style="font-family:var(--mono);font-size:11px;">192.168.3.30/24</code>, hostname: <code
-                        style="font-family:var(--mono);font-size:11px;">openclaw-prod</code>. Após instalar: <code style="font-family:var(--mono);font-size:11px;">ansible-playbook playbooks/07-openclaw-deploy.yml</code>.</div>
+                        style="font-family:var(--mono);font-size:11px;">lm-claw</code>. Após instalar: <code style="font-family:var(--mono);font-size:11px;">ansible-playbook playbooks/07-openclaw-deploy.yml</code>.</div>
             </div>
 
             <div class="alert alert-purple" style="margin-bottom:16px;">
@@ -1194,35 +1194,22 @@
 
                     <div class="code-block" style="margin-top:16px;">
                         <div class="code-header"><span class="code-lang">bash</span><span
-                                class="code-file">storage-setup.sh — 3 discos</span></div>
+                                class="code-file">storage-setup.sh — lm-claw (2 discos)</span></div>
                         <pre>
-<span class="c-dim"># Identificar discos</span>
+<span class="c-dim"># Identificar discos no lm-claw (bare-metal)</span>
 lsblk -f
-<span class="c-dim"># sda → SSD 240GB (Proxmox OS)</span>
-<span class="c-dim"># sdb → HDD 320GB (serviços)</span>
-<span class="c-dim"># sdc → HDD 1TB (dados pessoais)</span>
+<span class="c-dim"># nvme0n1 → NVMe 238GB (OS + OpenClaw)</span>
+<span class="c-dim"># sdb     → HDD 298GB (openclaw-storage)</span>
 
-<span class="c-dim"># 1. HDD 320GB → pve-storage (VMs, LXCs, ISOs)</span>
+<span class="c-dim"># HDD 298GB → /mnt/openclaw-storage</span>
 fdisk /dev/sdb  <span class="c-dim"># n, p, 1, enter, enter, w</span>
 mkfs.ext4 /dev/sdb1
-mkdir -p /mnt/pve-storage
-mount /dev/sdb1 /mnt/pve-storage
-echo "/dev/sdb1 /mnt/pve-storage ext4 defaults 0 2" >> /etc/fstab
-<span class="c-green">pvesm</span> add dir pve-storage \
-  --path /mnt/pve-storage \
-  --content images,rootdir,backup,iso,snippets,vztmpl
+mkdir -p /mnt/openclaw-storage
+mount /dev/sdb1 /mnt/openclaw-storage
+echo "/dev/sdb1 /mnt/openclaw-storage ext4 defaults,nofail 0 2" >> /etc/fstab
 
-<span class="c-dim"># 2. HDD 1TB → data-storage (NÃO formatar!)</span>
-apt install -y ntfs-3g  <span class="c-dim"># se NTFS</span>
-mkdir -p /mnt/data
-mount -t ntfs-3g /dev/sdc1 /mnt/data
-echo "/dev/sdc1 /mnt/data ntfs-3g defaults,nofail 0 0" >> /etc/fstab
-<span class="c-green">pvesm</span> add dir data-storage \
-  --path /mnt/data \
-  --content backup,iso
-
-<span class="c-dim"># 3. Verificar</span>
-<span class="c-green">pvesm</span> status
+<span class="c-dim"># Verificar</span>
+lsblk -f && df -h
         </pre>
                     </div>
                 </div>
@@ -1523,7 +1510,7 @@ pve-optiplex.lan  → <span class="c-teal">192.168.3.10</span>
 pve-laptop.lan    → <span class="c-teal">192.168.3.19</span>
 homeassistant.lan → <span class="c-teal">192.168.3.21</span>
 openclaw.lan      → <span class="c-teal">192.168.3.22</span>
-openclaw-prod.lan → <span class="c-teal">192.168.3.30</span>
+lm-claw.lan → <span class="c-teal">192.168.3.30</span>
 uptime.lan        → <span class="c-teal">192.168.3.6</span>
 files.lan         → <span class="c-teal">192.168.3.x</span>
 n8n.lan           → <span class="c-teal">192.168.3.11</span>
@@ -1911,7 +1898,7 @@ sysctl -p
                             <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw gateway install --force && openclaw gateway start</code></li>
                             <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw doctor --fix</code> e validar</li>
                             <li>Pull dos modelos Ollama: gemma4:e2b, gemma3:4b, qwen3:8b</li>
-                            <li>Montar HDD 1TB: <code style="font-family:var(--mono);font-size:11px;">/mnt/data (ntfs-3g)</code></li>
+                            <li>Montar HDD 298GB: <code style="font-family:var(--mono);font-size:11px;">/mnt/openclaw-storage (ext4)</code></li>
                             <li>Autenticar Tailscale: <code style="font-family:var(--mono);font-size:11px;">tailscale up --advertise-routes=192.168.3.0/24</code></li>
                         </ul>
                     </div>
@@ -1929,7 +1916,7 @@ sysctl -p
                             <li>Instalar AdGuard Home — configurar DNS Rewrites para todos os serviços</li>
                             <li>Atualizar DNS primário no Mercusys para 192.168.3.5</li>
                             <li>Criar LXC 102 (nginx-proxy) no Inspiron: <code style="font-family:var(--mono);font-size:11px;">192.168.3.7, 1GB</code></li>
-                            <li>Configurar proxy hosts: openclaw-prod (.30), homeassistant (.22), pve-inspiron (.50), uptime (.6)</li>
+                            <li>Configurar proxy hosts: lm-claw (.30), homeassistant (.22), pve-inspiron (.50), uptime (.6)</li>
                             <li>Testar resolução DNS da rede e acessos por hostname .lan</li>
                             <li>Verificar RAM do Inspiron: <code style="font-family:var(--mono);font-size:11px;">free -h</code> — alvo: &lt;7GB usados de 8GB</li>
                         </ul>
@@ -1945,7 +1932,7 @@ sysctl -p
                         <ul class="checklist">
                             <li>Testar OpenClaw end-to-end via Telegram (enviar mensagem, receber resposta com gemma4:e2b)</li>
                             <li>Testar envio de imagem e áudio via Telegram (multimodal gemma4:e2b)</li>
-                            <li>Configurar Uptime Kuma com monitores do novo inventário (openclaw-prod, adguard, nginx, pve-inspiron, homeassistant)</li>
+                            <li>Configurar Uptime Kuma com monitores do novo inventário (lm-claw, adguard, nginx, pve-inspiron, homeassistant)</li>
                             <li>Remover gemma2:2b após validar gemma4:e2b e gemma3:4b</li>
                             <li>Atualizar token Google Gemini no calendário de renovação</li>
                             <li>Merge da branch feat/openclaw-bare-metal → main</li>

@@ -1,9 +1,10 @@
 ---
 # ============================================================
-# Playbook 01 — Storage Setup (Optiplex — 3 discos)
+# Playbook 01 — Storage Setup (pve-inspiron — HDD 1TB via Samba)
 # ============================================================
 # Monta e registra os HDDs no Proxmox.
-# ATENÇÃO: O HDD 1TB NÃO será formatado (dados pessoais).
+# O HDD 1TB está no pve-inspiron (ver playbook 03-sharing.yml).
+# ATENÇÃO: O HDD de dados NÃO será formatado (dados pessoais).
 #
 # Uso:
 #   ansible-playbook playbooks/01-storage.yml

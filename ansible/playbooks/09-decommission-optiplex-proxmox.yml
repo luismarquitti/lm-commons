@@ -29,10 +29,10 @@
         "mkdir -p {{ backup_dest_path }}"
       changed_when: false
 
-    - name: Backup do config do openclaw-prod LXC (via pct dump)
+    - name: Backup do config do lm-claw LXC (via pct dump)
       ansible.builtin.shell: |
-        pct config 200 > /tmp/openclaw-prod-lxc-config.txt
-        cat /tmp/openclaw-prod-lxc-config.txt
+        pct config 200 > /tmp/lm-claw-lxc-config.txt
+        cat /tmp/lm-claw-lxc-config.txt
       register: lxc_config
       changed_when: false
 
@@ -62,7 +62,7 @@
   become: true
   tags: [shutdown]
   tasks:
-    - name: Parar LXC openclaw-prod (200)
+    - name: Parar LXC lm-claw (200)
       ansible.builtin.command: pct shutdown 200 --timeout 30
       ignore_errors: true
       changed_when: true

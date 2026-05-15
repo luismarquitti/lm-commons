@@ -20,22 +20,18 @@ etc_hosts_entries:
   - ip: "192.168.3.50"
     names: "pve-inspiron pve-inspiron.lan"
   - ip: "192.168.3.30"
-    names: "openclaw-prod openclaw-prod.lan"
+    names: "lm-claw lm-claw.lan"
 
 
 # Tailscale
 tailscale_advertise_routes: "192.168.3.0/24"
 tailscale_accept_routes: true
 
-# Samba — compartilhamento do HDD 1TB
+# Samba — HDD 1TB no pve-inspiron, acessível via \\192.168.3.50\data
+samba_share_host: "192.168.3.50"
 samba_share_name: "data"
 samba_share_path: "/mnt/data"
 samba_user: "root"
-
-# NFS — compartilhamento entre nós Proxmox
-nfs_export_path: "/mnt/pve-storage"
-nfs_allowed_network: "192.168.3.0/24"
-nfs_mount_point: "/mnt/optiplex-storage"
 
 # Pacotes base para todos os nós Proxmox
 base_packages:
@@ -45,8 +41,6 @@ base_packages:
   - git
   - net-tools
   - samba
-  - nfs-kernel-server
-  - nfs-common
   - ntfs-3g
   - python3-proxmoxer  # Necessário para módulo Ansible proxmox
   - python3-pexpect    # Necessário para o módulo expect do Ansible (cluster join)

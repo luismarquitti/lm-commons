@@ -1,6 +1,6 @@
 # OpenClaw Manual Configuration Log
 
-Este documento registra as alterações manuais realizadas na instância `openclaw-prod` para posterior automação via Ansible.
+Este documento registra as alterações manuais realizadas na instância `lm-claw` para posterior automação via Ansible.
 
 ---
 
@@ -73,7 +73,7 @@ Removeu 1 entrada sem transcript. Resultado: 7 sessões válidas.
 
 ### 3. Tailscale dentro do LXC
 
-- **Situação atual:** `tailscaled.service` não roda dentro do LXC `openclaw-prod`. O openclaw registra erro ao tentar publicar a porta via `tailscale serve`, mas o gateway continua funcional (apenas sem exposição Tailscale direta).
+- **Situação atual:** `tailscaled.service` não roda dentro do LXC `lm-claw`. O openclaw registra erro ao tentar publicar a porta via `tailscale serve`, mas o gateway continua funcional (apenas sem exposição Tailscale direta).
 - **Status:** Pendente — investigar se LXC precisa de `nesting=1` ou `keyctl=1` para suportar tailscaled, ou se a exposição via Tailscale do host Proxmox é suficiente.
 - **Detalhes Técnicos:**
   - Instalar via script oficial: `curl -fsSL https://tailscale.com/install.sh | sh`

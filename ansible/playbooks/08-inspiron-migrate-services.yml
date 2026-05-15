@@ -137,7 +137,7 @@
         msg: >
           Nginx Proxy Manager instalado. Acesse http://192.168.3.7:81
           Credenciais padrão: admin@example.com / changeme
-          Configure proxy hosts para openclaw-prod (.30), homeassistant (.22),
+          Configure proxy hosts para lm-claw (.30), homeassistant (.22),
           pve-inspiron (.50), adguard (.5), uptime-kuma (.6).
 
 
