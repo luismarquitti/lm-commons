@@ -1,0 +1,63 @@
+---
+# ============================================================
+# Playbook 06 — Configuração do PostgreSQL central
+# ============================================================
+
+- name: DB Setup — Preparar e configurar PostgreSQL
+  hosts: postgres-db
+  gather_facts: false
+  tasks:
+    - name: Garantir que Python3 está instalado (via raw)
+      ansible.builtin.raw: apt-get update && apt-get install -y python3
+      changed_when: false
+
+    - name: Instalar PostgreSQL e dependências
+      ansible.builtin.apt:
+        name:
+          - postgresql
+          - postgresql-contrib
+          - python3-psycopg2
+          - sudo
+        state: present
+        update_cache: true
+
+    - name: Configurar PostgreSQL para ouvir em todas as interfaces
+      ansible.builtin.lineinfile:
+        path: /etc/postgresql/15/main/postgresql.conf
+        regexp: "^#?listen_addresses ="
+        line: "listen_addresses = '*'"
+      notify: Restart PostgreSQL
+
+    - name: Permitir conexões da rede local (192.168.3.0/24)
+      ansible.builtin.blockinfile:
+        path: /etc/postgresql/15/main/pg_hba.conf
+        block: |
+          # Acesso local e remoto para a rede do Home Lab
+          host    all             all             192.168.3.0/24          scram-sha-256
+          host    all             all             100.64.0.0/10           scram-sha-256  # Rede Tailscale
+      notify: Restart PostgreSQL
+
+    - name: Criar usuário de desenvolvedor (dev_user)
+      become: true
+      become_user: postgres
+      become_method: su
+      community.postgresql.postgresql_user:
+        name: dev_user
+        password: "{{ vault_db_password }}"
+        role_attr_flags: "SUPERUSER,CREATEDB,CREATEROLE"
+        state: present
+
+    - name: Criar banco de dados padrão (dev_db)
+      become: true
+      become_user: postgres
+      become_method: su
+      community.postgresql.postgresql_db:
+        name: dev_db
+        owner: dev_user
+        state: present
+
+  handlers:
+    - name: Restart PostgreSQL
+      ansible.builtin.service:
+        name: postgresql
+        state: restarted

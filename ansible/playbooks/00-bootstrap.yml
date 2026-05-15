@@ -1,0 +1,97 @@
+---
+# ============================================================
+# Playbook 00 — Bootstrap Proxmox
+# ============================================================
+# Configura repositórios, instala pacotes base, remove aviso
+# de subscription, e distribui chaves SSH.
+#
+# Uso:
+#   ansible-playbook playbooks/00-bootstrap.yml
+#   ansible-playbook playbooks/00-bootstrap.yml --limit pve-optiplex
+# ============================================================
+
+- name: Bootstrap — Configuração pós-instalação do Proxmox
+  hosts: proxmox
+  gather_facts: true
+
+  tasks:
+    # ── Repositórios ──────────────────────────────────────
+    - name: Remover repositórios enterprise pagos (arquivos .list e .sources)
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apt/sources.list.d/pve-enterprise.list
+        - /etc/apt/sources.list.d/pve-enterprise.sources
+        - /etc/apt/sources.list.d/ceph.list
+        - /etc/apt/sources.list.d/ceph.sources
+
+    - name: Adicionar repositório community PVE (no-subscription, formato deb822)
+      ansible.builtin.copy:
+        content: |
+          Types: deb
+          URIs: http://download.proxmox.com/debian/pve
+          Suites: trixie
+          Components: pve-no-subscription
+          Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+        dest: /etc/apt/sources.list.d/pve-no-subscription.sources
+        mode: '0644'
+
+    - name: Adicionar repositório community Ceph (no-subscription, formato deb822)
+      ansible.builtin.copy:
+        content: |
+          Types: deb
+          URIs: http://download.proxmox.com/debian/ceph-squid
+          Suites: trixie
+          Components: no-subscription
+          Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+        dest: /etc/apt/sources.list.d/ceph-no-subscription.sources
+        mode: '0644'
+
+    - name: Atualizar cache do apt
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Atualizar todos os pacotes
+      ansible.builtin.apt:
+        upgrade: full
+        autoclean: true
+        autoremove: true
+
+    # ── Pacotes Base ──────────────────────────────────────
+    - name: Instalar pacotes base
+      ansible.builtin.apt:
+        name: "{{ base_packages }}"
+        state: present
+
+    # ── Remover Aviso de Subscription ─────────────────────
+    - name: Remover aviso de subscription do Proxmox UI
+      ansible.builtin.replace:
+        path: /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+        regexp: "data\\.status !== 'Active'"
+        replace: "false"
+        backup: true
+      notify: Restart pveproxy
+
+    # ── /etc/hosts ────────────────────────────────────────
+    - name: Configurar /etc/hosts com todos os nós do cluster
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        regexp: "^{{ item.ip }}"
+        line: "{{ item.ip }}  {{ item.names }}"
+        state: present
+      loop: "{{ etc_hosts_entries }}"
+
+    # ── SSH Key ───────────────────────────────────────────
+    - name: Distribuir chave SSH do Lenovo (WSL) para acesso sem senha
+      ansible.posix.authorized_key:
+        user: root
+        state: present
+        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_ed25519.pub') }}"
+      ignore_errors: true
+
+  handlers:
+    - name: Restart pveproxy
+      ansible.builtin.systemd:
+        name: pveproxy
+        state: restarted

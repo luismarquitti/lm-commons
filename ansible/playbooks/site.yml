@@ -1,0 +1,15 @@
+---
+# ============================================================
+# site.yml — Master Playbook (roda tudo em ordem)
+# ============================================================
+# Uso:
+#   ansible-playbook playbooks/site.yml
+# ============================================================
+
+- import_playbook: 00-bootstrap.yml
+- import_playbook: 01-storage.yml
+- import_playbook: 02-cluster.yml
+- import_playbook: 03-sharing.yml
+- import_playbook: 04-tailscale.yml
+- import_playbook: 05-lxc-deploy.yml
+- import_playbook: 07-openclaw-deploy.yml

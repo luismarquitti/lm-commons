@@ -1,0 +1,12 @@
+# Ansible Setup — Home Lab
+#
+# Instalar no WSL do Lenovo:
+#   sudo apt update && sudo apt install -y python3-pip python3-venv
+#   python3 -m venv ~/ansible-venv
+#   source ~/ansible-venv/bin/activate
+#   pip install ansible proxmoxer requests
+#   ansible-galaxy collection install community.general ansible.posix
+
+ansible>=9.0
+proxmoxer>=2.0
+requests>=2.31

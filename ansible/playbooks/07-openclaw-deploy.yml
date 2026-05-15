@@ -1,0 +1,74 @@
+---
+# ============================================================
+# Playbook 07 — Deploy Openclaw Definitive Instance
+# ============================================================
+# Provisiona o ambiente para a instância definitiva do Openclaw.
+#
+# Uso:
+#   ansible-playbook playbooks/07-openclaw-deploy.yml
+# ============================================================
+
+# - name: Openclaw — Provisionar LXC no Proxmox
+#   import_playbook: 05-lxc-deploy.yml
+#   vars:
+#     ansible_limit: openclaw-prod
+
+- name: Openclaw — Configurar Ambiente e Dependências
+  hosts: openclaw-prod
+  become: true
+  tasks:
+    - name: Atualizar cache do apt
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Instalar pacotes base
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - build-essential
+          - python3
+          - python3-pip
+          - unzip
+          - rsync
+          - zstd
+        state: present
+
+    - name: Instalar Node.js (LTS)
+      ansible.builtin.shell: |
+        curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+        apt-get install -y nodejs
+      args:
+        creates: /usr/bin/node
+
+    - name: Instalar Ollama
+      ansible.builtin.shell: |
+        curl -fsSL https://ollama.com/install.sh | sh
+      args:
+        creates: /usr/local/bin/ollama
+
+    - name: Garantir diretórios do Openclaw
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ ansible_user | default('root') }}"
+        group: "{{ ansible_user | default('root') }}"
+        mode: "0755"
+      loop:
+        - "/home/{{ ansible_user | default('root') }}/.openclaw"
+        - "/home/{{ ansible_user | default('root') }}/.openclaw/workspace"
+        - "/home/{{ ansible_user | default('root') }}/.openclaw/agents"
+
+    - name: Baixar modelos Ollama necessários
+      ansible.builtin.command: "ollama pull {{ item }}"
+      loop:
+        - gemma2:2b
+        - nomic-embed-text:latest
+      register: ollama_pull
+      changed_when: "'success' in ollama_pull.stdout"
+
+- name: Openclaw — Configurar Tailscale
+  import_playbook: 04-tailscale.yml
+  vars:
+    ansible_limit: openclaw-prod

@@ -1,0 +1,24 @@
+# Ansible vault files (contain real passwords)
+**/vault.yml
+**/secrets.yml
+ansible/inventory/group_vars/*/vault.yml
+.vault_pass
+
+# WSL Windows metadata
+*:Zone.Identifier
+
+# Environment files
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Editor artifacts
+.DS_Store
+*.swp
+*.swo

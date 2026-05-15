@@ -1,0 +1,61 @@
+---
+# ============================================================
+# Playbook 05 — Deploy LXC Containers
+# ============================================================
+# Cria LXCs via API Proxmox usando community.general.proxmox.
+#
+# Uso:
+#   ansible-playbook playbooks/05-lxc-deploy.yml
+#   ansible-playbook playbooks/05-lxc-deploy.yml --tags adguard
+# ============================================================
+
+- name: LXC Deploy — Preparar templates
+  hosts: proxmox
+  gather_facts: false
+  tasks:
+    - name: "Baixar template Debian 12 em {{ inventory_hostname }}"
+      ansible.builtin.command: "pveam download {{ 'local' if inventory_hostname == 'pve-inspiron' else 'pve-storage' }} debian-12-standard_12.12-1_amd64.tar.zst"
+      register: dl
+      changed_when: "'already exists' not in dl.stdout"
+      failed_when: dl.rc != 0 and 'already exists' not in dl.stdout
+
+- name: LXC Deploy — Criar contêineres
+  hosts: lxc_optiplex, lxc_inspiron
+  gather_facts: false
+  connection: local
+  vars:
+    # Escolhe o nó e storage baseado no grupo do host
+    target_node: "{{ 'pve-optiplex' if inventory_hostname in groups['lxc_optiplex'] else 'pve-inspiron' }}"
+    target_storage: "{{ 'pve-storage' if inventory_hostname in groups['lxc_optiplex'] else 'local' }}"
+    target_api_host: "{{ hostvars[target_node]['ansible_host'] }}"
+
+  tasks:
+    - name: "Criar LXC {{ lxc_hostname }} em {{ target_node }} ({{ lxc_ip }})"
+      community.general.proxmox:
+        api_host: "{{ target_api_host }}"
+        api_user: root@pam
+        api_password: "{{ ansible_password | default(ansible_ssh_pass) | default('changeme') }}"
+        node: "{{ target_node }}"
+        vmid: "{{ lxc_vmid }}"
+        hostname: "{{ lxc_hostname }}"
+        ostemplate: "{{ target_storage }}:vztmpl/{{ lxc_template }}"
+        storage: "{{ target_storage }}"
+        cores: "{{ lxc_cores }}"
+        memory: "{{ lxc_memory }}"
+        disk: "{{ lxc_disk }}"
+        password: "{{ lxc_password }}"
+        netif: '{"net0":"name=eth0,bridge={{ lxc_default_bridge }},ip={{ lxc_ip }}{{ network_cidr }},gw={{ lxc_default_gateway }}"}'
+        nameserver: "{{ lxc_default_dns }}"
+        onboot: true
+        unprivileged: true
+        state: present
+      tags: ["lxc-create"]
+
+    - name: "Iniciar LXC {{ lxc_hostname }}"
+      community.general.proxmox:
+        api_host: "{{ target_api_host }}"
+        api_user: root@pam
+        api_password: "{{ ansible_password | default(ansible_ssh_pass) | default('changeme') }}"
+        vmid: "{{ lxc_vmid }}"
+        state: started
+      tags: ["lxc-start"]

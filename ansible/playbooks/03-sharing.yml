@@ -1,0 +1,102 @@
+---
+# ============================================================
+# Playbook 03 — Compartilhamento de Arquivos (NFS + Samba)
+# ============================================================
+# Configura:
+#   1. Samba no Optiplex → HDD 1TB acessível via Windows Explorer
+#   2. NFS no Optiplex → ISOs/templates compartilhados com Inspiron
+#
+# Uso:
+#   ansible-playbook playbooks/03-sharing.yml
+# ============================================================
+
+- name: Sharing — Configurar Samba e NFS no pve-optiplex
+  hosts: pve-optiplex
+  gather_facts: true
+
+  tasks:
+    # ── Samba (acesso do Lenovo via Windows Explorer) ─────
+    - name: "[Samba] Configurar compartilhamento do HDD 1TB"
+      ansible.builtin.blockinfile:
+        path: /etc/samba/smb.conf
+        marker: "# {mark} ANSIBLE MANAGED — homelab data share"
+        block: |
+          [{{ samba_share_name }}]
+             path = {{ samba_share_path }}
+             browseable = yes
+             read only = no
+             guest ok = no
+             valid users = {{ samba_user }}
+             create mask = 0644
+             directory mask = 0755
+
+    - name: "[Samba] Garantir que o serviço está ativo"
+      ansible.builtin.systemd:
+        name: smbd
+        state: restarted
+        enabled: true
+
+    - name: "[Samba] Lembrete — definir senha Samba manualmente"
+      ansible.builtin.debug:
+        msg: >
+          AÇÃO MANUAL NECESSÁRIA: Execute 'smbpasswd -a root' no shell
+          do pve-optiplex para definir a senha de acesso Samba.
+          Depois acesse \\192.168.3.10\data no Windows Explorer do Lenovo.
+
+    # ── NFS (compartilhamento entre nós Proxmox) ─────────
+    - name: "[NFS] Configurar export do pve-storage"
+      ansible.builtin.lineinfile:
+        path: /etc/exports
+        regexp: "^{{ nfs_export_path }}"
+        line: "{{ nfs_export_path }}  {{ nfs_allowed_network }}(rw,sync,no_subtree_check,no_root_squash)"
+        state: present
+        create: true
+        mode: '0644'
+
+    - name: "[NFS] Aplicar exports"
+      ansible.builtin.command: exportfs -a
+      changed_when: true
+
+    - name: "[NFS] Garantir que o serviço NFS está ativo"
+      ansible.builtin.systemd:
+        name: nfs-kernel-server
+        state: restarted
+        enabled: true
+
+# ── Montar NFS no Inspiron ───────────────────────────────
+- name: Sharing — Montar NFS do Optiplex no pve-inspiron
+  hosts: pve-inspiron
+  gather_facts: true
+
+  tasks:
+    - name: "[NFS] Instalar nfs-common"
+      ansible.builtin.apt:
+        name: nfs-common
+        state: present
+
+    - name: "[NFS] Criar ponto de montagem"
+      ansible.builtin.file:
+        path: "{{ nfs_mount_point }}"
+        state: directory
+        mode: '0755'
+
+    - name: "[NFS] Montar storage do Optiplex e adicionar ao fstab"
+      ansible.posix.mount:
+        path: "{{ nfs_mount_point }}"
+        src: "{{ cluster_primary_ip }}:{{ nfs_export_path }}"
+        fstype: nfs
+        opts: "defaults,nofail"
+        state: mounted
+
+    - name: "[NFS] Registrar como storage no Proxmox do Inspiron"
+      ansible.builtin.command: >
+        pvesm add nfs optiplex-shared
+        --server {{ cluster_primary_ip }}
+        --export {{ nfs_export_path }}
+        --content iso,vztmpl,backup
+        --path {{ nfs_mount_point }}
+      register: pvesm_nfs
+      changed_when: "'already exists' not in pvesm_nfs.stderr"
+      failed_when:
+        - pvesm_nfs.rc != 0
+        - "'already exists' not in pvesm_nfs.stderr"

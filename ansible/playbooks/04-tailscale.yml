@@ -1,0 +1,83 @@
+---
+# ============================================================
+# Playbook 04 — Tailscale
+# ============================================================
+# Instala Tailscale em todos os nós Proxmox e configura
+# subnet routing no nó principal.
+#
+# Uso:
+#   ansible-playbook playbooks/04-tailscale.yml
+# ============================================================
+
+- name: Tailscale — Instalar e configurar VPN mesh
+  hosts: proxmox
+  gather_facts: true
+
+  tasks:
+    # ── Instalação ───────────────────────────────────────
+    - name: Verificar se Tailscale já está instalado
+      ansible.builtin.command: which tailscale
+      register: tailscale_check
+      changed_when: false
+      failed_when: false
+
+    - name: Instalar Tailscale via script oficial
+      ansible.builtin.shell: curl -fsSL https://tailscale.com/install.sh | sh
+      args:
+        creates: /usr/bin/tailscale
+      when: tailscale_check.rc != 0
+
+    # ── IP Forwarding (necessário para subnet routing) ───
+    - name: Habilitar IP forwarding (IPv4)
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: true
+        state: present
+        reload: true
+
+    # ── Ativação ─────────────────────────────────────────
+    - name: Verificar status do Tailscale
+      ansible.builtin.command: tailscale status
+      register: ts_status
+      changed_when: false
+      failed_when: false
+
+    - name: "Ativar Tailscale (nó principal — sem advertise-routes para não conflitar com Corosync)"
+      ansible.builtin.command: >
+        tailscale up
+        --accept-routes
+        --ssh
+        --accept-risk=lose-ssh
+      when:
+        - pve_is_primary | bool
+      register: ts_up_primary
+
+    - name: "Ativar Tailscale com subnet routing (nó secundário)"
+      ansible.builtin.command: >
+        tailscale up
+        --advertise-routes={{ tailscale_advertise_routes }}
+        --accept-routes
+        --ssh
+        --accept-risk=lose-ssh
+      when:
+        - not (pve_is_primary | bool)
+      register: ts_up_secondary
+
+    - name: Exibir URL de autenticação (se necessário)
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines | default(['Tailscale já estava autenticado']) }}"
+      loop:
+        - "{{ ts_up_primary | default({}) }}"
+        - "{{ ts_up_secondary | default({}) }}"
+      when: item is changed
+
+    # ── Lembrete ─────────────────────────────────────────
+    - name: Lembrete — aprovar rotas no Tailscale Admin
+      ansible.builtin.debug:
+        msg: >
+          AÇÃO MANUAL: Acesse https://login.tailscale.com/admin →
+          Machines → pve-optiplex → Edit Route Settings →
+          Approve 192.168.3.0/24
+      when: pve_is_primary | bool
+      run_once: true
