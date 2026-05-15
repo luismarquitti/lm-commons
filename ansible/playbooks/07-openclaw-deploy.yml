@@ -1,21 +1,24 @@
 ---
 # ============================================================
-# Playbook 07 — Deploy Openclaw Definitive Instance
+# Playbook 07 — OpenClaw Bare-Metal (Dell Optiplex 7040)
 # ============================================================
-# Provisiona o ambiente para a instância definitiva do Openclaw.
+# Provisiona o OpenClaw diretamente no hardware do Optiplex,
+# sem camada de virtualização (Proxmox removido).
+#
+# Pré-requisito: Debian 12 instalado no Optiplex com:
+#   - IP estático: 192.168.3.30
+#   - usuário: luismarquitti (com sudo)
+#   - SSH key de ~/.ssh/id_ed25519 autorizada
 #
 # Uso:
 #   ansible-playbook playbooks/07-openclaw-deploy.yml
+#   ansible-playbook playbooks/07-openclaw-deploy.yml --tags ollama
 # ============================================================
 
-# - name: Openclaw — Provisionar LXC no Proxmox
-#   import_playbook: 05-lxc-deploy.yml
-#   vars:
-#     ansible_limit: openclaw-prod
-
-- name: Openclaw — Configurar Ambiente e Dependências
+- name: OpenClaw — Configurar Sistema Base
   hosts: openclaw-prod
   become: true
+  tags: [base]
   tasks:
     - name: Atualizar cache do apt
       ansible.builtin.apt:
@@ -33,14 +36,67 @@
           - unzip
           - rsync
           - zstd
+          - htop
+          - iotop
+          - net-tools
+          - sudo
         state: present
 
+    - name: Garantir usuário luismarquitti existe
+      ansible.builtin.user:
+        name: luismarquitti
+        shell: /bin/bash
+        groups: sudo
+        append: true
+        create_home: true
+
+    - name: Configurar IP estático em /etc/network/interfaces
+      ansible.builtin.copy:
+        dest: /etc/network/interfaces
+        content: |
+          auto lo
+          iface lo inet loopback
+
+          auto enp2s0
+          iface enp2s0 inet static
+            address 192.168.3.30/24
+            gateway 192.168.3.1
+            dns-nameservers 192.168.3.5 8.8.8.8
+        owner: root
+        group: root
+        mode: "0644"
+      notify: restart networking
+
+    - name: Configurar /etc/hosts
+      ansible.builtin.blockinfile:
+        path: /etc/hosts
+        block: |
+          192.168.3.30  openclaw-prod openclaw-prod.lan
+          192.168.3.50  pve-inspiron pve-inspiron.lan
+          192.168.3.5   adguard adguard.lan
+        marker: "# {mark} ANSIBLE MANAGED — homelab"
+
+    - name: Configurar hostname
+      ansible.builtin.hostname:
+        name: openclaw-prod
+
+  handlers:
+    - name: restart networking
+      ansible.builtin.service:
+        name: networking
+        state: restarted
+
+
+- name: OpenClaw — Instalar Node.js via NVM
+  hosts: openclaw-prod
+  become: false
+  tags: [node, nvm]
+  tasks:
     - name: Instalar NVM para o usuário luismarquitti
       ansible.builtin.shell: |
         curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
       args:
         creates: /home/luismarquitti/.nvm/nvm.sh
-      become_user: luismarquitti
 
     - name: Instalar Node.js LTS via NVM
       ansible.builtin.shell: |
@@ -52,7 +108,6 @@
       args:
         executable: /bin/bash
         creates: /home/luismarquitti/.nvm/alias/default
-      become_user: luismarquitti
 
     - name: Criar symlinks do node no PATH do sistema
       ansible.builtin.shell: |
@@ -65,39 +120,99 @@
         ln -sf "$(dirname $NVM_NODE)/npx" /usr/local/bin/npx
       args:
         executable: /bin/bash
+      become: true
 
+
+- name: OpenClaw — Instalar Ollama
+  hosts: openclaw-prod
+  become: true
+  tags: [ollama]
+  tasks:
     - name: Instalar Ollama
       ansible.builtin.shell: |
         curl -fsSL https://ollama.com/install.sh | sh
       args:
         creates: /usr/local/bin/ollama
 
-    - name: Garantir diretórios do Openclaw
+    - name: Garantir serviço Ollama está habilitado
+      ansible.builtin.systemd:
+        name: ollama
+        enabled: true
+        state: started
+
+    - name: Baixar modelos Ollama
+      ansible.builtin.command: "ollama pull {{ item }}"
+      loop: "{{ ollama_models | default(['gemma4:e2b', 'gemma3:4b', 'qwen3:8b', 'nomic-embed-text:latest']) }}"
+      register: ollama_pull
+      changed_when: "'success' in (ollama_pull.stdout | default(''))"
+      become: false
+
+
+- name: OpenClaw — Instalar e Configurar Tailscale
+  hosts: openclaw-prod
+  become: true
+  tags: [tailscale]
+  tasks:
+    - name: Instalar Tailscale
+      ansible.builtin.shell: |
+        curl -fsSL https://tailscale.com/install.sh | sh
+      args:
+        creates: /usr/bin/tailscale
+
+    - name: Habilitar IP forwarding
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        sysctl_set: true
+        state: present
+        reload: true
+
+    # Autenticação Tailscale é interativa — executar manualmente:
+    # tailscale up --advertise-routes=192.168.3.0/24 --accept-routes
+
+
+- name: OpenClaw — Garantir diretórios e permissões
+  hosts: openclaw-prod
+  become: true
+  tags: [dirs]
+  tasks:
+    - name: Criar diretórios do OpenClaw
       ansible.builtin.file:
         path: "{{ item }}"
         state: directory
-        owner: "{{ ansible_user | default('root') }}"
-        group: "{{ ansible_user | default('root') }}"
+        owner: luismarquitti
+        group: luismarquitti
         mode: "0755"
       loop:
-        - "/home/{{ ansible_user | default('root') }}/.openclaw"
-        - "/home/{{ ansible_user | default('root') }}/.openclaw/workspace"
-        - "/home/{{ ansible_user | default('root') }}/.openclaw/agents"
+        - /home/luismarquitti/.openclaw
+        - /home/luismarquitti/.openclaw/workspace
+        - /home/luismarquitti/.openclaw/agents
+        - /home/luismarquitti/.openclaw/logs
 
-    - name: Baixar modelos Ollama necessários
-      ansible.builtin.command: "ollama pull {{ item }}"
-      loop:
-        - gemma2:2b
-        - nomic-embed-text:latest
-      register: ollama_pull
-      changed_when: "'success' in ollama_pull.stdout"
+    - name: Criar mount point para HDD de dados
+      ansible.builtin.file:
+        path: /mnt/data
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
 
-# NOTA: Tailscale dentro do LXC openclaw-prod requer investigação adicional.
-# tailscaled falha sem nesting=1 ou keyctl=1 nas features do LXC (pct config 200).
-# Por ora o gateway funciona sem exposição Tailscale direta — acesso via Telegram/loopback.
-# Descomentar após validar features necessárias no LXC:
-#
-# - name: Openclaw — Configurar Tailscale
-#   import_playbook: 04-tailscale.yml
-#   vars:
-#     ansible_limit: openclaw-prod
+    - name: Montar HDD 1TB (dados pessoais) — NTFS
+      ansible.posix.mount:
+        path: /mnt/data
+        src: /dev/sdc1
+        fstype: ntfs-3g
+        opts: defaults,nofail,uid=1000,gid=1000
+        state: mounted
+
+    - name: Montar HDD 298GB (storage openclaw) — ext4
+      ansible.posix.mount:
+        path: /mnt/openclaw-storage
+        src: /dev/sdb1
+        fstype: ext4
+        opts: defaults,nofail
+        state: mounted
+
+# NOTA: A instalação do OpenClaw em si (pnpm install -g openclaw, openclaw configure,
+# openclaw gateway install) é feita manualmente pois requer autenticação OAuth interativa.
+# Ver docs/openclaw-manual-config-log.md para o passo-a-passo completo.

@@ -10,16 +10,17 @@ network_cidr: "/24"
 network_dns_primary: "8.8.8.8"      # Temporário até AdGuard estar pronto
 network_dns_adguard: "192.168.3.5"  # DNS definitivo
 
-# Cluster Proxmox
+# Proxmox — único nó restante após migração bare-metal
+# (Optiplex removido do cluster em favor de bare-metal OpenClaw)
 cluster_name: "mqt-homelab"
-cluster_primary_ip: "192.168.3.10"
+cluster_primary_ip: "192.168.3.50"
 
 # Hosts para /etc/hosts
 etc_hosts_entries:
-  - ip: "192.168.3.10"
-    names: "pve-optiplex pve-optiplex.lan"
   - ip: "192.168.3.50"
     names: "pve-inspiron pve-inspiron.lan"
+  - ip: "192.168.3.30"
+    names: "openclaw-prod openclaw-prod.lan"
 
 
 # Tailscale

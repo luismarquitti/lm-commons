@@ -1,15 +1,29 @@
 ---
 # ============================================================
-# site.yml — Master Playbook (roda tudo em ordem)
+# site.yml — Master Playbook
 # ============================================================
-# Uso:
+# Arquitetura pós-migração bare-metal (15/05/2026):
+#   - pve-inspiron: único nó Proxmox (adguard, nginx-proxy, uptime-kuma, postgres, homeassistant VM)
+#   - openclaw-prod: Dell Optiplex bare-metal Debian (sem Proxmox)
+#
+# Uso completo (inspiron + openclaw):
 #   ansible-playbook playbooks/site.yml
+#
+# Só inspiron:
+#   ansible-playbook playbooks/site.yml --limit pve-inspiron,lxc_inspiron,inspiron_vms
+#
+# Só openclaw bare-metal:
+#   ansible-playbook playbooks/site.yml --limit baremetal
 # ============================================================
 
+# ── Inspiron: bootstrap e cluster standalone
 - import_playbook: 00-bootstrap.yml
 - import_playbook: 01-storage.yml
-- import_playbook: 02-cluster.yml
-- import_playbook: 03-sharing.yml
 - import_playbook: 04-tailscale.yml
 - import_playbook: 05-lxc-deploy.yml
+
+# ── Inspiron: serviços
+- import_playbook: 06-db-setup.yml
+
+# ── Optiplex: bare-metal OpenClaw
 - import_playbook: 07-openclaw-deploy.yml

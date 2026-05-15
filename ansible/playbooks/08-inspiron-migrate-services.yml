@@ -1,0 +1,169 @@
+---
+# ============================================================
+# Playbook 08 — Migração de Serviços para pve-inspiron
+# ============================================================
+# Executar APÓS o Optiplex ser removido do cluster Proxmox.
+# Provisiona no pve-inspiron os serviços que antes rodavam
+# em LXCs no pve-optiplex: AdGuard e Nginx Proxy Manager.
+#
+# uptime-kuma (101) e postgres-db (104) já existem no Inspiron.
+# homeassistant-server VM (151) permanece inalterada.
+#
+# Uso:
+#   ansible-playbook playbooks/08-inspiron-migrate-services.yml
+#   ansible-playbook playbooks/08-inspiron-migrate-services.yml --tags adguard
+#   ansible-playbook playbooks/08-inspiron-migrate-services.yml --tags nginx
+# ============================================================
+
+- name: Inspiron — Criar LXC AdGuard Home
+  hosts: pve-inspiron
+  become: true
+  tags: [adguard]
+  tasks:
+    - name: Criar LXC adguard no Inspiron via Proxmox API
+      community.general.proxmox:
+        api_host: "192.168.3.50"
+        api_user: "root@pam"
+        api_password: "{{ vault_proxmox_password }}"
+        node: pve-inspiron
+        vmid: 100
+        hostname: adguard
+        ostemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
+        netif:
+          net0: "name=eth0,bridge=vmbr0,ip=192.168.3.5/24,gw=192.168.3.1"
+        cores: 1
+        memory: 512
+        disk: "local-lvm:4"
+        password: "{{ vault_lxc_password | default('changeme123') }}"
+        onboot: true
+        state: present
+      register: adguard_lxc
+
+    - name: Iniciar LXC adguard
+      community.general.proxmox:
+        api_host: "192.168.3.50"
+        api_user: "root@pam"
+        api_password: "{{ vault_proxmox_password }}"
+        node: pve-inspiron
+        vmid: 100
+        state: started
+
+    - name: Aguardar LXC adguard iniciar
+      ansible.builtin.wait_for:
+        host: "192.168.3.5"
+        port: 22
+        delay: 10
+        timeout: 120
+
+
+- name: Inspiron — Instalar AdGuard Home no LXC
+  hosts: adguard
+  become: true
+  tags: [adguard]
+  tasks:
+    - name: Instalar AdGuard Home via script oficial
+      ansible.builtin.shell: |
+        curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/adguard.sh \
+          | bash -s -- --install-only
+      args:
+        creates: /opt/AdGuardHome/AdGuardHome
+
+    - name: Garantir serviço AdGuard está habilitado e rodando
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        enabled: true
+        state: started
+
+    - name: Informar URL de configuração
+      ansible.builtin.debug:
+        msg: >
+          AdGuard Home instalado. Acesse http://192.168.3.5:3000 para
+          configuração inicial. Configure DNS Rewrites para os serviços da rede.
+
+
+- name: Inspiron — Criar LXC Nginx Proxy Manager
+  hosts: pve-inspiron
+  become: true
+  tags: [nginx]
+  tasks:
+    - name: Criar LXC nginx-proxy no Inspiron via Proxmox API
+      community.general.proxmox:
+        api_host: "192.168.3.50"
+        api_user: "root@pam"
+        api_password: "{{ vault_proxmox_password }}"
+        node: pve-inspiron
+        vmid: 102
+        hostname: nginx-proxy
+        ostemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
+        netif:
+          net0: "name=eth0,bridge=vmbr0,ip=192.168.3.7/24,gw=192.168.3.1"
+        cores: 1
+        memory: 1024
+        disk: "local-lvm:8"
+        password: "{{ vault_lxc_password | default('changeme123') }}"
+        onboot: true
+        state: present
+
+    - name: Iniciar LXC nginx-proxy
+      community.general.proxmox:
+        api_host: "192.168.3.50"
+        api_user: "root@pam"
+        api_password: "{{ vault_proxmox_password }}"
+        node: pve-inspiron
+        vmid: 102
+        state: started
+
+    - name: Aguardar LXC nginx-proxy iniciar
+      ansible.builtin.wait_for:
+        host: "192.168.3.7"
+        port: 22
+        delay: 10
+        timeout: 120
+
+
+- name: Inspiron — Instalar Nginx Proxy Manager no LXC
+  hosts: nginx-proxy
+  become: true
+  tags: [nginx]
+  tasks:
+    - name: Instalar Nginx Proxy Manager via script oficial
+      ansible.builtin.shell: |
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nginx-proxy-manager.sh)"
+      args:
+        creates: /opt/nginx-proxy-manager
+
+    - name: Informar URL de configuração
+      ansible.builtin.debug:
+        msg: >
+          Nginx Proxy Manager instalado. Acesse http://192.168.3.7:81
+          Credenciais padrão: admin@example.com / changeme
+          Configure proxy hosts para openclaw-prod (.30), homeassistant (.22),
+          pve-inspiron (.50), adguard (.5), uptime-kuma (.6).
+
+
+- name: Inspiron — Verificar capacidade de RAM após migração
+  hosts: pve-inspiron
+  become: true
+  tags: [verify]
+  tasks:
+    - name: Checar uso de memória do host
+      ansible.builtin.command: free -h
+      register: mem_status
+      changed_when: false
+
+    - name: Exibir status de memória
+      ansible.builtin.debug:
+        msg: "{{ mem_status.stdout_lines }}"
+
+    - name: Listar todos os LXCs e VMs
+      ansible.builtin.command: "{{ item }}"
+      loop:
+        - pct list
+        - qm list
+      register: vm_list
+      changed_when: false
+
+    - name: Exibir inventário de containers
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ vm_list.results }}"

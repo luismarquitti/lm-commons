@@ -1,0 +1,111 @@
+---
+# ============================================================
+# Playbook 09 — Decommission Proxmox no Optiplex
+# ============================================================
+# ATENÇÃO: Este playbook prepara o Optiplex para a transição
+# bare-metal. Ele NÃO apaga dados — apenas para os LXCs,
+# remove o nó do cluster Proxmox e exporta dados críticos.
+#
+# Executar ANTES de reinstalar o SO no Optiplex.
+# Executar OS PASSOS MANUAIS antes de rodar este playbook.
+#
+# Uso:
+#   ansible-playbook playbooks/09-decommission-optiplex-proxmox.yml
+#   ansible-playbook playbooks/09-decommission-optiplex-proxmox.yml --tags backup
+#   ansible-playbook playbooks/09-decommission-optiplex-proxmox.yml --tags shutdown
+# ============================================================
+
+- name: Optiplex — Fazer backup dos dados críticos antes do shutdown
+  hosts: pve-optiplex
+  become: true
+  tags: [backup]
+  vars:
+    backup_dest_host: "192.168.3.50"       # pve-inspiron
+    backup_dest_path: "/mnt/backup-optiplex"
+  tasks:
+    - name: Criar diretório de backup no Inspiron
+      ansible.builtin.command: >
+        ssh root@{{ backup_dest_host }}
+        "mkdir -p {{ backup_dest_path }}"
+      changed_when: false
+
+    - name: Backup do config do openclaw-prod LXC (via pct dump)
+      ansible.builtin.shell: |
+        pct config 200 > /tmp/openclaw-prod-lxc-config.txt
+        cat /tmp/openclaw-prod-lxc-config.txt
+      register: lxc_config
+      changed_when: false
+
+    - name: Exibir configuração do LXC 200 para referência
+      ansible.builtin.debug:
+        msg: "{{ lxc_config.stdout_lines }}"
+
+    - name: Exportar dados do ~/.openclaw do LXC para o Inspiron
+      ansible.builtin.shell: |
+        pct exec 200 -- tar czf /tmp/openclaw-data-backup.tar.gz \
+          /home/luismarquitti/.openclaw 2>/dev/null || true
+        pct pull 200 /tmp/openclaw-data-backup.tar.gz /tmp/openclaw-data-backup.tar.gz
+        rsync -avz /tmp/openclaw-data-backup.tar.gz \
+          root@{{ backup_dest_host }}:{{ backup_dest_path }}/
+      args:
+        executable: /bin/bash
+
+    - name: Confirmar backup salvo
+      ansible.builtin.debug:
+        msg: >
+          Backup salvo em {{ backup_dest_host }}:{{ backup_dest_path }}/openclaw-data-backup.tar.gz
+          Restaurar com: tar xzf openclaw-data-backup.tar.gz -C / (no novo sistema)
+
+
+- name: Optiplex — Parar LXCs e remover do cluster Proxmox
+  hosts: pve-optiplex
+  become: true
+  tags: [shutdown]
+  tasks:
+    - name: Parar LXC openclaw-prod (200)
+      ansible.builtin.command: pct shutdown 200 --timeout 30
+      ignore_errors: true
+      changed_when: true
+
+    - name: Parar LXC nginx-proxy (102)
+      ansible.builtin.command: pct shutdown 102 --timeout 30
+      ignore_errors: true
+      changed_when: true
+
+    - name: Parar LXC adguard (100)
+      ansible.builtin.command: pct shutdown 100 --timeout 30
+      ignore_errors: true
+      changed_when: true
+
+    - name: Confirmar parada de todos os LXCs
+      ansible.builtin.command: pct list
+      register: lxc_status
+      changed_when: false
+
+    - name: Exibir status final dos LXCs
+      ansible.builtin.debug:
+        msg: "{{ lxc_status.stdout_lines }}"
+
+    - name: Remover pve-optiplex do cluster Proxmox
+      ansible.builtin.command: pvecm delnode pve-optiplex
+      delegate_to: pve-inspiron
+      changed_when: true
+      ignore_errors: true
+
+    - name: Verificar cluster no Inspiron após remoção
+      ansible.builtin.command: pvecm status
+      delegate_to: pve-inspiron
+      register: cluster_status
+      changed_when: false
+
+    - name: Exibir status do cluster
+      ansible.builtin.debug:
+        msg: "{{ cluster_status.stdout_lines }}"
+
+    - name: Instrução final — próximo passo manual
+      ansible.builtin.debug:
+        msg: >
+          Optiplex pronto para reinstalação.
+          Próximo passo: instalar Debian 12 no Optiplex via USB.
+          IP alvo: 192.168.3.30, usuário: luismarquitti
+          Após instalar: ansible-playbook playbooks/07-openclaw-deploy.yml
