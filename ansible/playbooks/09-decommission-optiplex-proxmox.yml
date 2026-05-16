@@ -24,10 +24,13 @@
     backup_dest_path: "/mnt/backup-optiplex"
   tasks:
     - name: Criar diretório de backup no Inspiron
-      ansible.builtin.command: >
-        ssh root@{{ backup_dest_host }}
-        "mkdir -p {{ backup_dest_path }}"
-      changed_when: false
+      ansible.builtin.file:
+        path: "{{ backup_dest_path }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      delegate_to: pve-inspiron
 
     - name: Backup do config do lm-claw LXC (via pct dump)
       ansible.builtin.shell: |
@@ -36,7 +39,7 @@
       register: lxc_config
       changed_when: false
 
-    - name: Exibir configuração do LXC 200 para referência
+    - name: Exibir configuração do LXC 200 para reference
       ansible.builtin.debug:
         msg: "{{ lxc_config.stdout_lines }}"
 
@@ -45,7 +48,7 @@
         pct exec 200 -- tar czf /tmp/openclaw-data-backup.tar.gz \
           /home/luismarquitti/.openclaw 2>/dev/null || true
         pct pull 200 /tmp/openclaw-data-backup.tar.gz /tmp/openclaw-data-backup.tar.gz
-        rsync -avz /tmp/openclaw-data-backup.tar.gz \
+        rsync -avz -e "ssh -o StrictHostKeyChecking=no" /tmp/openclaw-data-backup.tar.gz \
           root@{{ backup_dest_host }}:{{ backup_dest_path }}/
       args:
         executable: /bin/bash

@@ -57,21 +57,21 @@
           auto lo
           iface lo inet loopback
 
-          auto enp2s0
-          iface enp2s0 inet static
-            address 192.168.3.30/24
+          auto enp0s31f6
+          iface enp0s31f6 inet static
+            address 192.168.3.10/24
             gateway 192.168.3.1
             dns-nameservers 192.168.3.5 8.8.8.8
         owner: root
         group: root
         mode: "0644"
-      notify: restart networking
+      # notify: restart networking
 
     - name: Configurar /etc/hosts
       ansible.builtin.blockinfile:
         path: /etc/hosts
         block: |
-          192.168.3.30  lm-claw lm-claw.lan
+          192.168.3.10  lm-claw lm-claw.lan
           192.168.3.50  pve-inspiron pve-inspiron.lan
           192.168.3.5   adguard adguard.lan
         marker: "# {mark} ANSIBLE MANAGED — homelab"
@@ -85,6 +85,42 @@
       ansible.builtin.service:
         name: networking
         state: restarted
+
+
+- name: OpenClaw — Instalar Homebrew
+  hosts: lm-claw
+  become: false
+  tags: [brew, homebrew]
+  tasks:
+    - name: Instalar dependências do Homebrew
+      ansible.builtin.apt:
+        name:
+          - build-essential
+          - procps
+          - curl
+          - file
+          - git
+        state: present
+      become: true
+
+    - name: Executar script de instalação do Homebrew (Non-Interactive)
+      ansible.builtin.shell: |
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /home/linuxbrew/.linuxbrew/bin/brew
+
+    - name: Adicionar Homebrew ao .bashrc
+      ansible.builtin.lineinfile:
+        path: /home/luismarquitti/.bashrc
+        line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+        state: present
+
+    - name: Criar symlink do brew no PATH do sistema
+      ansible.builtin.file:
+        src: /home/linuxbrew/.linuxbrew/bin/brew
+        dest: /usr/local/bin/brew
+        state: link
+      become: true
 
 
 - name: OpenClaw — Instalar Node.js via NVM
@@ -121,6 +157,16 @@
       args:
         executable: /bin/bash
       become: true
+
+    - name: Instalar Gemini CLI globalmente
+      ansible.builtin.shell: |
+        export NVM_DIR="/home/luismarquitti/.nvm"
+        source "$NVM_DIR/nvm.sh"
+        npm install -g @google/gemini-cli
+      args:
+        executable: /bin/bash
+      register: gemini_install
+      changed_when: "'added' in gemini_install.stdout"
 
 
 - name: OpenClaw — Instalar Ollama
@@ -208,6 +254,9 @@
 - name: OpenClaw — PKM / Obsidian Vault
   hosts: lm-claw
   become: false
+  vars:
+    obsidian_vault_repo: "https://github.com/luismarquitti/obsidian-vault.git"
+    obsidian_vault_dest: "/home/luismarquitti/.openclaw/workspace/obsidian-vault"
   tags: [vault, pkm]
   tasks:
     - name: Clonar repositório do Obsidian Vault para o workspace
@@ -220,6 +269,17 @@
       until: vault_clone is success
       retries: 3
       delay: 5
+
+- name: OpenClaw — Instalação Final
+  hosts: lm-claw
+  become: false
+  tags: [openclaw, install]
+  tasks:
+    - name: Instalar OpenClaw via script oficial
+      ansible.builtin.shell: |
+        curl -fsSL https://openclaw.ai/install.sh | bash
+      args:
+        creates: /home/luismarquitti/.local/bin/openclaw
 
 # NOTA: A instalação do OpenClaw em si (pnpm install -g openclaw, openclaw configure,
 # openclaw gateway install) é feita manualmente pois requer autenticação OAuth interativa.

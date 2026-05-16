@@ -19,7 +19,7 @@ cluster_primary_ip: "192.168.3.50"
 etc_hosts_entries:
   - ip: "192.168.3.50"
     names: "pve-inspiron pve-inspiron.lan"
-  - ip: "192.168.3.30"
+  - ip: "192.168.3.10"
     names: "lm-claw lm-claw.lan"
 
 

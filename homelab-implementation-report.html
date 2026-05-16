@@ -825,7 +825,7 @@
             <div class="meta-item">Atualizado em <span>15/05/2026 — branch feat/openclaw-bare-metal</span></div>
             <div class="meta-item">Rede <span>192.168.3.0/24</span></div>
             <div class="meta-item">Proxmox <span>pve-inspiron standalone (1 nó)</span></div>
-            <div class="meta-item">OpenClaw <span>bare-metal @ 192.168.3.30 🟢 running</span></div>
+            <div class="meta-item">OpenClaw <span>bare-metal @ 192.168.3.10 🟢 running</span></div>
         </div>
     </div>
 
@@ -879,7 +879,7 @@
                                 <div class="arch-node" style="font-size:10px;padding:10px 14px;border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.06);">
                                     <div class="node-label">Bare Metal — Debian 12</div>
                                     <div class="node-name" style="color:var(--teal);">lm-claw</div>
-                                    <div class="node-ip">192.168.3.30</div>
+                                    <div class="node-ip">192.168.3.10</div>
                                 </div>
                                 <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
                                     <div class="node-label">Ollama</div>
@@ -946,7 +946,7 @@
                             <div class="arch-node" style="border-color:rgba(0,212,170,0.3)">
                                 <div class="node-label">Bare Metal</div>
                                 <div class="node-name">lm-claw</div>
-                                <div class="node-ip">192.168.3.30</div>
+                                <div class="node-ip">192.168.3.10</div>
                             </div>
                             <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
                             <div class="arch-node" style="border-color:rgba(124,109,250,0.3)">
@@ -989,7 +989,7 @@
                             <td>—</td>
                         </tr>
                         <tr>
-                            <td class="td-ip">192.168.3.30</td>
+                            <td class="td-ip">192.168.3.10</td>
                             <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
                             <td class="td-name">lm-claw</td>
                             <td>Dell Optiplex 7040 — Bare Metal Debian 12, OpenClaw + Ollama</td>
@@ -1029,7 +1029,7 @@
                             <td>—</td>
                         </tr>
                         <tr>
-                            <td class="td-ip">192.168.3.30</td>
+                            <td class="td-ip">192.168.3.10</td>
                             <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
                             <td class="td-name">lm-claw</td>
                             <td>OpenClaw — bare metal no Optiplex, Ollama local (gemma4:e2b + qwen3:8b)</td>
@@ -1123,7 +1123,7 @@
 
             <div class="alert alert-teal" style="margin-top:16px;">
                 <div class="alert-icon">✓</div>
-                <div><strong>Dell Optiplex 7040 (lm-claw)</strong> — bare metal Debian 12 em 192.168.3.30. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 298GB montado em /mnt/openclaw-storage. HDD 1TB movido para pve-inspiron (Samba).</div>
+                <div><strong>Dell Optiplex 7040 (lm-claw)</strong> — bare metal Debian 12 em 192.168.3.10. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 298GB montado em /mnt/openclaw-storage. HDD 1TB movido para pve-inspiron (Samba).</div>
             </div>
 
             <div class="alert alert-teal" style="margin-top:8px;">
@@ -1155,7 +1155,7 @@
 192.168.3.14    luis-laptop          <span class="c-dim"># Lenovo (reserva DHCP)</span>
 192.168.3.20    postgres-db          <span class="c-dim"># LXC — banco relacional central (no pve-inspiron)</span>
 192.168.3.22    homeassistant-server <span class="c-dim"># VM — Home Assistant (no pve-inspiron)</span>
-192.168.3.30    lm-claw        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
+192.168.3.10    lm-claw        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
 192.168.3.50    pve-inspiron         <span class="c-dim"># Proxmox standalone (único nó)</span>
 
 <span class="c-dim"># DISPOSITIVOS IoT (automação Home Assistant)</span>
@@ -1175,7 +1175,7 @@
             <div class="alert alert-teal" style="margin-bottom:16px;">
                 <div class="alert-icon">✓</div>
                 <div><strong>Optiplex 7040 → Bare Metal:</strong> Instalar Debian 12 via USB no NVMe 238GB. IP estático: <code
-                        style="font-family:var(--mono);font-size:11px;">192.168.3.30/24</code>, hostname: <code
+                        style="font-family:var(--mono);font-size:11px;">192.168.3.10/24</code>, hostname: <code
                         style="font-family:var(--mono);font-size:11px;">lm-claw</code>. Após instalar: <code style="font-family:var(--mono);font-size:11px;">ansible-playbook playbooks/07-openclaw-deploy.yml</code>.</div>
             </div>
 
@@ -1377,7 +1377,7 @@ EOF
                     <div class="tool-info">
                         <div class="tool-name">OpenClaw</div>
                         <div class="tool-desc">Framework de IA — bare-metal no Optiplex, Ollama local, Telegram bot, agentes chief/nest/main</div>
-                        <div class="tool-repo">Bare Metal — 192.168.3.30 (🟢 running)</div>
+                        <div class="tool-repo">Bare Metal — 192.168.3.10 (🟢 running)</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1501,7 +1501,7 @@ lm-claw.lan  → <span class="c-teal">192.168.3.10</span>
 pve-inspiron.lan    → <span class="c-teal">192.168.3.19</span>
 homeassistant.lan → <span class="c-teal">192.168.3.21</span>
 openclaw.lan      → <span class="c-teal">192.168.3.22</span>
-lm-claw.lan → <span class="c-teal">192.168.3.30</span>
+lm-claw.lan → <span class="c-teal">192.168.3.10</span>
 uptime.lan        → <span class="c-teal">192.168.3.6</span>
 files.lan         → <span class="c-teal">192.168.3.x</span>
         </pre>
@@ -1670,14 +1670,14 @@ sysctl -p
                         <tr>
                             <td class="td-name">OpenClaw Gateway</td>
                             <td>TCP Port</td>
-                            <td class="td-ip">192.168.3.30:18789</td>
+                            <td class="td-ip">192.168.3.10:18789</td>
                             <td>60s</td>
                             <td>Telegram</td>
                         </tr>
                         <tr>
                             <td class="td-name">Ollama API</td>
                             <td>HTTP</td>
-                            <td class="td-ip">192.168.3.30:11434</td>
+                            <td class="td-ip">192.168.3.10:11434</td>
                             <td>120s</td>
                             <td>Telegram</td>
                         </tr>
@@ -1719,7 +1719,7 @@ sysctl -p
                         <tr>
                             <td class="td-name">Tailscale Peer</td>
                             <td>Ping</td>
-                            <td class="td-ip">192.168.3.30</td>
+                            <td class="td-ip">192.168.3.10</td>
                             <td>120s</td>
                             <td>Telegram</td>
                         </tr>
@@ -1823,7 +1823,7 @@ sysctl -p
                     <div class="phase-body">
                         <ul class="checklist">
                             <li class="done">Cluster Proxmox mqt-homelab — 2 nós, Quorate</li>
-                            <li class="done">OpenClaw 2026.5.12 instalado e rodando no LXC 200 (192.168.3.30)</li>
+                            <li class="done">OpenClaw 2026.5.12 instalado e rodando no LXC 200 (192.168.3.10)</li>
                             <li class="done">Gateway systemd ativo — Telegram @luismarquitti_proxmox_bot conectado</li>
                             <li class="done">Ollama com gemma2:2b + nomic-embed-text</li>
                             <li class="done">Command owner configurado (telegram:8666532874)</li>
@@ -1859,10 +1859,10 @@ sysctl -p
                     <div class="phase-body">
                         <ul class="checklist">
                             <li>Criar USB bootável com Debian 12 netinstall</li>
-                            <li>Instalar Debian no NVMe 238GB — IP estático 192.168.3.30, usuário luismarquitti</li>
+                            <li>Instalar Debian no NVMe 238GB — IP estático 192.168.3.10, usuário luismarquitti</li>
                             <li>Autorizar chave SSH: <code style="font-family:var(--mono);font-size:11px;">~/.ssh/id_ed25519.pub</code></li>
                             <li>Adicionar luismarquitti ao grupo sudo</li>
-                            <li>Verificar conectividade: <code style="font-family:var(--mono);font-size:11px;">ssh luismarquitti@192.168.3.30</code></li>
+                            <li>Verificar conectividade: <code style="font-family:var(--mono);font-size:11px;">ssh luismarquitti@192.168.3.10</code></li>
                             <li>Atualizar reserva DHCP do Optiplex no Mercusys: MAC 74:86:7A:FA:8E:C8 → IP .30</li>
                         </ul>
                     </div>
@@ -2003,7 +2003,7 @@ sysctl -p
     <div class="footer">
         <div class="footer-logo">HOME LAB — MQT_Home</div>
         <div>Luis Marquitti · Campinas, SP · 2026 · branch: feat/openclaw-bare-metal</div>
-        <div>Rede: 192.168.3.0/24 · Tailnet: tail2a8138.ts.net · OpenClaw: 192.168.3.30</div>
+        <div>Rede: 192.168.3.0/24 · Tailnet: tail2a8138.ts.net · OpenClaw: 192.168.3.10</div>
     </div>
 
 </body>
