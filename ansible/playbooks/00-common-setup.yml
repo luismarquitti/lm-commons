@@ -11,6 +11,8 @@
   become: true
   vars:
     zsh_custom_dir: "~{{ ansible_user | default('luismarquitti') }}/.oh-my-zsh/custom"
+    git_user_name: "Luis Marquitti"
+    git_user_email: "luismarquitti@gmail.com"
 
   tasks:
     - name: Garantir que pacotes essenciais estão instalados

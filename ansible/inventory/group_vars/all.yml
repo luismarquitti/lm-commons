@@ -53,7 +53,7 @@ obsidian_vault_repo: "https://github.com/luismarquitti/obsidian-vault.git"
 obsidian_vault_dest: "/home/luismarquitti/.openclaw/workspace/obsidian-vault"
 
 # Git Identity
-git_user_name: "Luis Eduardo (Luis Marquitti)"
+git_user_name: "Luis Marquitti"
 git_user_email: "luismarquitti@gmail.com"
 
 # LXC defaults
