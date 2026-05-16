@@ -16,6 +16,9 @@
 #   ansible-playbook playbooks/site.yml --limit baremetal
 # ============================================================
 
+# ── Universal: setup base (Zsh, Git, Shell, gh)
+- import_playbook: 00-common-setup.yml
+
 # ── Inspiron: bootstrap e cluster standalone
 - import_playbook: 00-bootstrap.yml
 - import_playbook: 01-storage.yml

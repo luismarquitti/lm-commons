@@ -2,54 +2,15 @@
 # ============================================================
 # Playbook 07 — OpenClaw Bare-Metal (Dell Optiplex 7040)
 # ============================================================
-# Provisiona o OpenClaw diretamente no hardware do Optiplex,
-# sem camada de virtualização (Proxmox removido).
-#
-# Pré-requisito: Debian 12 instalado no Optiplex com:
-#   - IP estático: 192.168.3.30
-#   - usuário: luismarquitti (com sudo)
-#   - SSH key de ~/.ssh/id_ed25519 autorizada
-#
-# Uso:
-#   ansible-playbook playbooks/07-openclaw-deploy.yml
-#   ansible-playbook playbooks/07-openclaw-deploy.yml --tags ollama
+# Provisiona ferramentas de IA/Dev no nó bare-metal lm-claw.
+# O setup base (Zsh, Git, Shell) é feito via 00-common-setup.yml.
 # ============================================================
 
-- name: OpenClaw — Configurar Sistema Base
+- name: OpenClaw — Configurar Rede e Hostname
   hosts: lm-claw
   become: true
-  tags: [base]
+  tags: [base, network]
   tasks:
-    - name: Atualizar cache do apt
-      ansible.builtin.apt:
-        update_cache: true
-        cache_valid_time: 3600
-
-    - name: Instalar pacotes base
-      ansible.builtin.apt:
-        name:
-          - curl
-          - git
-          - build-essential
-          - python3
-          - python3-pip
-          - unzip
-          - rsync
-          - zstd
-          - htop
-          - iotop
-          - net-tools
-          - sudo
-        state: present
-
-    - name: Garantir usuário luismarquitti existe
-      ansible.builtin.user:
-        name: luismarquitti
-        shell: /bin/bash
-        groups: sudo
-        append: true
-        create_home: true
-
     - name: Configurar IP estático em /etc/network/interfaces
       ansible.builtin.copy:
         dest: /etc/network/interfaces
@@ -65,7 +26,6 @@
         owner: root
         group: root
         mode: "0644"
-      # notify: restart networking
 
     - name: Configurar /etc/hosts
       ansible.builtin.blockinfile:
@@ -80,40 +40,17 @@
       ansible.builtin.hostname:
         name: lm-claw
 
-  handlers:
-    - name: restart networking
-      ansible.builtin.service:
-        name: networking
-        state: restarted
-
 
 - name: OpenClaw — Instalar Homebrew
   hosts: lm-claw
   become: false
   tags: [brew, homebrew]
   tasks:
-    - name: Instalar dependências do Homebrew
-      ansible.builtin.apt:
-        name:
-          - build-essential
-          - procps
-          - curl
-          - file
-          - git
-        state: present
-      become: true
-
     - name: Executar script de instalação do Homebrew (Non-Interactive)
       ansible.builtin.shell: |
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       args:
         creates: /home/linuxbrew/.linuxbrew/bin/brew
-
-    - name: Adicionar Homebrew ao .bashrc
-      ansible.builtin.lineinfile:
-        path: /home/luismarquitti/.bashrc
-        line: 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
-        state: present
 
     - name: Criar symlink do brew no PATH do sistema
       ansible.builtin.file:
@@ -213,9 +150,6 @@
         state: present
         reload: true
 
-    # Autenticação Tailscale é interativa — executar manualmente:
-    # tailscale up --advertise-routes=192.168.3.0/24 --accept-routes
-
 
 - name: OpenClaw — Garantir diretórios e permissões
   hosts: lm-claw
@@ -280,7 +214,3 @@
         curl -fsSL https://openclaw.ai/install.sh | bash
       args:
         creates: /home/luismarquitti/.local/bin/openclaw
-
-# NOTA: A instalação do OpenClaw em si (pnpm install -g openclaw, openclaw configure,
-# openclaw gateway install) é feita manualmente pois requer autenticação OAuth interativa.
-# Ver docs/openclaw-manual-config-log.md para o passo-a-passo completo.

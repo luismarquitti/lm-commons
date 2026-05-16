@@ -52,6 +52,10 @@ pve_helper_scripts_url: "https://github.com/community-scripts/ProxmoxVE/raw/main
 obsidian_vault_repo: "https://github.com/luismarquitti/obsidian-vault.git"
 obsidian_vault_dest: "/home/luismarquitti/.openclaw/workspace/obsidian-vault"
 
+# Git Identity
+git_user_name: "Luis Eduardo (Luis Marquitti)"
+git_user_email: "luismarquitti@gmail.com"
+
 # LXC defaults
 lxc_default_gateway: "192.168.3.1"
 lxc_default_dns: "8.8.8.8"

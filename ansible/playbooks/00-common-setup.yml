@@ -1,0 +1,102 @@
+---
+# ============================================================
+# Playbook 00 — Common Setup (Universal)
+# ============================================================
+# Configura o ambiente base em qualquer host (Proxmox, Bare-metal, LXC).
+# Inclui: Zsh, Oh-My-Zsh, Git, GitHub CLI e PATH resilience.
+# ============================================================
+
+- name: Common — Configuração Base de Ambiente
+  hosts: all
+  become: true
+  vars:
+    zsh_custom_dir: "~{{ ansible_user | default('luismarquitti') }}/.oh-my-zsh/custom"
+
+  tasks:
+    - name: Garantir que pacotes essenciais estão instalados
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - zsh
+          - fzf
+          - fonts-powerline
+          - build-essential
+          - unzip
+          - htop
+          - rsync
+          - wget
+        state: present
+        update_cache: true
+
+    - name: Adicionar repositório do GitHub CLI
+      ansible.builtin.shell: |
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+        chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list
+      args:
+        creates: /etc/apt/sources.list.d/github-cli.list
+
+    - name: Instalar GitHub CLI
+      ansible.builtin.apt:
+        name: gh
+        state: present
+        update_cache: true
+
+    # ── Oh-My-Zsh ──────────────────────────────────────────
+    - name: Verificar se Oh-My-Zsh já está instalado
+      ansible.builtin.stat:
+        path: "~{{ ansible_user | default('luismarquitti') }}/.oh-my-zsh"
+      register: omz_stat
+      become: false
+
+    - name: Instalar Oh-My-Zsh
+      ansible.builtin.shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      args:
+        executable: /bin/bash
+      become: false
+      when: not omz_stat.stat.exists
+
+    - name: Instalar plugin zsh-syntax-highlighting
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+        dest: "{{ zsh_custom_dir }}/plugins/zsh-syntax-highlighting"
+      become: false
+
+    - name: Instalar plugin zsh-autosuggestions
+      ansible.builtin.git:
+        repo: https://github.com/zsh-users/zsh-autosuggestions.git
+        dest: "{{ zsh_custom_dir }}/plugins/zsh-autosuggestions"
+      become: false
+
+    - name: Aplicar template .zshrc
+      ansible.builtin.template:
+        src: ../templates/zshrc.j2
+        dest: "~{{ ansible_user | default('luismarquitti') }}/.zshrc"
+        owner: "{{ ansible_user | default('luismarquitti') }}"
+        mode: '0644'
+      become: false
+
+    - name: Alterar shell padrão para Zsh
+      ansible.builtin.user:
+        name: "{{ ansible_user | default('luismarquitti') }}"
+        shell: /bin/zsh
+
+    # ── Git & GitHub CLI Config ───────────────────────────
+    - name: Configurar identidade Global do Git
+      become: false
+      community.general.git_config:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        scope: global
+      loop:
+        - { name: "user.name", value: "{{ git_user_name }}" }
+        - { name: "user.email", value: "{{ git_user_email }}" }
+
+    - name: Login no GitHub CLI via Token (Vault)
+      ansible.builtin.shell: |
+        echo "{{ vault_github_token }}" | gh auth login --with-token
+      become: false
+      changed_when: false
+      when: vault_github_token is defined

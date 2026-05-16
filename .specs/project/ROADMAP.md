@@ -6,6 +6,7 @@
 - [x] **Task 1.3**: Manual OS Installation (Debian 13.4.0) on Optiplex.
 
 ## Milestone 2: Provisioning & Deployment ✅
+- [ ] **Task 0.1**: Universal Common Setup (Zsh, Git, GH CLI).
 - [x] **Task 2.1**: Base system configuration (IP 192.168.3.10, Hostname lm-claw).
 - [x] **Task 2.2**: Node.js, Ollama, and Homebrew installation.
 - [x] **Task 2.3**: Tailscale and Storage configuration.
