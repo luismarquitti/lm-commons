@@ -33,6 +33,7 @@ Infrastructure-as-Code para o home lab pessoal rodando em arquitetura híbrida (
 
 - **OpenClaw**: Framework de IA central (IP .10).
 - **Ollama**: Backend de LLM local (IP .10).
+- **Projetos de Código**: Centralizados em `~/Code/` no `lm-claw` com sincronização automática.
 - **AdGuard Home**: DNS local e bloqueio de ads (LXC no .50).
 - **PostgreSQL**: Banco de dados central (LXC no .50).
 - **Home Assistant**: Automação residencial (VM no .50).

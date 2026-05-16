@@ -8,6 +8,8 @@ The lab is designed for high-availability services (via Proxmox) and high-perfor
 
 ### Core Architecture
 - **Bare-Metal Node (`lm-claw`):** Dell Optiplex 7040 running **Debian 13.4.0**. Dedicated to the **OpenClaw** AI framework, Ollama models, and Gemini CLI.
+  - **Project Root:** `~/Code/` is the centralized directory for all git repositories.
+  - **Sync:** Automated background sync via `~/Code/repos-sync.sh` triggered by OpenClaw heartbeats.
 - **Proxmox Node (`pve-inspiron`):** Dell Inspiron 14R. Hosts LXC containers for networking (AdGuard, Nginx Proxy), monitoring (Uptime Kuma), and databases (PostgreSQL), plus a VM for Home Assistant.
 - **Management:** Orchestrated via Ansible from a Windows/WSL2 development machine.
 - **Networking:** `192.168.3.0/24` subnet. VPN mesh via Tailscale.

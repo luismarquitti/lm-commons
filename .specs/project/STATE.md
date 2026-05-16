@@ -18,3 +18,5 @@
 - Proxmox overhead was prohibitive for large LLM models on 16GB hardware.
 - Debian 13.4.0 requires masking `sleep.target` to prevent automatic hibernation on Optiplex 7040.
 - Ansible `delegate_to` is more reliable than manual SSH for inter-node transfers during migrations.
+- **2026-05-15**: Centralized code projects in `~/Code` for better isolation and management.
+- **2026-05-15**: Implemented universal repository sync script triggered by AI heartbeats.

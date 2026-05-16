@@ -16,3 +16,8 @@
 - [x] **Task 3.1**: Restore ~/.openclaw data.
 - [x] **Task 3.2**: Manual OpenClaw configuration and OAuth login.
 - [x] **Task 3.3**: Verification of local LLM performance and network stability.
+
+## Milestone 4: Scalability & Organization
+- [x] **Task 4.1**: Create centralized `~/Code` directory.
+- [x] **Task 4.2**: Implement universal sync script `repos-sync.sh`.
+- [x] **Task 4.3**: Integrate universal sync into OpenClaw heartbeat hook.
