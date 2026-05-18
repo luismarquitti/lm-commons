@@ -214,3 +214,21 @@
         curl -fsSL https://openclaw.ai/install.sh | bash
       args:
         creates: /home/luismarquitti/.local/bin/openclaw
+
+    - name: Implantar configuração do OpenClaw (config.json)
+      ansible.builtin.template:
+        src: templates/openclaw.json.j2
+        dest: /home/luismarquitti/.openclaw/openclaw.json
+        owner: luismarquitti
+        group: luismarquitti
+        mode: "0600"
+      notify: Reiniciar Gateway OpenClaw
+
+  handlers:
+    - name: Reiniciar Gateway OpenClaw
+      ansible.builtin.shell: |
+        export NVM_DIR="/home/luismarquitti/.nvm"
+        source "$NVM_DIR/nvm.sh"
+        openclaw gateway restart
+      args:
+        executable: /bin/bash
