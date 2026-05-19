@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Lab — Implementação Ideal</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;700;800&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d0f14;
+            --surface: #13161d;
+            --surface2: #1a1e28;
+            --border: #252933;
+            --border2: #2f3545;
+            --teal: #00d4aa;
+            --teal-dim: rgba(0, 212, 170, 0.12);
+            --teal-dim2: rgba(0, 212, 170, 0.06);
+            --purple: #7c6dfa;
+            --purple-dim: rgba(124, 109, 250, 0.12);
+            --amber: #f59e0b;
+            --amber-dim: rgba(245, 158, 11, 0.1);
+            --red: #f87171;
+            --green: #4ade80;
+            --blue: #60a5fa;
+            --blue-dim: rgba(96, 165, 250, 0.1);
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #4a5568;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', sans-serif;
+            --display: 'Syne', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* HEADER */
+        .header {
+            border-bottom: 1px solid var(--border);
+            padding: 48px 64px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -80px;
+            right: -80px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-tag {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--teal);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-tag::before {
+            content: '//';
+            opacity: 0.5;
+        }
+
+        .header h1 {
+            font-family: var(--display);
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .header h1 span {
+            color: var(--teal);
+        }
+
+        .header-sub {
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 300;
+            max-width: 600px;
+        }
+
+        .header-meta {
+            margin-top: 28px;
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        .meta-item span {
+            color: var(--text-secondary);
+        }
+
+        /* LAYOUT */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 64px 80px;
+        }
+
+        /* SECTION */
+        .section {
+            margin-top: 56px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-number {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--teal);
+            background: var(--teal-dim);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .section-title {
+            font-family: var(--display);
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* CARDS */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 22px;
+            transition: border-color 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--border2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .card-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .dot-teal {
+            background: var(--teal);
+        }
+
+        .dot-purple {
+            background: var(--purple);
+        }
+
+        .dot-amber {
+            background: var(--amber);
+        }
+
+        .dot-blue {
+            background: var(--blue);
+        }
+
+        .dot-green {
+            background: var(--green);
+        }
+
+        .dot-red {
+            background: var(--red);
+        }
+
+        .card-title {
+            font-family: var(--display);
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .card-body {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid;
+        }
+
+        .tag-teal {
+            color: var(--teal);
+            border-color: rgba(0, 212, 170, 0.25);
+            background: var(--teal-dim2);
+        }
+
+        .tag-purple {
+            color: var(--purple);
+            border-color: rgba(124, 109, 250, 0.25);
+            background: var(--purple-dim);
+        }
+
+        .tag-amber {
+            color: var(--amber);
+            border-color: rgba(245, 158, 11, 0.25);
+            background: var(--amber-dim);
+        }
+
+        .tag-blue {
+            color: var(--blue);
+            border-color: rgba(96, 165, 250, 0.25);
+            background: var(--blue-dim);
+        }
+
+        /* TABLE */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--surface2);
+        }
+
+        th {
+            font-family: var(--mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background: var(--surface2);
+        }
+
+        .td-ip {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--teal);
+        }
+
+        .td-name {
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .td-port {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--purple);
+        }
+
+        .td-badge {
+            display: inline-block;
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+
+        .badge-wired {
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--blue);
+        }
+
+        .badge-wifi {
+            background: rgba(124, 109, 250, 0.1);
+            color: var(--purple);
+        }
+
+        .badge-vm {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--teal);
+        }
+
+        .badge-lxc {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--amber);
+        }
+
+        /* CODE BLOCK */
+        .code-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface2);
+        }
+
+        .code-lang {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .code-file {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        pre {
+            padding: 16px 20px;
+            overflow-x: auto;
+            font-family: var(--mono);
+            font-size: 12px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .c-green {
+            color: #4ade80;
+        }
+
+        .c-teal {
+            color: var(--teal);
+        }
+
+        .c-amber {
+            color: var(--amber);
+        }
+
+        .c-purple {
+            color: var(--purple);
+        }
+
+        .c-red {
+            color: var(--red);
+        }
+
+        .c-blue {
+            color: var(--blue);
+        }
+
+        .c-dim {
+            color: var(--text-tertiary);
+        }
+
+        /* ARCHITECTURE DIAGRAM */
+        .arch-diagram {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 32px;
+            overflow-x: auto;
+        }
+
+        .arch-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .arch-node {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-family: var(--mono);
+            font-size: 11px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .arch-node .node-label {
+            color: var(--text-tertiary);
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .arch-node .node-name {
+            color: var(--text);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .arch-node .node-ip {
+            color: var(--teal);
+            font-size: 10px;
+            margin-top: 1px;
+        }
+
+        .arch-arrow {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--text-tertiary);
+            padding: 0 8px;
+            flex-shrink: 0;
+        }
+
+        .arch-group {
+            border: 1px dashed var(--border2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .arch-group-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+        }
+
+        .arch-nodes-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* PHASE TIMELINE */
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border2);
+        }
+
+        .phase {
+            position: relative;
+            margin-bottom: 32px;
+            padding: 20px 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 22px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--border2);
+            background: var(--bg);
+        }
+
+        .phase.active::before {
+            border-color: var(--teal);
+            background: var(--teal);
+        }
+
+        .phase.pending::before {
+            border-color: var(--amber);
+            background: var(--amber);
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .phase-tag {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .phase-tag-done {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--teal);
+        }
+
+        .phase-tag-next {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--amber);
+        }
+
+        .phase-tag-future {
+            background: rgba(74, 85, 104, 0.3);
+            color: var(--text-tertiary);
+        }
+
+        .phase-title {
+            font-family: var(--display);
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .phase-body {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-top: 10px;
+        }
+
+        .checklist li {
+            display: flex;
+            gap: 10px;
+            padding: 5px 0;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .checklist li::before {
+            content: '→';
+            color: var(--teal);
+            flex-shrink: 0;
+            font-family: var(--mono);
+        }
+
+        .checklist li.done::before {
+            content: '✓';
+            color: var(--green);
+        }
+
+        .checklist li.warn::before {
+            content: '!';
+            color: var(--amber);
+        }
+
+        /* ALERT BOX */
+        .alert {
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin: 16px 0;
+            font-size: 13px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .alert-icon {
+            flex-shrink: 0;
+            font-family: var(--mono);
+            font-size: 12px;
+            margin-top: 1px;
+        }
+
+        .alert-teal {
+            background: var(--teal-dim);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+            color: #a7f3e0;
+        }
+
+        .alert-amber {
+            background: var(--amber-dim);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: #fde68a;
+        }
+
+        .alert-purple {
+            background: var(--purple-dim);
+            border: 1px solid rgba(124, 109, 250, 0.2);
+            color: #c4b5fd;
+        }
+
+        /* TWO COL */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 700px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* NETWORK MAP */
+        .net-section {
+            margin-bottom: 10px;
+        }
+
+        .net-section-title {
+            font-family: var(--mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+
+        .net-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .net-ip {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--teal);
+            min-width: 120px;
+        }
+
+        .net-name {
+            color: var(--text);
+            font-weight: 500;
+            min-width: 180px;
+        }
+
+        .net-detail {
+            color: var(--text-tertiary);
+            font-size: 11px;
+        }
+
+        /* TOOL GRID */
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
+        }
+
+        .tool-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .tool-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .tool-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .tool-repo {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+        }
+
+        /* DIVIDER */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 40px 0;
+        }
+
+        /* FOOTER */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 64px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--text-tertiary);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-logo {
+            color: var(--teal);
+            font-weight: 600;
+        }
+
+        strong {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        a {
+            color: var(--teal);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-tag">Projeto Home Lab — MQT_Home</div>
+        <h1>Plano de <span>Migração</span></h1>
+        <div class="header-sub">Transição para arquitetura bare-metal: OpenClaw no Dell Optiplex, pve-inspiron como único nó Proxmox. Branch: feat/openclaw-bare-metal.</div>
+        <div class="header-meta">
+            <div class="meta-item">Atualizado em <span>15/05/2026 — branch feat/openclaw-bare-metal</span></div>
+            <div class="meta-item">Rede <span>192.168.3.0/24</span></div>
+            <div class="meta-item">Proxmox <span>pve-inspiron standalone (1 nó)</span></div>
+            <div class="meta-item">OpenClaw <span>bare-metal @ 192.168.3.10 🟢 running</span></div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- SEÇÃO 1: VISÃO GERAL -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">01</div>
+                <div class="section-title">Visão Geral da Arquitetura</div>
+            </div>
+
+            <div class="arch-diagram">
+                <div style="margin-bottom:24px;">
+                    <div
+                        style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.12em;">
+                        Topologia Alvo — MQT_Home (pós migração bare-metal)</div>
+
+                    <!-- Internet -->
+                    <div class="arch-group" style="border-color:rgba(74,85,104,0.4);">
+                        <div class="arch-group-label" style="color:var(--text-tertiary)">WAN / Internet</div>
+                        <div class="arch-nodes-grid">
+                            <div class="arch-node">
+                                <div class="node-label">ISP Modem</div>
+                                <div class="node-name">Gateway ISP</div>
+                                <div class="node-ip">192.168.0.1</div>
+                            </div>
+                            <div class="arch-arrow">→</div>
+                            <div class="arch-node" style="border-color:rgba(0,212,170,0.3)">
+                                <div class="node-label">Mesh Primary</div>
+                                <div class="node-name">Halo H60XR</div>
+                                <div class="node-ip">192.168.3.1</div>
+                            </div>
+                            <div class="arch-arrow">⟷</div>
+                            <div class="arch-node">
+                                <div class="node-label">Mesh Satélite</div>
+                                <div class="node-name">Halo H60XS</div>
+                                <div class="node-ip">192.168.3.250</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Servidores -->
+                    <div class="two-col" style="margin-top:12px;gap:12px;">
+
+                        <!-- Optiplex bare-metal -->
+                        <div class="arch-group" style="border-color:rgba(0,212,170,0.35);margin:0;background:rgba(0,212,170,0.03);">
+                            <div class="arch-group-label" style="color:var(--teal)">Dell Optiplex 7040 — Bare Metal Linux</div>
+                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-6500 · 16GB DDR4 · NVMe 238GB + HDD 298GB + HDD 931GB</div>
+                            <div class="arch-nodes-grid" style="gap:6px;">
+                                <div class="arch-node" style="font-size:10px;padding:10px 14px;border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.06);">
+                                    <div class="node-label">Bare Metal — Debian 12</div>
+                                    <div class="node-name" style="color:var(--teal);">lm-claw</div>
+                                    <div class="node-ip">192.168.3.10</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
+                                    <div class="node-label">Ollama</div>
+                                    <div class="node-name">gemma4:e2b</div>
+                                    <div class="node-ip">primário</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
+                                    <div class="node-label">Ollama</div>
+                                    <div class="node-name">qwen3:8b</div>
+                                    <div class="node-ip">coding</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inspiron Proxmox -->
+                        <div class="arch-group" style="border-color:rgba(124,109,250,0.3);margin:0;">
+                            <div class="arch-group-label" style="color:var(--purple)">Dell Inspiron 14R — Proxmox (standalone)</div>
+                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-3337U · 8GB DDR3 · SSD 224GB · HDD 1TB</div>
+                            <div class="arch-nodes-grid" style="gap:6px;">
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 100</div>
+                                    <div class="node-name">AdGuard Home</div>
+                                    <div class="node-ip">.5 — DNS</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 101</div>
+                                    <div class="node-name">Uptime Kuma</div>
+                                    <div class="node-ip">.6 — monitor</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 102</div>
+                                    <div class="node-name">Nginx Proxy</div>
+                                    <div class="node-ip">.7 — reverse proxy</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 104</div>
+                                    <div class="node-name">PostgreSQL</div>
+                                    <div class="node-ip">.20 — banco</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">VM 151</div>
+                                    <div class="node-name">Home Assistant</div>
+                                    <div class="node-ip">.22 — IoT</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(124,109,250,0.2);">
+                                    <div class="node-label">Storage</div>
+                                    <div class="node-name">HDD 1TB</div>
+                                    <div class="node-ip">\\192.168.3.50\data</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Acesso -->
+                    <div class="arch-group" style="border-color:rgba(245,158,11,0.2);margin-top:12px;">
+                        <div class="arch-group-label" style="color:var(--amber)">Acesso — Tailscale VPN Mesh</div>
+                        <div class="arch-nodes-grid">
+                            <div class="arch-node" style="border-color:rgba(245,158,11,0.3)">
+                                <div class="node-label">Cliente</div>
+                                <div class="node-name">LUIS-LAPTOP</div>
+                                <div class="node-ip">100.105.115.103</div>
+                            </div>
+                            <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
+                            <div class="arch-node" style="border-color:rgba(0,212,170,0.3)">
+                                <div class="node-label">Bare Metal</div>
+                                <div class="node-name">lm-claw</div>
+                                <div class="node-ip">192.168.3.10</div>
+                            </div>
+                            <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
+                            <div class="arch-node" style="border-color:rgba(124,109,250,0.3)">
+                                <div class="node-label">Proxmox</div>
+                                <div class="node-name">pve-inspiron</div>
+                                <div class="node-ip">192.168.3.50</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: HARDWARE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">02</div>
+                <div class="section-title">Inventário de Hardware e Endereçamento</div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Reservado</th>
+                            <th>MAC</th>
+                            <th>Hostname</th>
+                            <th>Função</th>
+                            <th>Tipo</th>
+                            <th>Storage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-ip">192.168.3.1</td>
+                            <td style="font-family:var(--mono);font-size:11px;">30-16-9D-B2-D1-98</td>
+                            <td class="td-name">halo-office</td>
+                            <td>Gateway / Mesh Primary</td>
+                            <td><span class="td-badge badge-wired">fixed</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.10</td>
+                            <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
+                            <td class="td-name">lm-claw</td>
+                            <td>Dell Optiplex 7040 — Bare Metal Debian 12, OpenClaw + Ollama</td>
+                            <td><span class="td-badge badge-wired">wired</span></td>
+                            <td>NVMe 238GB (OS) + HDD 298GB (openclaw-storage)</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.50</td>
+                            <td style="font-family:var(--mono);font-size:11px;">BC-24-11-A5-32-E5</td>
+                            <td class="td-name">pve-inspiron</td>
+                            <td>Dell Inspiron 14R — Proxmox standalone (único nó)</td>
+                            <td><span class="td-badge badge-wired">wired</span></td>
+                            <td>SSD 224GB (OS + LXCs + VM) + HDD 1TB (Samba \\192.168.3.50\data)</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.14</td>
+                            <td style="font-family:var(--mono);font-size:11px;">E0-D5-5D-AC-A4-59</td>
+                            <td class="td-name">luis-laptop</td>
+                            <td>Lenovo — cliente gerenciamento</td>
+                            <td><span class="td-badge badge-wifi">wi-fi 5G</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.20</td>
+                            <td style="font-family:var(--mono);font-size:11px;">(auto)</td>
+                            <td class="td-name">postgres-db</td>
+                            <td>PostgreSQL Central para desenvolvimento local (LXC no Inspiron)</td>
+                            <td><span class="td-badge badge-lxc">lxc</span></td>
+                            <td>SSD 224GB</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.250</td>
+                            <td style="font-family:var(--mono);font-size:11px;">30-16-9D-B2-CB-D8</td>
+                            <td class="td-name">halo-bedroom</td>
+                            <td>Mesh Satélite</td>
+                            <td><span class="td-badge badge-wired">fixed</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">192.168.3.10</td>
+                            <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
+                            <td class="td-name">lm-claw</td>
+                            <td>OpenClaw — bare metal no Optiplex, Ollama local (gemma4:e2b + qwen3:8b)</td>
+                            <td><span class="td-badge badge-wired">bare-metal</span></td>
+                            <td>NVMe 238GB + HDD 298GB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-wrap" style="margin-top: 24px;">
+                <h3 style="margin-bottom: 12px; font-size: 14px; font-weight: 600; color: var(--text-primary);">Recursos Alocados (VMs e LXCs)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tipo</th>
+                            <th>Nome / Serviço</th>
+                            <th>Nó Proxmox</th>
+                            <th>vCPU</th>
+                            <th>RAM</th>
+                            <th>Disco</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background:rgba(0,212,170,0.04);">
+                            <td class="td-ip">—</td>
+                            <td><span class="td-badge badge-wired">BARE</span></td>
+                            <td class="td-name">lm-claw</td>
+                            <td>Dell Optiplex 7040</td>
+                            <td>4 cores</td>
+                            <td>16 GB</td>
+                            <td>238 GB NVMe</td>
+                            <td>🟢 Running</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">100</td>
+                            <td><span class="td-badge badge-lxc">LXC</span></td>
+                            <td class="td-name">adguard</td>
+                            <td>pve-inspiron</td>
+                            <td>1 core</td>
+                            <td>512 MB</td>
+                            <td>4 GB</td>
+                            <td>⏳ A criar</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">101</td>
+                            <td><span class="td-badge badge-lxc">LXC</span></td>
+                            <td class="td-name">uptime-kuma</td>
+                            <td>pve-inspiron</td>
+                            <td>1 core</td>
+                            <td>512 MB</td>
+                            <td>4 GB</td>
+                            <td>🟢 Running</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">102</td>
+                            <td><span class="td-badge badge-lxc">LXC</span></td>
+                            <td class="td-name">nginx-proxy</td>
+                            <td>pve-inspiron</td>
+                            <td>1 core</td>
+                            <td>1024 MB</td>
+                            <td>8 GB</td>
+                            <td>⏳ A criar</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">104</td>
+                            <td><span class="td-badge badge-lxc">LXC</span></td>
+                            <td class="td-name">postgres-db</td>
+                            <td>pve-inspiron</td>
+                            <td>2 cores</td>
+                            <td>2048 MB</td>
+                            <td>10 GB</td>
+                            <td>🟢 Running</td>
+                        </tr>
+                        <tr>
+                            <td class="td-ip">151</td>
+                            <td><span class="td-badge badge-wifi" style="background:var(--purple);color:white;">VM</span></td>
+                            <td class="td-name">homeassistant-server</td>
+                            <td>pve-inspiron</td>
+                            <td>2 cores</td>
+                            <td>2048 MB</td>
+                            <td>32 GB</td>
+                            <td>🟢 Running</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="alert alert-teal" style="margin-top:16px;">
+                <div class="alert-icon">✓</div>
+                <div><strong>Dell Optiplex 7040 (lm-claw)</strong> — bare metal Debian 12 em 192.168.3.10. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 298GB montado em /mnt/openclaw-storage. HDD 1TB movido para pve-inspiron (Samba).</div>
+            </div>
+
+            <div class="alert alert-teal" style="margin-top:8px;">
+                <div class="alert-icon">✓</div>
+                <div><strong>pve-inspiron</strong> standalone em 192.168.3.50 — único nó Proxmox. Uptime Kuma (101) e PostgreSQL (104) operacionais. HomeAssistant VM (151) rodando. AdGuard (100) e Nginx Proxy (102) a criar via playbook 08.</div>
+            </div>
+
+            <div class="alert alert-amber" style="margin-top:8px;">
+                <div class="alert-icon">!</div>
+                <div><strong>Pendente:</strong> Criar LXCs adguard (100) e nginx-proxy (102) no pve-inspiron via <code style="font-family:var(--mono);font-size:11px;">08-inspiron-migrate-services.yml</code>. Enquanto não criados, DNS da rede usa fallback 8.8.8.8 do roteador.</div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">//
+                    Plano de endereçamento completo — 192.168.3.0/24</div>
+                <div class="code-block">
+                    <div class="code-header"><span class="code-lang">addressing plan</span><span
+                            class="code-file">ip-plan.txt</span></div>
+                    <pre>
+<span class="c-dim"># INFRAESTRUTURA</span>
+192.168.3.1     halo-office          <span class="c-dim"># Mercusys gateway (fixo)</span>
+192.168.3.250   halo-bedroom         <span class="c-dim"># Mercusys satélite (fixo)</span>
+
+<span class="c-dim"># SERVIDORES (fora do pool DHCP dinâmico)</span>
+<span class="c-dim"># DHCP pool dinâmico: 192.168.3.150 → 192.168.3.199</span>
+192.168.3.5     adguard              <span class="c-dim"># LXC — DNS resolver (no pve-inspiron)</span>
+192.168.3.6     uptime-kuma          <span class="c-dim"># LXC — monitoramento (no pve-inspiron)</span>
+192.168.3.7     nginx-proxy          <span class="c-dim"># LXC — reverse proxy (no pve-inspiron)</span>
+192.168.3.14    luis-laptop          <span class="c-dim"># Lenovo (reserva DHCP)</span>
+192.168.3.20    postgres-db          <span class="c-dim"># LXC — banco relacional central (no pve-inspiron)</span>
+192.168.3.22    homeassistant-server <span class="c-dim"># VM — Home Assistant (no pve-inspiron)</span>
+192.168.3.10    lm-claw        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
+192.168.3.50    pve-inspiron         <span class="c-dim"># Proxmox standalone (único nó)</span>
+
+<span class="c-dim"># DISPOSITIVOS IoT (automação Home Assistant)</span>
+192.168.3.100+  <span class="c-dim"># Dispositivos Tuya/Sonoff/Echo/Fire TV</span>
+      </pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 3: CONFIGURAÇÃO DE SERVIDORES -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">03</div>
+                <div class="section-title">Configuração de Servidores — Bare Metal + Proxmox</div>
+            </div>
+
+            <div class="alert alert-teal" style="margin-bottom:16px;">
+                <div class="alert-icon">✓</div>
+                <div><strong>Optiplex 7040 → Bare Metal:</strong> Instalar Debian 12 via USB no NVMe 238GB. IP estático: <code
+                        style="font-family:var(--mono);font-size:11px;">192.168.3.10/24</code>, hostname: <code
+                        style="font-family:var(--mono);font-size:11px;">lm-claw</code>. Após instalar: <code style="font-family:var(--mono);font-size:11px;">ansible-playbook playbooks/07-openclaw-deploy.yml</code>.</div>
+            </div>
+
+            <div class="alert alert-purple" style="margin-bottom:16px;">
+                <div class="alert-icon">→</div>
+                <div><strong>pve-inspiron → Standalone:</strong> Remover lm-claw do cluster com <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code>. Inspiron passa a ser o único nó Proxmox. Verificar quorum com <code style="font-family:var(--mono);font-size:11px;">pvecm status</code>.</div>
+            </div>
+
+            <div class="two-col">
+                <div>
+                    <div class="alert alert-teal">
+                        <div class="alert-icon">→</div>
+                        <div>Após instalar o Proxmox, acessar <strong>https://192.168.3.10:8006</strong> do Lenovo. As
+                            etapas abaixo referem-se à configuração pós-instalação.</div>
+                    </div>
+
+                    <div class="code-block" style="margin-top:16px;">
+                        <div class="code-header"><span class="code-lang">bash</span><span
+                                class="code-file">storage-setup.sh — lm-claw (2 discos)</span></div>
+                        <pre>
+<span class="c-dim"># Identificar discos no lm-claw (bare-metal)</span>
+lsblk -f
+<span class="c-dim"># nvme0n1 → NVMe 238GB (OS + OpenClaw)</span>
+<span class="c-dim"># sdb     → HDD 298GB (openclaw-storage)</span>
+
+<span class="c-dim"># HDD 298GB → /mnt/openclaw-storage</span>
+fdisk /dev/sdb  <span class="c-dim"># n, p, 1, enter, enter, w</span>
+mkfs.ext4 /dev/sdb1
+mkdir -p /mnt/openclaw-storage
+mount /dev/sdb1 /mnt/openclaw-storage
+echo "/dev/sdb1 /mnt/openclaw-storage ext4 defaults,nofail 0 2" >> /etc/fstab
+
+<span class="c-dim"># Verificar</span>
+lsblk -f && df -h
+        </pre>
+                    </div>
+                </div>
+                <div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">bash</span><span
+                                class="code-file">network-setup.sh</span></div>
+                        <pre>
+<span class="c-dim"># /etc/network/interfaces</span>
+auto lo
+iface lo inet loopback
+
+auto enp2s0
+iface enp2s0 inet manual
+
+<span class="c-dim"># Bridge principal para VMs</span>
+auto vmbr0
+iface vmbr0 inet static
+    address <span class="c-teal">192.168.3.10/24</span>
+    gateway <span class="c-teal">192.168.3.1</span>
+    bridge-ports enp2s0
+    bridge-stp off
+    bridge-fd 0
+
+<span class="c-dim"># /etc/resolv.conf</span>
+nameserver <span class="c-teal">192.168.3.5</span>   <span class="c-dim"># AdGuard</span>
+nameserver 8.8.8.8
+        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="two-col" style="margin-top:16px;">
+                <div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">bash</span><span
+                                class="code-file">proxmox-hardening.sh</span></div>
+                        <pre>
+<span class="c-dim"># Desabilitar repositório enterprise</span>
+sed -i 's/^deb/#deb/' /etc/apt/sources.list.d/pve-enterprise.list
+
+<span class="c-dim"># Habilitar repositório community</span>
+echo "deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription" \
+  > /etc/apt/sources.list.d/pve-community.list
+
+<span class="c-dim"># Atualizar e instalar ferramentas</span>
+apt update && apt full-upgrade -y
+apt install -y htop iotop curl git net-tools samba nfs-kernel-server
+
+<span class="c-dim"># Remover aviso de subscription</span>
+sed -i.bak "s/data.status !== 'Active'/false/" \
+  /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
+systemctl restart pveproxy
+        </pre>
+                    </div>
+                </div>
+                <div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">bash</span><span
+                                class="code-file">cluster-setup.sh — mqt-homelab</span></div>
+                        <pre>
+<span class="c-dim"># ═══ No lm-claw (.10) ═══</span>
+<span class="c-dim"># Configurar hosts</span>
+cat >> /etc/hosts << 'EOF'
+192.168.3.10  lm-claw lm-claw.lan
+192.168.3.50  pve-inspiron pve-inspiron.lan
+EOF
+
+<span class="c-dim"># Criar cluster</span>
+<span class="c-green">pvecm</span> create <span class="c-teal">mqt-homelab</span>
+
+<span class="c-dim"># ═══ No pve-inspiron (.50) ═══</span>
+<span class="c-dim"># Configurar hosts (mesma coisa)</span>
+cat >> /etc/hosts << 'EOF'
+192.168.3.10  lm-claw lm-claw.lan
+192.168.3.50  pve-inspiron pve-inspiron.lan
+EOF
+
+<span class="c-dim"># Juntar ao cluster</span>
+<span class="c-green">pvecm</span> add <span class="c-teal">192.168.3.10</span>
+
+<span class="c-dim"># Verificar (qualquer nó)</span>
+<span class="c-green">pvecm</span> status
+<span class="c-green">pvecm</span> nodes
+        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 4: SERVIÇOS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">04</div>
+                <div class="section-title">Serviços — Stack Completa</div>
+            </div>
+
+            <div class="alert alert-purple" style="margin-bottom:20px;">
+                <div class="alert-icon">★</div>
+                <div>Stack selecionada com base nos repositórios do artigo KDnuggets + necessidades específicas do
+                    deployados como LXC ou VM via Proxmox.</div>
+            </div>
+
+            <div class="tool-grid">
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">PVE</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Proxmox VE</div>
+                        <div class="tool-desc">Hipervisor base — VMs e LXC containers em ambos os servidores</div>
+                        <div class="tool-repo">community-scripts/ProxmoxVE</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">AG</div>
+                    <div class="tool-info">
+                        <div class="tool-name">AdGuard Home</div>
+                        <div class="tool-desc">DNS resolver local com blocklist — resolve .lan, bloqueia ads em toda a
+                            rede</div>
+                        <div class="tool-repo">LXC — 192.168.3.5</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(96,165,250,0.1);color:var(--blue)">UK</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Uptime Kuma</div>
+                        <div class="tool-desc">Monitoramento de uptime, health checks e alertas de todos os serviços
+                        </div>
+                        <div class="tool-repo">louislam/uptime-kuma</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(124,109,250,0.1);color:var(--purple)">NP</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Nginx Proxy Manager</div>
+                        <div class="tool-desc">Reverse proxy com SSL automático via Let's Encrypt para todos os serviços
+                        </div>
+                        <div class="tool-repo">LXC — 192.168.3.7</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">CF</div>
+                    <div class="tool-info">
+                        <div class="tool-desc">PaaS self-hosted para deploy de ClinicCare, SwMaster, IntelliFinance
+                        </div>
+                        <div class="tool-repo">coollabsio/coolify</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">n8</div>
+                    <div class="tool-info">
+                        <div class="tool-desc">Automação de workflows — integrações entre projetos, alertas, backups
+                        </div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(96,165,250,0.1);color:var(--blue)">HA</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Home Assistant</div>
+                        <div class="tool-desc">Automação doméstica — Tuya, Sonoff, Echo, Fire TV, Samsung TV</div>
+                        <div class="tool-repo">VM — 192.168.3.22 (✅ HTTP 200)</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">OC</div>
+                    <div class="tool-info">
+                        <div class="tool-name">OpenClaw</div>
+                        <div class="tool-desc">Framework de IA — bare-metal no Optiplex, Ollama local, Telegram bot, agentes chief/nest/main</div>
+                        <div class="tool-repo">Bare Metal — 192.168.3.10 (🟢 running)</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(124,109,250,0.1);color:var(--purple)">NC</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Nextcloud</div>
+                        <div class="tool-desc">Private cloud — substitui Google Drive, sync entre dispositivos</div>
+                        <div class="tool-repo">nextcloud/server</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">IM</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Immich</div>
+                        <div class="tool-desc">Backup de fotos — substitui Google Photos, com AI de reconhecimento</div>
+                        <div class="tool-repo">immich-app/immich</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(96,165,250,0.1);color:var(--blue)">MM</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Memos</div>
+                        <div class="tool-desc">Notas rápidas self-hosted — Go binary, ~20MB, SQLite</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(96,165,250,0.1);color:var(--blue)">PN</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Paperless-ngx</div>
+                        <div class="tool-desc">Gestão de documentos self-hosted com OCR e organização automática</div>
+                        <div class="tool-repo">LXC — 192.168.3.15</div>
+                    </div>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">TS</div>
+                    <div class="tool-info">
+                        <div class="tool-name">Tailscale</div>
+                        <div class="tool-desc">VPN mesh — acesso externo seguro sem port forwarding, contorna double NAT
+                        </div>
+                        <div class="tool-repo">anderspitman/awesome-tunneling</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 5: DEPLOY DOS SERVIÇOS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">05</div>
+                <div class="section-title">Deploy — Comandos de Instalação</div>
+            </div>
+
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:12px;">// Via
+                Proxmox VE Helper Scripts — community-scripts/ProxmoxVE</div>
+
+            <div class="code-block">
+                <div class="code-header"><span class="code-lang">bash</span><span class="code-file">install-services.sh
+                        — rodar no shell do Proxmox</span></div>
+                <pre>
+<span class="c-dim"># AdGuard Home LXC</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/adguard.sh)"
+
+<span class="c-dim"># Uptime Kuma LXC</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/uptimekuma.sh)"
+
+<span class="c-dim"># Nginx Proxy Manager LXC</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nginx-proxy-manager.sh)"
+
+
+<span class="c-dim"># Nextcloud LXC</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloud.sh)"
+
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/coolify.sh)"
+
+<span class="c-dim"># Immich LXC</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/immich.sh)"
+
+<span class="c-dim"># Memos LXC</span>
+    </pre>
+            </div>
+
+            <div class="code-block" style="margin-top:16px;">
+                <div class="code-header"><span class="code-lang">bash</span><span class="code-file">migrate-openclaw.sh
+                        — migração VM do laptop para Optiplex</span></div>
+                <pre>
+<span class="c-dim"># 1. No Proxmox do Laptop — criar backup</span>
+vzdump <span class="c-amber">101</span> --storage local --mode snapshot --compress zstd
+
+<span class="c-dim"># 2. Transferir para o Optiplex via rede local</span>
+scp /var/lib/vz/dump/vzdump-qemu-<span class="c-amber">101</span>-*.vma.zst \
+    root@<span class="c-teal">192.168.3.10</span>:/mnt/hdd/dump/
+
+<span class="c-dim"># 3. No Proxmox do Optiplex — restaurar</span>
+qmrestore /mnt/hdd/dump/vzdump-qemu-<span class="c-amber">101</span>-*.vma.zst <span class="c-amber">200</span> \
+    --storage hdd-storage \
+    --unique true
+
+<span class="c-dim"># 4. Ajustar recursos da VM restaurada</span>
+qm set <span class="c-amber">200</span> --memory 8192 --cores 4  <span class="c-dim"># Mais recursos no Optiplex</span>
+qm start <span class="c-amber">200</span>
+    </pre>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 6: REDE -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">06</div>
+                <div class="section-title">Configuração de Rede e DNS Local</div>
+            </div>
+
+            <div class="two-col">
+                <div>
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">//
+                        AdGuard Home — Rewrite Rules (.lan)</div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">dns rewrite</span><span
+                                class="code-file">AdGuard → Filters → DNS Rewrites</span></div>
+                        <pre>
+lm-claw.lan  → <span class="c-teal">192.168.3.10</span>
+pve-inspiron.lan    → <span class="c-teal">192.168.3.19</span>
+homeassistant.lan → <span class="c-teal">192.168.3.21</span>
+openclaw.lan      → <span class="c-teal">192.168.3.22</span>
+lm-claw.lan → <span class="c-teal">192.168.3.10</span>
+uptime.lan        → <span class="c-teal">192.168.3.6</span>
+files.lan         → <span class="c-teal">192.168.3.x</span>
+        </pre>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">//
+                        Mercusys — Configurações Recomendadas</div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">config</span><span
+                                class="code-file">http://192.168.3.1 → Advanced</span></div>
+                        <pre>
+<span class="c-dim"># DHCP → DNS</span>
+Primary DNS:   <span class="c-teal">192.168.3.5</span>  <span class="c-dim"># AdGuard</span>
+Secondary DNS: <span class="c-teal">8.8.8.8</span>
+
+<span class="c-dim"># DHCP → Pool</span>
+Start: 192.168.3.150
+End:   192.168.3.199
+Lease: 24h
+
+<span class="c-dim"># DHCP → Reservas (todos os servidores)</span>
+Ver seção 02 — IP Plan
+        </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:8px;">//
+                    Nginx Proxy Manager — Proxy Hosts (acesso por hostname na LAN)</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Domain (LAN)</th>
+                                <th>Forward IP</th>
+                                <th>Port</th>
+                                <th>SSL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="td-ip">lm-claw.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.10</td>
+                                <td class="td-port">8006</td>
+                                <td>self-signed</td>
+                            </tr>
+                            <tr>
+                                <td class="td-ip">pve-inspiron.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.19</td>
+                                <td class="td-port">8006</td>
+                                <td>self-signed</td>
+                            </tr>
+                            <tr>
+                                <td class="td-ip">homeassistant.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.21</td>
+                                <td class="td-port">8123</td>
+                                <td>Let's Encrypt</td>
+                            </tr>
+                            <tr>
+                                <td class="td-ip">uptime.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.6</td>
+                                <td class="td-port">3001</td>
+                                <td>Let's Encrypt</td>
+                            </tr>
+                            <tr>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.11</td>
+                                <td class="td-port">5678</td>
+                                <td>Let's Encrypt</td>
+                            </tr>
+                            <tr>
+                                <td class="td-ip">paperless.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.15</td>
+                                <td class="td-port">8000</td>
+                                <td>Let's Encrypt</td>
+                            </tr>
+                            <tr>
+                                <td class="td-ip">files.lan</td>
+                                <td style="font-family:var(--mono);font-size:12px;">192.168.3.x</td>
+                                <td class="td-port">443</td>
+                                <td>Let's Encrypt</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 7: ACESSO EXTERNO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">07</div>
+                <div class="section-title">Acesso Externo — Tailscale</div>
+            </div>
+
+            <div class="two-col">
+                <div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">bash</span><span
+                                class="code-file">tailscale-setup.sh</span></div>
+                        <pre>
+<span class="c-dim"># Instalar em cada nó Proxmox</span>
+curl -fsSL https://tailscale.com/install.sh | sh
+
+<span class="c-dim"># Ativar com subnet routing no INSPIRON (nó secundário)</span>
+<span class="c-dim"># (não fazer no Optiplex para evitar conflito com Corosync local)</span>
+tailscale up \
+  --advertise-routes=<span class="c-teal">192.168.3.0/24</span> \
+  --accept-routes
+
+<span class="c-dim"># Habilitar IP forwarding (necessário)</span>
+echo 'net.ipv4.ip_forward = 1' >> /etc/sysctl.conf
+sysctl -p
+
+<span class="c-dim"># No Tailscale Admin Console</span>
+<span class="c-dim"># → Machines → Inspiron → Edit Route Settings</span>
+<span class="c-dim"># → Approve 192.168.3.0/24</span>
+        </pre>
+                    </div>
+                </div>
+                <div>
+                    <div class="alert alert-teal" style="margin-bottom:12px;">
+                        <div class="alert-icon">✓</div>
+                        <div>Com subnet routing ativo no Inspiron, o Lenovo acessa <strong>qualquer dispositivo da rede
+                                192.168.3.x</strong> via Tailscale — incluindo IoT devices e o Mercusys — sem precisar
+                            de VPN separada por serviço.</div>
+                    </div>
+                    <div class="code-block">
+                        <div class="code-header"><span class="code-lang">status</span><span class="code-file">tailscale
+                                peers — alvo</span></div>
+                        <pre>
+<span class="c-teal">100.105.115.103</span>  luis-laptop       online  (idle)
+<span class="c-teal">100.95.244.76</span>   lm-claw     online  ✅
+<span class="c-teal">100.92.32.71</span>    pve-inspiron     online  ✅
+<span class="c-dim">100.92.19.119</span>    openclaw         offline (4h)
+<span class="c-dim">100.77.105.37</span>    moto-edge-60     offline (23d)
+        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 8: MONITORAMENTO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">08</div>
+                <div class="section-title">Monitoramento — Uptime Kuma</div>
+            </div>
+
+            <div style="font-family:var(--mono);font-size:11px;color:var(--text-tertiary);margin-bottom:12px;">//
+                Monitors a configurar — louislam/uptime-kuma</div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Monitor</th>
+                            <th>Tipo</th>
+                            <th>URL / Host</th>
+                            <th>Intervalo</th>
+                            <th>Alerta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-name">OpenClaw Gateway</td>
+                            <td>TCP Port</td>
+                            <td class="td-ip">192.168.3.10:18789</td>
+                            <td>60s</td>
+                            <td>Telegram</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">Ollama API</td>
+                            <td>HTTP</td>
+                            <td class="td-ip">192.168.3.10:11434</td>
+                            <td>120s</td>
+                            <td>Telegram</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">pve-inspiron Proxmox</td>
+                            <td>TCP Port</td>
+                            <td class="td-ip">192.168.3.50:8006</td>
+                            <td>60s</td>
+                            <td>Telegram / Email</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">Home Assistant</td>
+                            <td>HTTP</td>
+                            <td class="td-ip">192.168.3.22:8123</td>
+                            <td>60s</td>
+                            <td>Telegram</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">AdGuard DNS</td>
+                            <td>DNS</td>
+                            <td class="td-ip">192.168.3.5:53</td>
+                            <td>120s</td>
+                            <td>Telegram / Email</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">Nginx Proxy Manager</td>
+                            <td>HTTP</td>
+                            <td class="td-ip">192.168.3.7:81</td>
+                            <td>120s</td>
+                            <td>Email</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">PostgreSQL</td>
+                            <td>TCP Port</td>
+                            <td class="td-ip">192.168.3.20:5432</td>
+                            <td>120s</td>
+                            <td>Email</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">Tailscale Peer</td>
+                            <td>Ping</td>
+                            <td class="td-ip">192.168.3.10</td>
+                            <td>120s</td>
+                            <td>Telegram</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 9: AUTOMAÇÃO COM N8N -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">09</div>
+            </div>
+
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-teal"></div>
+                        <div class="card-title">Backup Automático</div>
+                    </div>
+                    <div class="card-subtitle">Diário — 03:00</div>
+                    <div class="card-body">Trigger agendado → SSH no Proxmox → vzdump das VMs críticas → upload para
+                        Google Drive → notificação Telegram com status.</div>
+                    <div class="card-tags"><span class="tag tag-teal">cron</span><span
+                            class="tag tag-teal">ssh</span><span class="tag tag-teal">gdrive</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-amber"></div>
+                        <div class="card-title">Alerta de Serviço Down</div>
+                    </div>
+                    <div class="card-subtitle">Webhook do Uptime Kuma</div>
+                        contexto → Telegram com link direto para o Proxmox do host afetado.</div>
+                    <div class="card-tags"><span class="tag tag-amber">webhook</span><span
+                            class="tag tag-amber">telegram</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-purple"></div>
+                        <div class="card-title">Health Report Semanal</div>
+                    </div>
+                    <div class="card-subtitle">Domingo — 09:00</div>
+                    <div class="card-body">Coleta métricas do Proxmox API + Uptime Kuma → gera relatório Markdown →
+                        envia por email ou salva no Nextcloud.</div>
+                    <div class="card-tags"><span class="tag tag-purple">api</span><span
+                            class="tag tag-purple">report</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-blue"></div>
+                        <div class="card-title">Sync Inventário de Rede</div>
+                    </div>
+                    <div class="card-subtitle">Semanal</div>
+                    <div class="card-body">Executa scan via Nmap → compara com inventário anterior → alerta se novo
+                        dispositivo desconhecido entrou na rede → atualiza planilha no Google Sheets.</div>
+                    <div class="card-tags"><span class="tag tag-blue">nmap</span><span
+                            class="tag tag-blue">sheets</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-green"></div>
+                        <div class="card-title">Deploy Openclaw Projects</div>
+                    </div>
+                    <div class="card-subtitle">Trigger: GitHub push</div>
+                        IntelliFinance → notificação de status no Telegram.</div>
+                    <div class="card-tags"><span class="tag tag-teal">github</span><span
+                            class="tag tag-teal">coolify</span><span class="tag tag-teal">ci/cd</span></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-dot dot-red"></div>
+                        <div class="card-title">Home Assistant Eventos</div>
+                    </div>
+                    <div class="card-subtitle">Trigger: HA webhook</div>
+                        alerta de sensor) → lógica adicional → notificação ou ação corretiva automática.</div>
+                    <div class="card-tags"><span class="tag tag-amber">ha</span><span class="tag tag-amber">iot</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 10: PLANO DE EXECUÇÃO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">10</div>
+                <div class="section-title">Plano de Implementação — Migração Bare-Metal</div>
+            </div>
+
+            <div class="alert alert-purple" style="margin-bottom:20px;">
+                <div class="alert-icon">★</div>
+                <div>Decisão arquitetural em 15/05/2026: OpenClaw migra de LXC no Optiplex para <strong>bare-metal Debian 12</strong> no mesmo hardware. pve-inspiron passa a ser o único nó Proxmox, herdando adguard e nginx-proxy. Branch: <code style="font-family:var(--mono);font-size:11px;">feat/openclaw-bare-metal</code>.</div>
+            </div>
+
+            <div class="timeline">
+
+                <div class="phase active">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-done">✓ Concluído</span>
+                        <div class="phase-title">Fase 0 — Infraestrutura Base e OpenClaw no LXC</div>
+                    </div>
+                    <div class="phase-body">
+                        <ul class="checklist">
+                            <li class="done">Cluster Proxmox mqt-homelab — 2 nós, Quorate</li>
+                            <li class="done">OpenClaw 2026.5.12 instalado e rodando no LXC 200 (192.168.3.10)</li>
+                            <li class="done">Gateway systemd ativo — Telegram @luismarquitti_proxmox_bot conectado</li>
+                            <li class="done">Ollama com gemma2:2b + nomic-embed-text</li>
+                            <li class="done">Command owner configurado (telegram:8666532874)</li>
+                            <li class="done">Fallbacks dos agentes chief/nest corrigidos</li>
+                            <li class="done">Token Google Gemini renovado</li>
+                            <li class="done">PostgreSQL (LXC 104), Uptime Kuma (LXC 101), Home Assistant VM (151) operacionais no Inspiron</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase pending">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-next">▶ Próximo</span>
+                        <div class="phase-title">Fase 1 — Backup e Decommission do Optiplex Proxmox</div>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">09-decommission-optiplex-proxmox.yml</code></p>
+                        <ul class="checklist">
+                            <li>Exportar dados do ~/.openclaw do LXC 200 para o Inspiron (backup tar.gz)</li>
+                            <li>Parar LXCs no Optiplex: shutdown 200 → 102 → 100</li>
+                            <li>Remover lm-claw do cluster: <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code> (no Inspiron)</li>
+                            <li>Verificar Inspiron standalone: <code style="font-family:var(--mono);font-size:11px;">pvecm status</code></li>
+                            <li>Desligar o Optiplex fisicamente</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-future">◯ Fase 2</span>
+                        <div class="phase-title">Fase 2 — Instalar Debian 12 no Optiplex (manual)</div>
+                    </div>
+                    <div class="phase-body">
+                        <ul class="checklist">
+                            <li>Criar USB bootável com Debian 12 netinstall</li>
+                            <li>Instalar Debian no NVMe 238GB — IP estático 192.168.3.10, usuário luismarquitti</li>
+                            <li>Autorizar chave SSH: <code style="font-family:var(--mono);font-size:11px;">~/.ssh/id_ed25519.pub</code></li>
+                            <li>Adicionar luismarquitti ao grupo sudo</li>
+                            <li>Verificar conectividade: <code style="font-family:var(--mono);font-size:11px;">ssh luismarquitti@192.168.3.10</code></li>
+                            <li>Atualizar reserva DHCP do Optiplex no Mercusys: MAC 74:86:7A:FA:8E:C8 → IP .30</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-future">◯ Fase 3</span>
+                        <div class="phase-title">Fase 3 — Provisionar OpenClaw Bare-Metal via Ansible</div>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">07-openclaw-deploy.yml</code></p>
+                        <ul class="checklist">
+                            <li>Rodar playbook: sistema base, NVM, Node.js LTS, Ollama, Tailscale, diretórios</li>
+                            <li>Instalar OpenClaw: <code style="font-family:var(--mono);font-size:11px;">pnpm install -g openclaw</code> (manual — requer autenticação)</li>
+                            <li>Restaurar dados: <code style="font-family:var(--mono);font-size:11px;">tar xzf openclaw-data-backup.tar.gz -C /</code></li>
+                            <li>Rodar <code style="font-family:var(--mono);font-size:11px;">openclaw configure</code> e renovar token Google</li>
+                            <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw gateway install --force && openclaw gateway start</code></li>
+                            <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw doctor --fix</code> e validar</li>
+                            <li>Pull dos modelos Ollama: gemma4:e2b, gemma3:4b, qwen3:8b</li>
+                            <li>Montar HDD 298GB: <code style="font-family:var(--mono);font-size:11px;">/mnt/openclaw-storage (ext4)</code></li>
+                            <li>Autenticar Tailscale: <code style="font-family:var(--mono);font-size:11px;">tailscale up --advertise-routes=192.168.3.0/24</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-future">◯ Fase 4</span>
+                        <div class="phase-title">Fase 4 — Criar AdGuard e Nginx no pve-inspiron</div>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">08-inspiron-migrate-services.yml</code></p>
+                        <ul class="checklist">
+                            <li>Criar LXC 100 (adguard) no Inspiron: <code style="font-family:var(--mono);font-size:11px;">192.168.3.5, 512MB</code></li>
+                            <li>Instalar AdGuard Home — configurar DNS Rewrites para todos os serviços</li>
+                            <li>Atualizar DNS primário no Mercusys para 192.168.3.5</li>
+                            <li>Criar LXC 102 (nginx-proxy) no Inspiron: <code style="font-family:var(--mono);font-size:11px;">192.168.3.7, 1GB</code></li>
+                            <li>Configurar proxy hosts: lm-claw (.30), homeassistant (.22), pve-inspiron (.50), uptime (.6)</li>
+                            <li>Testar resolução DNS da rede e acessos por hostname .lan</li>
+                            <li>Verificar RAM do Inspiron: <code style="font-family:var(--mono);font-size:11px;">free -h</code> — alvo: &lt;7GB usados de 8GB</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-future">◯ Fase 5</span>
+                        <div class="phase-title">Fase 5 — Validação Final e Atualização de Modelos Ollama</div>
+                    </div>
+                    <div class="phase-body">
+                        <ul class="checklist">
+                            <li>Testar OpenClaw end-to-end via Telegram (enviar mensagem, receber resposta com gemma4:e2b)</li>
+                            <li>Testar envio de imagem e áudio via Telegram (multimodal gemma4:e2b)</li>
+                            <li>Configurar Uptime Kuma com monitores do novo inventário (lm-claw, adguard, nginx, pve-inspiron, homeassistant)</li>
+                            <li>Remover gemma2:2b após validar gemma4:e2b e gemma3:4b</li>
+                            <li>Atualizar token Google Gemini no calendário de renovação</li>
+                            <li>Merge da branch feat/openclaw-bare-metal → main</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- SEÇÃO 11: REFS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">11</div>
+                <div class="section-title">Repositórios de Referência</div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Repositório</th>
+                            <th>Uso no Projeto</th>
+                            <th>Fase</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="td-name">community-scripts/ProxmoxVE</td>
+                            <td>Instalação de todos os LXCs via helper scripts</td>
+                            <td><span class="tag tag-teal">F1–F4</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">louislam/uptime-kuma</td>
+                            <td>Monitoramento centralizado de todos os serviços</td>
+                            <td><span class="tag tag-teal">F2</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">coollabsio/coolify</td>
+                            <td>PaaS para deploy dos projetos ativos</td>
+                            <td><span class="tag tag-amber">F4</span></td>
+                        </tr>
+                        <tr>
+                            <td>Automação de workflows — backup, alertas, CI/CD</td>
+                            <td><span class="tag tag-amber">F4</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">nextcloud/server</td>
+                            <td>Private cloud — substituição parcial do Google Drive</td>
+                            <td><span class="tag tag-amber">F4</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">immich-app/immich</td>
+                            <td>Backup de fotos — substituição do Google Photos</td>
+                            <td><span class="tag tag-amber">F4</span></td>
+                        </tr>
+                        <tr>
+                            <td>Notas rápidas — complemento ao PKM existente</td>
+                            <td><span class="tag tag-amber">F4</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">anderspitman/awesome-tunneling</td>
+                            <td>Referência para Tailscale Funnel e alternativas</td>
+                            <td><span class="tag tag-purple">F5</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">awesome-selfhosted/awesome-selfhosted</td>
+                            <td>Descoberta de serviços adicionais futuros</td>
+                            <td><span class="tag tag-purple">contínuo</span></td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">mikeroyal/Self-Hosting-Guide</td>
+                            <td>Referência conceitual e troubleshooting</td>
+                            <td><span class="tag tag-purple">contínuo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /container -->
+
+    <div class="footer">
+        <div class="footer-logo">HOME LAB — MQT_Home</div>
+        <div>Luis Marquitti · Campinas, SP · 2026 · branch: feat/openclaw-bare-metal</div>
+        <div>Rede: 192.168.3.0/24 · Tailnet: tail2a8138.ts.net · OpenClaw: 192.168.3.10</div>
+    </div>
+
+</body>
+
+</html>

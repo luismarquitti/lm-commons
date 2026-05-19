@@ -1,0 +1,129 @@
+---
+# ============================================================
+# Playbook 01 — Storage Setup (pve-inspiron — HDD 1TB via Samba)
+# ============================================================
+# Monta e registra os HDDs no Proxmox.
+# O HDD 1TB está no pve-inspiron (ver playbook 03-sharing.yml).
+# ATENÇÃO: O HDD de dados NÃO será formatado (dados pessoais).
+#
+# Uso:
+#   ansible-playbook playbooks/01-storage.yml
+# ============================================================
+
+- name: Storage — Configurar discos no Proxmox
+  hosts: proxmox
+  gather_facts: true
+
+  tasks:
+    # ── HDD Sistema/VMs → pve-storage ────────────────────
+    - name: "[pve_storage] Obter tipo atual do filesystem"
+      ansible.builtin.command: "blkid -o value -s TYPE {{ storage_disks.pve_storage.device }}"
+      register: pve_storage_fstype
+      changed_when: false
+      failed_when: false
+      when: storage_disks.pve_storage is defined
+
+    - name: "[pve_storage] Criar filesystem ext4"
+      community.general.filesystem:
+        dev: "{{ storage_disks.pve_storage.device }}"
+        fstype: ext4
+        force: true
+      when:
+        - storage_disks.pve_storage is defined
+        - storage_disks.pve_storage.format | bool
+        - pve_storage_fstype.stdout != 'ext4'
+
+    - name: "[pve_storage] Criar ponto de montagem"
+      ansible.builtin.file:
+        path: "{{ storage_disks.pve_storage.mount }}"
+        state: directory
+        mode: '0755'
+      when: storage_disks.pve_storage is defined
+
+    - name: "[pve_storage] Montar e adicionar ao fstab"
+      ansible.posix.mount:
+        path: "{{ storage_disks.pve_storage.mount }}"
+        src: "{{ storage_disks.pve_storage.device }}"
+        fstype: "{{ storage_disks.pve_storage.fstype }}"
+        opts: defaults
+        state: mounted
+      when: storage_disks.pve_storage is defined
+
+    - name: "[pve_storage] Criar diretórios de storage do Proxmox"
+      ansible.builtin.file:
+        path: "{{ storage_disks.pve_storage.mount }}/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - images
+        - rootdir
+        - template/iso
+        - template/cache
+        - dump
+        - snippets
+      when: storage_disks.pve_storage is defined
+
+    - name: "[pve_storage] Registrar como storage no Proxmox"
+      ansible.builtin.command: >
+        pvesm add dir pve-storage
+        --path {{ storage_disks.pve_storage.mount }}
+        --content {{ storage_disks.pve_storage.content }}
+      register: pvesm_pve
+      changed_when: 
+        - "'already exists' not in pvesm_pve.stderr"
+        - "'already defined' not in pvesm_pve.stderr"
+      failed_when:
+        - pvesm_pve.rc != 0
+        - "'already exists' not in pvesm_pve.stderr"
+        - "'already defined' not in pvesm_pve.stderr"
+      when: storage_disks.pve_storage is defined
+
+    # ── HDD Dados Adicionais → data-storage ──────────────
+    - name: "[data_storage] Instalar ntfs-3g (se filesystem for NTFS)"
+      ansible.builtin.apt:
+        name: ntfs-3g
+        state: present
+      when: 
+        - storage_disks.data_storage is defined
+        - storage_disks.data_storage.fstype == 'ntfs-3g'
+
+    - name: "[data_storage] Criar ponto de montagem"
+      ansible.builtin.file:
+        path: "{{ storage_disks.data_storage.mount }}"
+        state: directory
+        mode: '0755'
+      when: storage_disks.data_storage is defined
+
+    - name: "[data_storage] Montar e adicionar ao fstab (sem formatar!)"
+      ansible.posix.mount:
+        path: "{{ storage_disks.data_storage.mount }}"
+        src: "{{ storage_disks.data_storage.device }}"
+        fstype: "{{ storage_disks.data_storage.fstype }}"
+        opts: "defaults,nofail,remove_hiberfile"
+        state: mounted
+      when: storage_disks.data_storage is defined
+
+    - name: "[data_storage] Registrar como storage no Proxmox"
+      ansible.builtin.command: >
+        pvesm add dir data-storage
+        --path {{ storage_disks.data_storage.mount }}
+        --content {{ storage_disks.data_storage.content }}
+      register: pvesm_data
+      changed_when: 
+        - "'already exists' not in pvesm_data.stderr"
+        - "'already defined' not in pvesm_data.stderr"
+      failed_when:
+        - pvesm_data.rc != 0
+        - "'already exists' not in pvesm_data.stderr"
+        - "'already defined' not in pvesm_data.stderr"
+      when: storage_disks.data_storage is defined
+
+    # ── Verificação ──────────────────────────────────────
+    - name: Verificar todos os storages
+      ansible.builtin.command: pvesm status
+      register: pvesm_status
+      changed_when: false
+
+    - name: Exibir storages configurados
+      ansible.builtin.debug:
+        var: pvesm_status.stdout_lines

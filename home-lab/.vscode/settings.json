@@ -1,0 +1,9 @@
+{
+    "ansible.ansible.path": "/home/luismarquitti/ansible-venv/bin/ansible",
+    "ansible.python.interpreterPath": "/home/luismarquitti/ansible-venv/bin/python",
+    "ansible.validation.lint.enabled": true,
+    "ansible.validation.lint.path": "/home/luismarquitti/ansible-venv/bin/ansible-lint",
+    "[ansible]": {
+        "editor.defaultFormatter": "redhat.ansible"
+    }
+}

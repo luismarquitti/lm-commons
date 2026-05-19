@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "O agente deve mencionar a atualização da tabela de hardware/IPs no HTML.",
+      "passed": true,
+      "evidence": "Menciona a lista de endereçamento."
+    },
+    {
+      "text": "O agente deve mencionar a atualização do diagrama de arquitetura (tags arch-node).",
+      "passed": true,
+      "evidence": "Menciona explicitamente a adição do bloco arch-node."
+    },
+    {
+      "text": "O agente deve usar o IP 192.168.3.15 nas instruções de atualização.",
+      "passed": true,
+      "evidence": "Usa corretamente o IP 192.168.3.15."
+    }
+  ]
+}

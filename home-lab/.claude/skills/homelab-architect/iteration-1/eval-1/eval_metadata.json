@@ -1,0 +1,19 @@
+{
+  "eval_id": 1,
+  "eval_name": "proxmox-node-addition",
+  "prompt": "Preciso adicionar um novo nó ao meu cluster Proxmox (IP 192.168.3.51) para rodar serviços de mídia (Plex/Jellyfin). Como devo planejar o armazenamento e qual playbook do Ansible devo usar para prepará-lo?",
+  "assertions": [
+    {
+      "name": "mentions-zfs-or-lvm",
+      "description": "A resposta deve recomendar especificamente ZFS ou LVM para o armazenamento de mídia."
+    },
+    {
+      "name": "identifies-storage-playbook",
+      "description": "A resposta deve identificar o playbook `01-storage.yml` como a ferramenta correta."
+    },
+    {
+      "name": "explains-architectural-why",
+      "description": "A resposta deve explicar o *porquê* da escolha arquitetural (ex: redundância, performance de IO)."
+    }
+  ]
+}

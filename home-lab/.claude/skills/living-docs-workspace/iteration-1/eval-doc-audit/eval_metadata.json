@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-doc-audit",
+  "prompt": "Quais arquivos de documentação do projeto estão desatualizados em relação ao estado atual da infraestrutura? Faz um diagnóstico.",
+  "assertions": [
+    {"id": "scans-multiple-files", "text": "Examines at least 3 different documentation files"},
+    {"id": "references-hosts-yml", "text": "Cross-references ansible/inventory/hosts.yml or CLAUDE.md as source of truth"},
+    {"id": "identifies-specific-discrepancies", "text": "Lists specific outdated content with concrete examples"},
+    {"id": "prioritizes-findings", "text": "Organizes findings in a useful way (by file, by severity, or by impact)"}
+  ]
+}

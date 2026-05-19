@@ -1,0 +1,24 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-proactive-suggestion",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Includes an unprompted suggestion to update the documentation at the end of the response",
+      "passed": true,
+      "evidence": "'Quer que eu atualize a documentação do projeto para refletir esse novo estado?'"
+    },
+    {
+      "text": "Names specific documentation files that should be updated",
+      "passed": true,
+      "evidence": "Names 4 specific files: docs/homelab-context.md, optiplex-openclaw-report.md, homelab-implementation-report.html, homelab-network-docs.md"
+    },
+    {
+      "text": "Asks if the user wants the docs updated rather than updating them automatically",
+      "passed": true,
+      "evidence": "'Se quiser, é só confirmar e eu atualizo todos de uma vez' — waits for confirmation"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Baseline also produced a proactive suggestion naturally — this behavior appears to be inherent in the model for this type of context. Skill adds formatting consistency (📄 separator) but doesn't uniquely enable the proactive behavior."
+}
