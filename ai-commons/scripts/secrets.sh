@@ -6,9 +6,9 @@
 set -e
 
 function secrets_get() {
-    local secret_id="\$1"
+    local secret_id="$1"
     
-    if [[ -z "\$secret_id" ]]; then
+    if [[ -z "$secret_id" ]]; then
         echo "Error: No secret identifier provided." >&2
         return 1
     fi
@@ -21,32 +21,32 @@ function secrets_get() {
 
     # Check if vault is unlocked
     local status
-    status=\$(bw status | grep -oP '"status":"\K[^"]+')
+    status=$(bw status | grep -oP '"status":"\K[^"]+')
     
-    if [[ "\$status" != "unlocked" ]]; then
-        echo "Error: Bitwarden vault is \$status. Please ensure it is unlocked and BW_SESSION is exported." >&2
+    if [[ "$status" != "unlocked" ]]; then
+        echo "Error: Bitwarden vault is $status. Please ensure it is unlocked and BW_SESSION is exported." >&2
         return 1
     fi
 
     # Retrieve password using bw CLI
     local value
-    value=\$(bw get password "\$secret_id" 2>/dev/null)
+    value=$(bw get password "$secret_id" 2>/dev/null)
     
-    if [[ \$? -ne 0 || -z "\$value" ]]; then
-        echo "Error: Could not retrieve secret '\$secret_id'. Item missing or access denied." >&2
+    if [[ $? -ne 0 || -z "$value" ]]; then
+        echo "Error: Could not retrieve secret '$secret_id'. Item missing or access denied." >&2
         return 1
     fi
 
-    echo -n "\$value"
+    echo -n "$value"
 }
 
 # If the script is sourced, the function is available to the caller.
 # If called directly with 'get <id>', it outputs the secret.
-if [[ "\${BASH_SOURCE[0]}" == "\${0}" ]]; then
-    if [[ "\$1" == "get" ]]; then
-        secrets_get "\$2"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    if [[ "$1" == "get" ]]; then
+        secrets_get "$2"
     else
-        echo "Usage: \$0 get <secret_id>"
+        echo "Usage: $0 get <secret_id>"
         exit 1
     fi
 fi
