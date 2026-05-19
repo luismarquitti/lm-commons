@@ -1,0 +1,10 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-proactive-suggestion",
+  "prompt": "O playbook `07-openclaw-deploy.yml` rodou com sucesso agora. O lm-claw está online com OpenClaw e Ollama funcionando na porta 11434. O Tailscale também foi configurado no host bare-metal.",
+  "assertions": [
+    {"id": "proactive-suggestion-present", "text": "Includes an unprompted suggestion to update the documentation at the end of the response"},
+    {"id": "names-specific-docs", "text": "Names specific documentation files that should be updated"},
+    {"id": "asks-not-assumes", "text": "Asks if the user wants the docs updated rather than updating them automatically"}
+  ]
+}

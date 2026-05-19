@@ -1,0 +1,39 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-migration-update",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Identifies homelab-implementation-report.html as a file needing updates",
+      "passed": true,
+      "evidence": "Listed as priority MEDIO with specific changes (phases still marked 'pending', stale Nginx/DNS entries)"
+    },
+    {
+      "text": "Identifies docs/homelab-context.md as a file needing updates",
+      "passed": true,
+      "evidence": "Listed as 🔴 Alta priority — 'Totalmente desatualizado; é o arquivo de contexto base para todas as conversas'"
+    },
+    {
+      "text": "Mentions 'lm-claw' as the new hostname in the proposed changes",
+      "passed": true,
+      "evidence": "Appears throughout — diff table, proposed new rows, tree diagram all use 'lm-claw'"
+    },
+    {
+      "text": "Mentions bare-metal or Debian as the new deployment type",
+      "passed": true,
+      "evidence": "Repeatedly references 'Debian 12 bare-metal', 'bare-metal Debian 12' across all proposed changes"
+    },
+    {
+      "text": "Asks for user approval before making any changes",
+      "passed": true,
+      "evidence": "Ends with: 'Posso aplicar essas atualizações? Você pode aprovar todas, apenas algumas, ou pedir ajustes antes de eu editar qualquer arquivo.'"
+    },
+    {
+      "text": "Does not actually modify any documentation files without approval",
+      "passed": true,
+      "evidence": "No file edits were made — response is entirely a proposal"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Skill enforced approval-first workflow clearly. However, it flagged homelab-implementation-report.html as needing updates (MEDIO priority) while the baseline correctly identified it as already up-to-date. Skill was more conservative but less accurate on this file."
+}

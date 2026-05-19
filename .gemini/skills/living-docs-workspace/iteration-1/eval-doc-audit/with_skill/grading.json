@@ -1,0 +1,29 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-doc-audit",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Examines at least 3 different documentation files",
+      "passed": true,
+      "evidence": "Examined 5 files in depth: homelab-context.md, homelab-inventory-audit.md, homelab-network-docs.md, homelab-implementation-report.html, optiplex-openclaw-report.md"
+    },
+    {
+      "text": "Cross-references ansible/inventory/hosts.yml or CLAUDE.md as source of truth",
+      "passed": true,
+      "evidence": "Header: 'Fonte de verdade: ansible/inventory/hosts.yml + CLAUDE.md'; builds current-state table from hosts.yml data"
+    },
+    {
+      "text": "Lists specific outdated content with concrete examples",
+      "passed": true,
+      "evidence": "Detailed section-by-section breakdown with exact values: MACs, IPs, hostnames, status flags"
+    },
+    {
+      "text": "Organizes findings in a useful way",
+      "passed": true,
+      "evidence": "Summary table with CRITICO/MEDIO/BAIXO severity; per-file deep-dive sections; prioritized action list at end"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Good structured output. However, skill excluded README.md as 'not a living doc' and docs/setup_proxmox_lxc.md — both of which the baseline caught. The skill's definition of living docs may be too narrow."
+}

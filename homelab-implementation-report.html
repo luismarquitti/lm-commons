@@ -819,14 +819,13 @@
     <!-- HEADER -->
     <div class="header">
         <div class="header-tag">Projeto Home Lab — MQT_Home</div>
-        <h1>Estado <span>Atual</span></h1>
-        <div class="header-sub">Dashboard operacional do homelab de Luis Marquitti — estado real da infraestrutura,
-            serviços, cluster e próximos passos.</div>
+        <h1>Plano de <span>Migração</span></h1>
+        <div class="header-sub">Transição para arquitetura bare-metal: OpenClaw no Dell Optiplex, pve-inspiron como único nó Proxmox. Branch: feat/openclaw-bare-metal.</div>
         <div class="header-meta">
-            <div class="meta-item">Auditado em <span>14/05/2026 17:30 BRT</span></div>
+            <div class="meta-item">Atualizado em <span>15/05/2026 — branch feat/openclaw-bare-metal</span></div>
             <div class="meta-item">Rede <span>192.168.3.0/24</span></div>
-            <div class="meta-item">Cluster Proxmox <span>mqt-homelab — 🟢 Quorate (2 nós)</span></div>
-            <div class="meta-item">LXCs ativos <span>5 (4 sem serviço)</span></div>
+            <div class="meta-item">Proxmox <span>pve-inspiron standalone (1 nó)</span></div>
+            <div class="meta-item">OpenClaw <span>bare-metal @ 192.168.3.10 🟢 running</span></div>
         </div>
     </div>
 
@@ -843,7 +842,7 @@
                 <div style="margin-bottom:24px;">
                     <div
                         style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:16px;text-transform:uppercase;letter-spacing:0.12em;">
-                        Topologia Alvo — MQT_Home</div>
+                        Topologia Alvo — MQT_Home (pós migração bare-metal)</div>
 
                     <!-- Internet -->
                     <div class="arch-group" style="border-color:rgba(74,85,104,0.4);">
@@ -870,80 +869,65 @@
                     </div>
 
                     <!-- Servidores -->
-                    <div class="arch-group" style="border-color:rgba(0,212,170,0.2);margin-top:12px;">
-                        <div class="arch-group-label" style="color:var(--teal)">Servidores (LAN — cabeado)</div>
-                        <div class="arch-nodes-grid">
-                            <div class="arch-node"
-                                style="border-color:rgba(0,212,170,0.4);background:rgba(0,212,170,0.05)">
-                                <div class="node-label">Servidor Principal (✅ ativo)</div>
-                                <div class="node-name">Optiplex 7040</div>
-                                <div class="node-ip">192.168.3.10 — SSD 240GB + HDD 320GB + HDD 1TB</div>
-                            </div>
-                            <div class="arch-arrow" style="color:var(--teal)">⟷ cluster ⟷</div>
-                            <div class="arch-node" style="border-color:rgba(124,109,250,0.3)">
-                                <div class="node-label">Servidor Secundário (ativo)</div>
-                                <div class="node-name">Dell Inspiron 14R</div>
-                                <div class="node-ip">192.168.3.50 — pve-inspiron</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- VMs -->
                     <div class="two-col" style="margin-top:12px;gap:12px;">
-                        <div class="arch-group" style="border-color:rgba(0,212,170,0.15);margin:0;">
-                            <div class="arch-group-label" style="color:var(--teal);font-size:9px;">VMs — Optiplex
-                                (Proxmox)</div>
+
+                        <!-- Optiplex bare-metal -->
+                        <div class="arch-group" style="border-color:rgba(0,212,170,0.35);margin:0;background:rgba(0,212,170,0.03);">
+                            <div class="arch-group-label" style="color:var(--teal)">Dell Optiplex 7040 — Bare Metal Linux</div>
+                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-6500 · 16GB DDR4 · NVMe 238GB + HDD 298GB + HDD 931GB</div>
                             <div class="arch-nodes-grid" style="gap:6px;">
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">VM</div>
-                                    <div class="node-name">Openclaw</div>
-                                    <div class="node-ip">.20</div>
+                                <div class="arch-node" style="font-size:10px;padding:10px 14px;border-color:rgba(0,212,170,0.5);background:rgba(0,212,170,0.06);">
+                                    <div class="node-label">Bare Metal — Debian 12</div>
+                                    <div class="node-name" style="color:var(--teal);">lm-claw</div>
+                                    <div class="node-ip">192.168.3.10</div>
                                 </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">AdGuard Home</div>
-                                    <div class="node-ip">.5</div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
+                                    <div class="node-label">Ollama</div>
+                                    <div class="node-name">gemma4:e2b</div>
+                                    <div class="node-ip">primário</div>
                                 </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">Uptime Kuma</div>
-                                    <div class="node-ip">.6</div>
-                                </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">Nginx Proxy</div>
-                                    <div class="node-ip">.7</div>
-                                </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">Coolify</div>
-                                    <div class="node-ip">.8</div>
-                                </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">Paperless-ngx</div>
-                                    <div class="node-ip">.15</div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(0,212,170,0.2);">
+                                    <div class="node-label">Ollama</div>
+                                    <div class="node-name">qwen3:8b</div>
+                                    <div class="node-ip">coding</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="arch-group" style="border-color:rgba(124,109,250,0.15);margin:0;">
-                            <div class="arch-group-label" style="color:var(--purple);font-size:9px;">VMs — Dell Inspiron
-                                14R / pve-inspiron (Proxmox)</div>
+
+                        <!-- Inspiron Proxmox -->
+                        <div class="arch-group" style="border-color:rgba(124,109,250,0.3);margin:0;">
+                            <div class="arch-group-label" style="color:var(--purple)">Dell Inspiron 14R — Proxmox (standalone)</div>
+                            <div style="font-family:var(--mono);font-size:10px;color:var(--text-tertiary);margin-bottom:12px;">i5-3337U · 8GB DDR3 · SSD 224GB · HDD 1TB</div>
                             <div class="arch-nodes-grid" style="gap:6px;">
                                 <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">VM</div>
+                                    <div class="node-label">LXC 100</div>
+                                    <div class="node-name">AdGuard Home</div>
+                                    <div class="node-ip">.5 — DNS</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 101</div>
+                                    <div class="node-name">Uptime Kuma</div>
+                                    <div class="node-ip">.6 — monitor</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 102</div>
+                                    <div class="node-name">Nginx Proxy</div>
+                                    <div class="node-ip">.7 — reverse proxy</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">LXC 104</div>
+                                    <div class="node-name">PostgreSQL</div>
+                                    <div class="node-ip">.20 — banco</div>
+                                </div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
+                                    <div class="node-label">VM 151</div>
                                     <div class="node-name">Home Assistant</div>
-                                    <div class="node-ip">.10</div>
+                                    <div class="node-ip">.22 — IoT</div>
                                 </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">n8n</div>
-                                    <div class="node-ip">.11</div>
-                                </div>
-                                <div class="arch-node" style="font-size:10px;padding:8px 12px;">
-                                    <div class="node-label">LXC</div>
-                                    <div class="node-name">Memos</div>
-                                    <div class="node-ip">.12</div>
+                                <div class="arch-node" style="font-size:10px;padding:8px 12px;border-color:rgba(124,109,250,0.2);">
+                                    <div class="node-label">Storage</div>
+                                    <div class="node-name">HDD 1TB</div>
+                                    <div class="node-ip">\\192.168.3.50\data</div>
                                 </div>
                             </div>
                         </div>
@@ -960,15 +944,15 @@
                             </div>
                             <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
                             <div class="arch-node" style="border-color:rgba(0,212,170,0.3)">
-                                <div class="node-label">Servidor</div>
-                                <div class="node-name">pve-optiplex</div>
-                                <div class="node-ip">100.95.244.76</div>
+                                <div class="node-label">Bare Metal</div>
+                                <div class="node-name">lm-claw</div>
+                                <div class="node-ip">192.168.3.10</div>
                             </div>
                             <div class="arch-arrow" style="color:var(--amber)">⟷ ts ⟷</div>
                             <div class="arch-node" style="border-color:rgba(124,109,250,0.3)">
-                                <div class="node-label">Servidor</div>
-                                <div class="node-name">pve-laptop</div>
-                                <div class="node-ip">100.71.89.124</div>
+                                <div class="node-label">Proxmox</div>
+                                <div class="node-name">pve-inspiron</div>
+                                <div class="node-ip">192.168.3.50</div>
                             </div>
                         </div>
                     </div>
@@ -1007,18 +991,18 @@
                         <tr>
                             <td class="td-ip">192.168.3.10</td>
                             <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
-                            <td class="td-name">pve-optiplex</td>
-                            <td>Proxmox — servidor principal (✅ ativo, uptime 4h37m)</td>
+                            <td class="td-name">lm-claw</td>
+                            <td>Dell Optiplex 7040 — Bare Metal Debian 12, OpenClaw + Ollama</td>
                             <td><span class="td-badge badge-wired">wired</span></td>
-                            <td>SSD 240GB (OS) + HDD 320GB (serviços) + HDD 1TB (dados)</td>
+                            <td>NVMe 238GB (OS) + HDD 298GB (openclaw-storage)</td>
                         </tr>
                         <tr>
                             <td class="td-ip">192.168.3.50</td>
-                            <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
+                            <td style="font-family:var(--mono);font-size:11px;">BC-24-11-A5-32-E5</td>
                             <td class="td-name">pve-inspiron</td>
-                            <td>Proxmox — servidor secundário (✅ ativo)</td>
+                            <td>Dell Inspiron 14R — Proxmox standalone (único nó)</td>
                             <td><span class="td-badge badge-wired">wired</span></td>
-                            <td>SSD (OS + VMs)</td>
+                            <td>SSD 224GB (OS + LXCs + VM) + HDD 1TB (Samba \\192.168.3.50\data)</td>
                         </tr>
                         <tr>
                             <td class="td-ip">192.168.3.14</td>
@@ -1032,9 +1016,9 @@
                             <td class="td-ip">192.168.3.20</td>
                             <td style="font-family:var(--mono);font-size:11px;">(auto)</td>
                             <td class="td-name">postgres-db</td>
-                            <td>PostgreSQL Central para desenvolvimento local (LXC no Optiplex)</td>
+                            <td>PostgreSQL Central para desenvolvimento local (LXC no Inspiron)</td>
                             <td><span class="td-badge badge-lxc">lxc</span></td>
-                            <td>SSD 240GB</td>
+                            <td>SSD 224GB</td>
                         </tr>
                         <tr>
                             <td class="td-ip">192.168.3.250</td>
@@ -1045,12 +1029,12 @@
                             <td>—</td>
                         </tr>
                         <tr>
-                            <td class="td-ip">192.168.3.30</td>
-                            <td style="font-family:var(--mono);font-size:11px;">(auto)</td>
-                            <td class="td-name">openclaw-prod</td>
-                            <td>Openclaw — instância definitiva (LXC no Optiplex)</td>
-                            <td><span class="td-badge badge-lxc">lxc</span></td>
-                            <td>SSD 240GB (pve-storage)</td>
+                            <td class="td-ip">192.168.3.10</td>
+                            <td style="font-family:var(--mono);font-size:11px;">74-86-7A-FA-8E-C8</td>
+                            <td class="td-name">lm-claw</td>
+                            <td>OpenClaw — bare metal no Optiplex, Ollama local (gemma4:e2b + qwen3:8b)</td>
+                            <td><span class="td-badge badge-wired">bare-metal</span></td>
+                            <td>NVMe 238GB + HDD 298GB</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1072,21 +1056,31 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr style="background:rgba(0,212,170,0.04);">
+                            <td class="td-ip">—</td>
+                            <td><span class="td-badge badge-wired">BARE</span></td>
+                            <td class="td-name">lm-claw</td>
+                            <td>Dell Optiplex 7040</td>
+                            <td>4 cores</td>
+                            <td>16 GB</td>
+                            <td>238 GB NVMe</td>
+                            <td>🟢 Running</td>
+                        </tr>
                         <tr>
                             <td class="td-ip">100</td>
                             <td><span class="td-badge badge-lxc">LXC</span></td>
                             <td class="td-name">adguard</td>
-                            <td>pve-optiplex</td>
+                            <td>pve-inspiron</td>
                             <td>1 core</td>
                             <td>512 MB</td>
                             <td>4 GB</td>
-                            <td>🟢 Running</td>
+                            <td>⏳ A criar</td>
                         </tr>
                         <tr>
                             <td class="td-ip">101</td>
                             <td><span class="td-badge badge-lxc">LXC</span></td>
                             <td class="td-name">uptime-kuma</td>
-                            <td>pve-optiplex</td>
+                            <td>pve-inspiron</td>
                             <td>1 core</td>
                             <td>512 MB</td>
                             <td>4 GB</td>
@@ -1096,40 +1090,20 @@
                             <td class="td-ip">102</td>
                             <td><span class="td-badge badge-lxc">LXC</span></td>
                             <td class="td-name">nginx-proxy</td>
-                            <td>pve-optiplex</td>
+                            <td>pve-inspiron</td>
                             <td>1 core</td>
                             <td>1024 MB</td>
-                            <td>4 GB</td>
-                            <td>🟢 Running</td>
-                        </tr>
-                        <tr>
-                            <td class="td-ip">103</td>
-                            <td><span class="td-badge badge-lxc">LXC</span></td>
-                            <td class="td-name">coolify</td>
-                            <td>pve-optiplex</td>
-                            <td>2 cores</td>
-                            <td>2048 MB</td>
-                            <td>10 GB</td>
-                            <td>🟢 Running</td>
+                            <td>8 GB</td>
+                            <td>⏳ A criar</td>
                         </tr>
                         <tr>
                             <td class="td-ip">104</td>
                             <td><span class="td-badge badge-lxc">LXC</span></td>
                             <td class="td-name">postgres-db</td>
-                            <td>pve-optiplex</td>
+                            <td>pve-inspiron</td>
                             <td>2 cores</td>
                             <td>2048 MB</td>
                             <td>10 GB</td>
-                            <td>🟢 Running</td>
-                        </tr>
-                        <tr>
-                            <td class="td-ip">150</td>
-                            <td><span class="td-badge badge-wifi" style="background:var(--purple);color:white;">VM</span></td>
-                            <td class="td-name">OpenClaw-Server</td>
-                            <td>pve-inspiron</td>
-                            <td>2 cores</td>
-                            <td>4096 MB</td>
-                            <td>128 GB</td>
                             <td>🟢 Running</td>
                         </tr>
                         <tr>
@@ -1149,19 +1123,17 @@
 
             <div class="alert alert-teal" style="margin-top:16px;">
                 <div class="alert-icon">✓</div>
-                <div>O Optiplex 7040 roda <strong>Proxmox VE</strong> (IP 192.168.3.10). Storages confirmados: <strong>pve-storage</strong> (HDD 320GB, 1.3% usado), <strong>data-storage</strong> (HDD 1TB, 79.6% usado), <strong>local-lvm</strong> (144GB livre). 5 LXCs ativos.</div>
+                <div><strong>Dell Optiplex 7040 (lm-claw)</strong> — bare metal Debian 12 em 192.168.3.10. OpenClaw 2026.5.12 rodando como systemd user service. Ollama com gemma4:e2b + gemma3:4b + qwen3:8b + nomic-embed-text. HDD 298GB montado em /mnt/openclaw-storage. HDD 1TB movido para pve-inspiron (Samba).</div>
             </div>
 
             <div class="alert alert-teal" style="margin-top:8px;">
                 <div class="alert-icon">✓</div>
-                <div>Cluster <strong>mqt-homelab</strong> operacional e <strong>Quorate</strong> entre <code
-                        style="font-family:var(--mono);font-size:11px;">pve-optiplex (.10)</code> e <code
-                        style="font-family:var(--mono);font-size:11px;">pve-inspiron (.50)</code>. Ring ID sincronizado (1.28), 2 votes, Corosync estável.</div>
+                <div><strong>pve-inspiron</strong> standalone em 192.168.3.50 — único nó Proxmox. Uptime Kuma (101) e PostgreSQL (104) operacionais. HomeAssistant VM (151) rodando. AdGuard (100) e Nginx Proxy (102) a criar via playbook 08.</div>
             </div>
 
             <div class="alert alert-amber" style="margin-top:8px;">
                 <div class="alert-icon">!</div>
-                <div><strong>Atenção:</strong> 4 LXCs (AdGuard, Uptime Kuma, Nginx Proxy, Coolify) estão rodando containers <strong>Debian base vazios</strong> — os serviços de aplicação nunca foram instalados dentro deles. Apenas SSH e postfix estão ativos. O PostgreSQL (LXC 104) é o único funcional.</div>
+                <div><strong>Pendente:</strong> Criar LXCs adguard (100) e nginx-proxy (102) no pve-inspiron via <code style="font-family:var(--mono);font-size:11px;">08-inspiron-migrate-services.yml</code>. Enquanto não criados, DNS da rede usa fallback 8.8.8.8 do roteador.</div>
             </div>
 
             <div style="margin-top:16px;">
@@ -1177,19 +1149,14 @@
 
 <span class="c-dim"># SERVIDORES (fora do pool DHCP dinâmico)</span>
 <span class="c-dim"># DHCP pool dinâmico: 192.168.3.150 → 192.168.3.199</span>
-192.168.3.5     adguard              <span class="c-dim"># LXC — DNS resolver</span>
-192.168.3.6     uptime-kuma          <span class="c-dim"># LXC — monitoramento</span>
-192.168.3.7     nginx-proxy          <span class="c-dim"># LXC — reverse proxy</span>
-192.168.3.8     coolify              <span class="c-dim"># LXC — deploy platform</span>
-192.168.3.10    pve-optiplex         <span class="c-dim"># Proxmox host (principal)</span>
-192.168.3.11    n8n                  <span class="c-dim"># LXC — automação</span>
-192.168.3.12    memos                <span class="c-dim"># LXC — notas</span>
+192.168.3.5     adguard              <span class="c-dim"># LXC — DNS resolver (no pve-inspiron)</span>
+192.168.3.6     uptime-kuma          <span class="c-dim"># LXC — monitoramento (no pve-inspiron)</span>
+192.168.3.7     nginx-proxy          <span class="c-dim"># LXC — reverse proxy (no pve-inspiron)</span>
 192.168.3.14    luis-laptop          <span class="c-dim"># Lenovo (reserva DHCP)</span>
-192.168.3.15    paperless            <span class="c-dim"># LXC — gestão de documentos</span>
-192.168.3.19    openclaw-legacy      <span class="c-dim"># VM — Openclaw Antiga (Rodando no Inspiron s/ GUI)</span>
-192.168.3.20    postgres-db          <span class="c-dim"># LXC — Banco de dados relacional central</span>
-192.168.3.22    homeassistant-legacy <span class="c-dim"># VM — Home Assistant Antiga (Rodando no Inspiron s/ GUI)</span>
-192.168.3.30    openclaw-prod        <span class="c-dim"># LXC — Openclaw definitiva</span>
+192.168.3.20    postgres-db          <span class="c-dim"># LXC — banco relacional central (no pve-inspiron)</span>
+192.168.3.22    homeassistant-server <span class="c-dim"># VM — Home Assistant (no pve-inspiron)</span>
+192.168.3.10    lm-claw        <span class="c-dim"># BARE METAL — Optiplex 7040, OpenClaw + Ollama</span>
+192.168.3.50    pve-inspiron         <span class="c-dim"># Proxmox standalone (único nó)</span>
 
 <span class="c-dim"># DISPOSITIVOS IoT (automação Home Assistant)</span>
 192.168.3.100+  <span class="c-dim"># Dispositivos Tuya/Sonoff/Echo/Fire TV</span>
@@ -1198,19 +1165,23 @@
             </div>
         </div>
 
-        <!-- SEÇÃO 3: PROXMOX -->
+        <!-- SEÇÃO 3: CONFIGURAÇÃO DE SERVIDORES -->
         <div class="section">
             <div class="section-header">
                 <div class="section-number">03</div>
-                <div class="section-title">Instalação e Configuração Proxmox — Optiplex 7040</div>
+                <div class="section-title">Configuração de Servidores — Bare Metal + Proxmox</div>
             </div>
 
-            <div class="alert alert-amber" style="margin-bottom:16px;">
-                <div class="alert-icon">!</div>
-                <div><strong>Passo 1:</strong> Instalar Proxmox VE via USB no SSD 240GB do Optiplex. Hostname: <code
-                        style="font-family:var(--mono);font-size:11px;">pve-optiplex.lan</code>, IP: <code
-                        style="font-family:var(--mono);font-size:11px;">192.168.3.10/24</code>. Guia completo em
-                    <strong>docs/setup_proxmox_lxc.md</strong>.</div>
+            <div class="alert alert-teal" style="margin-bottom:16px;">
+                <div class="alert-icon">✓</div>
+                <div><strong>Optiplex 7040 → Bare Metal:</strong> Instalar Debian 12 via USB no NVMe 238GB. IP estático: <code
+                        style="font-family:var(--mono);font-size:11px;">192.168.3.10/24</code>, hostname: <code
+                        style="font-family:var(--mono);font-size:11px;">lm-claw</code>. Após instalar: <code style="font-family:var(--mono);font-size:11px;">ansible-playbook playbooks/07-openclaw-deploy.yml</code>.</div>
+            </div>
+
+            <div class="alert alert-purple" style="margin-bottom:16px;">
+                <div class="alert-icon">→</div>
+                <div><strong>pve-inspiron → Standalone:</strong> Remover lm-claw do cluster com <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code>. Inspiron passa a ser o único nó Proxmox. Verificar quorum com <code style="font-family:var(--mono);font-size:11px;">pvecm status</code>.</div>
             </div>
 
             <div class="two-col">
@@ -1223,35 +1194,22 @@
 
                     <div class="code-block" style="margin-top:16px;">
                         <div class="code-header"><span class="code-lang">bash</span><span
-                                class="code-file">storage-setup.sh — 3 discos</span></div>
+                                class="code-file">storage-setup.sh — lm-claw (2 discos)</span></div>
                         <pre>
-<span class="c-dim"># Identificar discos</span>
+<span class="c-dim"># Identificar discos no lm-claw (bare-metal)</span>
 lsblk -f
-<span class="c-dim"># sda → SSD 240GB (Proxmox OS)</span>
-<span class="c-dim"># sdb → HDD 320GB (serviços)</span>
-<span class="c-dim"># sdc → HDD 1TB (dados pessoais)</span>
+<span class="c-dim"># nvme0n1 → NVMe 238GB (OS + OpenClaw)</span>
+<span class="c-dim"># sdb     → HDD 298GB (openclaw-storage)</span>
 
-<span class="c-dim"># 1. HDD 320GB → pve-storage (VMs, LXCs, ISOs)</span>
+<span class="c-dim"># HDD 298GB → /mnt/openclaw-storage</span>
 fdisk /dev/sdb  <span class="c-dim"># n, p, 1, enter, enter, w</span>
 mkfs.ext4 /dev/sdb1
-mkdir -p /mnt/pve-storage
-mount /dev/sdb1 /mnt/pve-storage
-echo "/dev/sdb1 /mnt/pve-storage ext4 defaults 0 2" >> /etc/fstab
-<span class="c-green">pvesm</span> add dir pve-storage \
-  --path /mnt/pve-storage \
-  --content images,rootdir,backup,iso,snippets,vztmpl
+mkdir -p /mnt/openclaw-storage
+mount /dev/sdb1 /mnt/openclaw-storage
+echo "/dev/sdb1 /mnt/openclaw-storage ext4 defaults,nofail 0 2" >> /etc/fstab
 
-<span class="c-dim"># 2. HDD 1TB → data-storage (NÃO formatar!)</span>
-apt install -y ntfs-3g  <span class="c-dim"># se NTFS</span>
-mkdir -p /mnt/data
-mount -t ntfs-3g /dev/sdc1 /mnt/data
-echo "/dev/sdc1 /mnt/data ntfs-3g defaults,nofail 0 0" >> /etc/fstab
-<span class="c-green">pvesm</span> add dir data-storage \
-  --path /mnt/data \
-  --content backup,iso
-
-<span class="c-dim"># 3. Verificar</span>
-<span class="c-green">pvesm</span> status
+<span class="c-dim"># Verificar</span>
+lsblk -f && df -h
         </pre>
                     </div>
                 </div>
@@ -1313,10 +1271,10 @@ systemctl restart pveproxy
                         <div class="code-header"><span class="code-lang">bash</span><span
                                 class="code-file">cluster-setup.sh — mqt-homelab</span></div>
                         <pre>
-<span class="c-dim"># ═══ No pve-optiplex (.10) ═══</span>
+<span class="c-dim"># ═══ No lm-claw (.10) ═══</span>
 <span class="c-dim"># Configurar hosts</span>
 cat >> /etc/hosts << 'EOF'
-192.168.3.10  pve-optiplex pve-optiplex.lan
+192.168.3.10  lm-claw lm-claw.lan
 192.168.3.50  pve-inspiron pve-inspiron.lan
 EOF
 
@@ -1326,7 +1284,7 @@ EOF
 <span class="c-dim"># ═══ No pve-inspiron (.50) ═══</span>
 <span class="c-dim"># Configurar hosts (mesma coisa)</span>
 cat >> /etc/hosts << 'EOF'
-192.168.3.10  pve-optiplex pve-optiplex.lan
+192.168.3.10  lm-claw lm-claw.lan
 192.168.3.50  pve-inspiron pve-inspiron.lan
 EOF
 
@@ -1352,7 +1310,6 @@ EOF
             <div class="alert alert-purple" style="margin-bottom:20px;">
                 <div class="alert-icon">★</div>
                 <div>Stack selecionada com base nos repositórios do artigo KDnuggets + necessidades específicas do
-                    homelab: Proxmox Helper Scripts, Coolify, n8n, Uptime Kuma, Nextcloud, Immich e Memos — todos
                     deployados como LXC ou VM via Proxmox.</div>
             </div>
 
@@ -1395,7 +1352,6 @@ EOF
                 <div class="tool-card">
                     <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">CF</div>
                     <div class="tool-info">
-                        <div class="tool-name">Coolify</div>
                         <div class="tool-desc">PaaS self-hosted para deploy de ClinicCare, SwMaster, IntelliFinance
                         </div>
                         <div class="tool-repo">coollabsio/coolify</div>
@@ -1404,10 +1360,8 @@ EOF
                 <div class="tool-card">
                     <div class="tool-icon" style="background:rgba(245,158,11,0.1);color:var(--amber)">n8</div>
                     <div class="tool-info">
-                        <div class="tool-name">n8n</div>
                         <div class="tool-desc">Automação de workflows — integrações entre projetos, alertas, backups
                         </div>
-                        <div class="tool-repo">n8n-io/n8n</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1421,10 +1375,9 @@ EOF
                 <div class="tool-card">
                     <div class="tool-icon" style="background:rgba(0,212,170,0.1);color:var(--teal)">OC</div>
                     <div class="tool-info">
-                        <div class="tool-name">Openclaw</div>
-                        <div class="tool-desc">Framework de IA principal — migrado do laptop server para VM robusta no
-                            Optiplex</div>
-                        <div class="tool-repo">VM legacy — 192.168.3.19 (🟡 a migrar)</div>
+                        <div class="tool-name">OpenClaw</div>
+                        <div class="tool-desc">Framework de IA — bare-metal no Optiplex, Ollama local, Telegram bot, agentes chief/nest/main</div>
+                        <div class="tool-repo">Bare Metal — 192.168.3.10 (🟢 running)</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1448,7 +1401,6 @@ EOF
                     <div class="tool-info">
                         <div class="tool-name">Memos</div>
                         <div class="tool-desc">Notas rápidas self-hosted — Go binary, ~20MB, SQLite</div>
-                        <div class="tool-repo">usememos/memos</div>
                     </div>
                 </div>
                 <div class="tool-card">
@@ -1494,20 +1446,16 @@ bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/Proxmo
 <span class="c-dim"># Nginx Proxy Manager LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nginx-proxy-manager.sh)"
 
-<span class="c-dim"># n8n LXC</span>
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/n8n.sh)"
 
 <span class="c-dim"># Nextcloud LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/nextcloud.sh)"
 
-<span class="c-dim"># Coolify LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/coolify.sh)"
 
 <span class="c-dim"># Immich LXC</span>
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/immich.sh)"
 
 <span class="c-dim"># Memos LXC</span>
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/memos.sh)"
     </pre>
             </div>
 
@@ -1549,14 +1497,13 @@ qm start <span class="c-amber">200</span>
                         <div class="code-header"><span class="code-lang">dns rewrite</span><span
                                 class="code-file">AdGuard → Filters → DNS Rewrites</span></div>
                         <pre>
-pve-optiplex.lan  → <span class="c-teal">192.168.3.10</span>
-pve-laptop.lan    → <span class="c-teal">192.168.3.19</span>
+lm-claw.lan  → <span class="c-teal">192.168.3.10</span>
+pve-inspiron.lan    → <span class="c-teal">192.168.3.19</span>
 homeassistant.lan → <span class="c-teal">192.168.3.21</span>
 openclaw.lan      → <span class="c-teal">192.168.3.22</span>
-openclaw-prod.lan → <span class="c-teal">192.168.3.30</span>
+lm-claw.lan → <span class="c-teal">192.168.3.10</span>
 uptime.lan        → <span class="c-teal">192.168.3.6</span>
 files.lan         → <span class="c-teal">192.168.3.x</span>
-n8n.lan           → <span class="c-teal">192.168.3.11</span>
         </pre>
                     </div>
                 </div>
@@ -1598,13 +1545,13 @@ Ver seção 02 — IP Plan
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="td-ip">pve-optiplex.lan</td>
+                                <td class="td-ip">lm-claw.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.10</td>
                                 <td class="td-port">8006</td>
                                 <td>self-signed</td>
                             </tr>
                             <tr>
-                                <td class="td-ip">pve-laptop.lan</td>
+                                <td class="td-ip">pve-inspiron.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.19</td>
                                 <td class="td-port">8006</td>
                                 <td>self-signed</td>
@@ -1622,7 +1569,6 @@ Ver seção 02 — IP Plan
                                 <td>Let's Encrypt</td>
                             </tr>
                             <tr>
-                                <td class="td-ip">n8n.lan</td>
                                 <td style="font-family:var(--mono);font-size:12px;">192.168.3.11</td>
                                 <td class="td-port">5678</td>
                                 <td>Let's Encrypt</td>
@@ -1689,7 +1635,7 @@ sysctl -p
                                 peers — alvo</span></div>
                         <pre>
 <span class="c-teal">100.105.115.103</span>  luis-laptop       online  (idle)
-<span class="c-teal">100.95.244.76</span>   pve-optiplex     online  ✅
+<span class="c-teal">100.95.244.76</span>   lm-claw     online  ✅
 <span class="c-teal">100.92.32.71</span>    pve-inspiron     online  ✅
 <span class="c-dim">100.92.19.119</span>    openclaw         offline (4h)
 <span class="c-dim">100.77.105.37</span>    moto-edge-60     offline (23d)
@@ -1722,30 +1668,30 @@ sysctl -p
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="td-name">Proxmox Optiplex</td>
+                            <td class="td-name">OpenClaw Gateway</td>
                             <td>TCP Port</td>
-                            <td class="td-ip">192.168.3.10:8006</td>
+                            <td class="td-ip">192.168.3.10:18789</td>
                             <td>60s</td>
-                            <td>Telegram / Email</td>
+                            <td>Telegram</td>
                         </tr>
                         <tr>
-                            <td class="td-name">Proxmox Laptop</td>
+                            <td class="td-name">Ollama API</td>
+                            <td>HTTP</td>
+                            <td class="td-ip">192.168.3.10:11434</td>
+                            <td>120s</td>
+                            <td>Telegram</td>
+                        </tr>
+                        <tr>
+                            <td class="td-name">pve-inspiron Proxmox</td>
                             <td>TCP Port</td>
-                            <td class="td-ip">192.168.3.19:8006</td>
+                            <td class="td-ip">192.168.3.50:8006</td>
                             <td>60s</td>
                             <td>Telegram / Email</td>
                         </tr>
                         <tr>
                             <td class="td-name">Home Assistant</td>
                             <td>HTTP</td>
-                            <td class="td-ip">192.168.3.21:8123</td>
-                            <td>60s</td>
-                            <td>Telegram</td>
-                        </tr>
-                        <tr>
-                            <td class="td-name">Openclaw</td>
-                            <td>HTTP</td>
-                            <td class="td-ip">192.168.3.22:port</td>
+                            <td class="td-ip">192.168.3.22:8123</td>
                             <td>60s</td>
                             <td>Telegram</td>
                         </tr>
@@ -1754,26 +1700,26 @@ sysctl -p
                             <td>DNS</td>
                             <td class="td-ip">192.168.3.5:53</td>
                             <td>120s</td>
-                            <td>Email</td>
+                            <td>Telegram / Email</td>
                         </tr>
                         <tr>
-                            <td class="td-name">n8n</td>
+                            <td class="td-name">Nginx Proxy Manager</td>
                             <td>HTTP</td>
-                            <td class="td-ip">192.168.3.11:5678</td>
+                            <td class="td-ip">192.168.3.7:81</td>
                             <td>120s</td>
                             <td>Email</td>
                         </tr>
                         <tr>
-                            <td class="td-name">Nextcloud</td>
-                            <td>HTTP</td>
-                            <td class="td-ip">files.lan</td>
-                            <td>300s</td>
+                            <td class="td-name">PostgreSQL</td>
+                            <td>TCP Port</td>
+                            <td class="td-ip">192.168.3.20:5432</td>
+                            <td>120s</td>
                             <td>Email</td>
                         </tr>
                         <tr>
                             <td class="td-name">Tailscale Peer</td>
                             <td>Ping</td>
-                            <td class="td-ip">100.71.89.124</td>
+                            <td class="td-ip">192.168.3.10</td>
                             <td>120s</td>
                             <td>Telegram</td>
                         </tr>
@@ -1786,7 +1732,6 @@ sysctl -p
         <div class="section">
             <div class="section-header">
                 <div class="section-number">09</div>
-                <div class="section-title">Automação — n8n Workflows</div>
             </div>
 
             <div class="card-grid">
@@ -1807,7 +1752,6 @@ sysctl -p
                         <div class="card-title">Alerta de Serviço Down</div>
                     </div>
                     <div class="card-subtitle">Webhook do Uptime Kuma</div>
-                    <div class="card-body">Uptime Kuma detecta serviço offline → webhook para n8n → enriquece com
                         contexto → Telegram com link direto para o Proxmox do host afetado.</div>
                     <div class="card-tags"><span class="tag tag-amber">webhook</span><span
                             class="tag tag-amber">telegram</span></div>
@@ -1840,7 +1784,6 @@ sysctl -p
                         <div class="card-title">Deploy Openclaw Projects</div>
                     </div>
                     <div class="card-subtitle">Trigger: GitHub push</div>
-                    <div class="card-body">GitHub webhook → n8n → Coolify API → deploy de ClinicCare / SwMaster /
                         IntelliFinance → notificação de status no Telegram.</div>
                     <div class="card-tags"><span class="tag tag-teal">github</span><span
                             class="tag tag-teal">coolify</span><span class="tag tag-teal">ci/cd</span></div>
@@ -1851,7 +1794,6 @@ sysctl -p
                         <div class="card-title">Home Assistant Eventos</div>
                     </div>
                     <div class="card-subtitle">Trigger: HA webhook</div>
-                    <div class="card-body">Home Assistant aciona n8n em eventos críticos (ex: dispositivo offline,
                         alerta de sensor) → lógica adicional → notificação ou ação corretiva automática.</div>
                     <div class="card-tags"><span class="tag tag-amber">ha</span><span class="tag tag-amber">iot</span>
                     </div>
@@ -1863,7 +1805,12 @@ sysctl -p
         <div class="section">
             <div class="section-header">
                 <div class="section-number">10</div>
-                <div class="section-title">Plano de Execução — Fases</div>
+                <div class="section-title">Plano de Implementação — Migração Bare-Metal</div>
+            </div>
+
+            <div class="alert alert-purple" style="margin-bottom:20px;">
+                <div class="alert-icon">★</div>
+                <div>Decisão arquitetural em 15/05/2026: OpenClaw migra de LXC no Optiplex para <strong>bare-metal Debian 12</strong> no mesmo hardware. pve-inspiron passa a ser o único nó Proxmox, herdando adguard e nginx-proxy. Branch: <code style="font-family:var(--mono);font-size:11px;">feat/openclaw-bare-metal</code>.</div>
             </div>
 
             <div class="timeline">
@@ -1871,102 +1818,109 @@ sysctl -p
                 <div class="phase active">
                     <div class="phase-header">
                         <span class="phase-tag phase-tag-done">✓ Concluído</span>
-                        <div class="phase-title">Fase 0 — Inventário e Diagnóstico</div>
+                        <div class="phase-title">Fase 0 — Infraestrutura Base e OpenClaw no LXC</div>
                     </div>
                     <div class="phase-body">
                         <ul class="checklist">
-                            <li class="done">Mapeamento completo da rede 192.168.3.0/24 (26 dispositivos)</li>
-                            <li class="done">Identificação de todos os MACs e hostnames</li>
-                            <li class="done">Proxmox instalado no Dell Inspiron 14R (192.168.3.50)</li>
-                            <li class="done">Home Assistant legacy desativada</li>
-                            <li class="done">Tailscale ativo no Lenovo e Inspiron</li>
-                            <li class="done">Tailnet: tail2a8138.ts.net com 6 peers</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="phase active">
-                    <div class="phase-header">
-                        <span class="phase-tag phase-tag-done">✓ Concluído</span>
-                        <div class="phase-title">Fase 1 — Instalação Proxmox no Optiplex + Cluster</div>
-                    </div>
-                    <div class="phase-body">
-                        <ul class="checklist">
-                            <li class="done">Instalar Proxmox no SSD 240GB do Optiplex (IP: 192.168.3.10)</li>
-                            <li class="done">Configurar HDD 320GB como pve-storage e montar HDD 1TB como data-storage</li>
-                            <li class="done">Configurar repos community, hardening, SSH</li>
-                            <li class="done">Criar cluster mqt-homelab — Quorate, 2 nós, Ring ID 1.28</li>
-                            <li class="done">Configurar NFS/Samba entre nós e com o Lenovo</li>
-                            <li class="done">Instalar Tailscale no Optiplex (100.95.244.76) e Inspiron (100.92.32.71)</li>
-                            <li class="done">Criar 5 LXCs no Optiplex via Ansible (IDs 100-104)</li>
+                            <li class="done">Cluster Proxmox mqt-homelab — 2 nós, Quorate</li>
+                            <li class="done">OpenClaw 2026.5.12 instalado e rodando no LXC 200 (192.168.3.10)</li>
+                            <li class="done">Gateway systemd ativo — Telegram @luismarquitti_proxmox_bot conectado</li>
+                            <li class="done">Ollama com gemma2:2b + nomic-embed-text</li>
+                            <li class="done">Command owner configurado (telegram:8666532874)</li>
+                            <li class="done">Fallbacks dos agentes chief/nest corrigidos</li>
+                            <li class="done">Token Google Gemini renovado</li>
+                            <li class="done">PostgreSQL (LXC 104), Uptime Kuma (LXC 101), Home Assistant VM (151) operacionais no Inspiron</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="phase pending">
                     <div class="phase-header">
-                        <span class="phase-tag phase-tag-next">⚠ Em Andamento — Bloqueado</span>
-                        <div class="phase-title">Fase 2 — Instalação de Serviços nos LXCs</div>
+                        <span class="phase-tag phase-tag-next">▶ Próximo</span>
+                        <div class="phase-title">Fase 1 — Backup e Decommission do Optiplex Proxmox</div>
                     </div>
                     <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">09-decommission-optiplex-proxmox.yml</code></p>
                         <ul class="checklist">
-                            <li class="warn">AdGuard Home (LXC 100, .5) — container rodando, serviço NÃO instalado</li>
-                            <li class="warn">Uptime Kuma (LXC 101, .6) — container rodando, serviço NÃO instalado</li>
-                            <li class="warn">Nginx Proxy Manager (LXC 102, .7) — container rodando, serviço NÃO instalado</li>
-                            <li class="warn">Coolify (LXC 103, .8) — container rodando, serviço NÃO instalado</li>
-                            <li class="done">PostgreSQL (LXC 104, .20) — ✅ instalado e aceitando conexões (:5432)</li>
-                            <li>Configurar PostgreSQL para listen em todas as interfaces (atualmente localhost only)</li>
-                            <li>Configurar proxy hosts .lan no Nginx Proxy Manager</li>
-                            <li>Configurar DNS Rewrites no AdGuard para todos os serviços</li>
+                            <li>Exportar dados do ~/.openclaw do LXC 200 para o Inspiron (backup tar.gz)</li>
+                            <li>Parar LXCs no Optiplex: shutdown 200 → 102 → 100</li>
+                            <li>Remover lm-claw do cluster: <code style="font-family:var(--mono);font-size:11px;">pvecm delnode lm-claw</code> (no Inspiron)</li>
+                            <li>Verificar Inspiron standalone: <code style="font-family:var(--mono);font-size:11px;">pvecm status</code></li>
+                            <li>Desligar o Optiplex fisicamente</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="phase">
                     <div class="phase-header">
-                        <span class="phase-tag phase-tag-future">◯ Próximo</span>
-                        <div class="phase-title">Fase 3 — Migração Openclaw e Limpeza</div>
+                        <span class="phase-tag phase-tag-future">◯ Fase 2</span>
+                        <div class="phase-title">Fase 2 — Instalar Debian 12 no Optiplex (manual)</div>
                     </div>
                     <div class="phase-body">
                         <ul class="checklist">
-                            <li>Executar playbook <code style="font-family:var(--mono);font-size:11px;">07-openclaw-deploy.yml</code> para criar LXC openclaw-prod (VMID 200, .30)</li>
-                            <li>Extrair memória de agentes da VM Openclaw legacy (.19)</li>
-                            <li>Sincronizar Soul & Memory dos agentes (Bandit, Chief, Nest)</li>
-                            <li>Investigar Home Assistant (.22) — responde HTTP 200 mas não aparece em qm list</li>
-                            <li>Limpar volumes LVM órfãos no Inspiron (~55GB: vm-100-disk-*, vm-101-disk-*)</li>
-                            <li>Configurar reservas DHCP no Mercusys para todos os IPs fixos</li>
+                            <li>Criar USB bootável com Debian 12 netinstall</li>
+                            <li>Instalar Debian no NVMe 238GB — IP estático 192.168.3.10, usuário luismarquitti</li>
+                            <li>Autorizar chave SSH: <code style="font-family:var(--mono);font-size:11px;">~/.ssh/id_ed25519.pub</code></li>
+                            <li>Adicionar luismarquitti ao grupo sudo</li>
+                            <li>Verificar conectividade: <code style="font-family:var(--mono);font-size:11px;">ssh luismarquitti@192.168.3.10</code></li>
+                            <li>Atualizar reserva DHCP do Optiplex no Mercusys: MAC 74:86:7A:FA:8E:C8 → IP .30</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="phase">
                     <div class="phase-header">
-                        <span class="phase-tag phase-tag-future">◯ Semana 4</span>
-                        <div class="phase-title">Fase 4 — Stack Completa</div>
+                        <span class="phase-tag phase-tag-future">◯ Fase 3</span>
+                        <div class="phase-title">Fase 3 — Provisionar OpenClaw Bare-Metal via Ansible</div>
                     </div>
                     <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">07-openclaw-deploy.yml</code></p>
                         <ul class="checklist">
-                            <li>Criar LXCs no Inspiron: n8n (.11), Memos (.12)</li>
-                            <li>Configurar Coolify para deploy de ClinicCare, SwMaster, IntelliFinance</li>
-                            <li>Instalar Nextcloud — migrar Google Drive (seletivo)</li>
-                            <li>Instalar Immich — backup de fotos</li>
-                            <li>Configurar QDevice no LUIS-LAPTOP para resiliência de quorum</li>
+                            <li>Rodar playbook: sistema base, NVM, Node.js LTS, Ollama, Tailscale, diretórios</li>
+                            <li>Instalar OpenClaw: <code style="font-family:var(--mono);font-size:11px;">pnpm install -g openclaw</code> (manual — requer autenticação)</li>
+                            <li>Restaurar dados: <code style="font-family:var(--mono);font-size:11px;">tar xzf openclaw-data-backup.tar.gz -C /</code></li>
+                            <li>Rodar <code style="font-family:var(--mono);font-size:11px;">openclaw configure</code> e renovar token Google</li>
+                            <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw gateway install --force && openclaw gateway start</code></li>
+                            <li>Executar <code style="font-family:var(--mono);font-size:11px;">openclaw doctor --fix</code> e validar</li>
+                            <li>Pull dos modelos Ollama: gemma4:e2b, gemma3:4b, qwen3:8b</li>
+                            <li>Montar HDD 298GB: <code style="font-family:var(--mono);font-size:11px;">/mnt/openclaw-storage (ext4)</code></li>
+                            <li>Autenticar Tailscale: <code style="font-family:var(--mono);font-size:11px;">tailscale up --advertise-routes=192.168.3.0/24</code></li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="phase">
                     <div class="phase-header">
-                        <span class="phase-tag phase-tag-future">◯ Mês 2</span>
-                        <div class="phase-title">Fase 5 — Refinamento e Integrações</div>
+                        <span class="phase-tag phase-tag-future">◯ Fase 4</span>
+                        <div class="phase-title">Fase 4 — Criar AdGuard e Nginx no pve-inspiron</div>
+                    </div>
+                    <div class="phase-body">
+                        <p style="margin-bottom:10px;font-size:12px;color:var(--text-tertiary);">Playbook: <code style="font-family:var(--mono);">08-inspiron-migrate-services.yml</code></p>
+                        <ul class="checklist">
+                            <li>Criar LXC 100 (adguard) no Inspiron: <code style="font-family:var(--mono);font-size:11px;">192.168.3.5, 512MB</code></li>
+                            <li>Instalar AdGuard Home — configurar DNS Rewrites para todos os serviços</li>
+                            <li>Atualizar DNS primário no Mercusys para 192.168.3.5</li>
+                            <li>Criar LXC 102 (nginx-proxy) no Inspiron: <code style="font-family:var(--mono);font-size:11px;">192.168.3.7, 1GB</code></li>
+                            <li>Configurar proxy hosts: lm-claw (.30), homeassistant (.22), pve-inspiron (.50), uptime (.6)</li>
+                            <li>Testar resolução DNS da rede e acessos por hostname .lan</li>
+                            <li>Verificar RAM do Inspiron: <code style="font-family:var(--mono);font-size:11px;">free -h</code> — alvo: &lt;7GB usados de 8GB</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="phase">
+                    <div class="phase-header">
+                        <span class="phase-tag phase-tag-future">◯ Fase 5</span>
+                        <div class="phase-title">Fase 5 — Validação Final e Atualização de Modelos Ollama</div>
                     </div>
                     <div class="phase-body">
                         <ul class="checklist">
-                            <li>Integrar Home Assistant com n8n para automações avançadas</li>
-                            <li>Configurar n8n workflows: backup automático, alertas de serviço, health report</li>
-                            <li>Criar GitHub repo homelab com todos os scripts versionados</li>
-                            <li>Monitorar HDD 1TB (79.6% uso) — planejar limpeza ou expansão</li>
-                            <li class="done">Cluster Proxmox mqt-homelab — implementado na Fase 1</li>
+                            <li>Testar OpenClaw end-to-end via Telegram (enviar mensagem, receber resposta com gemma4:e2b)</li>
+                            <li>Testar envio de imagem e áudio via Telegram (multimodal gemma4:e2b)</li>
+                            <li>Configurar Uptime Kuma com monitores do novo inventário (lm-claw, adguard, nginx, pve-inspiron, homeassistant)</li>
+                            <li>Remover gemma2:2b após validar gemma4:e2b e gemma3:4b</li>
+                            <li>Atualizar token Google Gemini no calendário de renovação</li>
+                            <li>Merge da branch feat/openclaw-bare-metal → main</li>
                         </ul>
                     </div>
                 </div>
@@ -2007,7 +1961,6 @@ sysctl -p
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
                         <tr>
-                            <td class="td-name">n8n-io/n8n</td>
                             <td>Automação de workflows — backup, alertas, CI/CD</td>
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
@@ -2022,7 +1975,6 @@ sysctl -p
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
                         <tr>
-                            <td class="td-name">usememos/memos</td>
                             <td>Notas rápidas — complemento ao PKM existente</td>
                             <td><span class="tag tag-amber">F4</span></td>
                         </tr>
@@ -2050,8 +2002,8 @@ sysctl -p
 
     <div class="footer">
         <div class="footer-logo">HOME LAB — MQT_Home</div>
-        <div>Luis Marquitti · Campinas, SP · 2026</div>
-        <div>Rede: 192.168.3.0/24 · Tailnet: tail2a8138.ts.net</div>
+        <div>Luis Marquitti · Campinas, SP · 2026 · branch: feat/openclaw-bare-metal</div>
+        <div>Rede: 192.168.3.0/24 · Tailnet: tail2a8138.ts.net · OpenClaw: 192.168.3.10</div>
     </div>
 
 </body>

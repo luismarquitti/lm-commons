@@ -1,91 +1,42 @@
 # Home Lab — MQT_Home
 
-Infrastructure-as-code para o home lab pessoal rodando em cluster Proxmox VE de dois nós.
+Infrastructure-as-Code para o home lab pessoal rodando em arquitetura híbrida (Proxmox + Bare-Metal).
 
-## Hardware
+## Hardware Atualizado (15/05/2026)
 
-| Host | Hostname | IP | Função |
-|------|----------|----|--------|
-| Dell Optiplex 7040 | `pve-optiplex` | `192.168.3.10` | Nó primário do cluster |
-| Dell Inspiron 14R | `pve-inspiron` | `192.168.3.50` | Nó secundário do cluster |
+| Host | Hostname | IP | Função | SO |
+|------|----------|----|--------|----|
+| Dell Optiplex 7040 | `lm-claw` | `192.168.3.10` | AI Server (OpenClaw/Ollama) | Debian 13.4.0 |
+| Dell Inspiron 14R | `pve-inspiron` | `192.168.3.50` | Virtualization (LXCs/VMs) | Proxmox VE |
 
-Cluster: `mqt-homelab` | Rede: `192.168.3.0/24` | VPN: Tailscale (`tail2a8138.ts.net`)
+## Estrutura do Repositório
 
-## Serviços
+- `ansible/`: Playbooks e inventário para automação.
+  - `playbooks/07-openclaw-deploy.yml`: Deploy completo da stack de IA bare-metal.
+  - `playbooks/05-lxc-deploy.yml`: Provisionamento de containers no Proxmox.
+- `docs/`: Documentação de contexto, rede e logs manuais.
+- `.specs/`: Definições de projeto seguindo SDD (Spec-Driven Development).
 
-| Serviço | IP | Porta | Host |
-|---------|----|-------|------|
-| AdGuard Home | 192.168.3.5 | 3000 | pve-optiplex |
-| Uptime Kuma | 192.168.3.6 | 3001 | pve-inspiron |
-| Nginx Proxy Manager | 192.168.3.7 | 81 | pve-optiplex |
-| Coolify | 192.168.3.8 | 8000 | pve-inspiron |
-| Openclaw-Prod | 192.168.3.30 | — | pve-optiplex |
-| PostgreSQL | 192.168.3.20 | 5432 | pve-inspiron |
-| Home Assistant | 192.168.3.22 | 8123 | pve-inspiron (VM) |
-| n8n | 192.168.3.11 | 5678 | pve-inspiron |
-| Memos | 192.168.3.12 | 5230 | pve-inspiron |
+## Como rodar o deploy
 
-## Estrutura
+1. Ative o ambiente virtual:
+   ```bash
+   source ~/ansible-venv/bin/activate
+   ```
+2. Execute o playbook desejado usando a senha do vault:
+   ```bash
+   cd ansible
+   ansible-playbook playbooks/07-openclaw-deploy.yml --vault-password-file ../.vault_pass
+   ```
 
-```
-ansible/
-├── ansible.cfg               # Configuração do Ansible
-├── requirements.yml          # Collections necessárias
-├── inventory/
-│   ├── hosts.yml             # Inventário completo (nós, LXCs, VMs)
-│   └── group_vars/all.yml    # Variáveis globais
-└── playbooks/
-    ├── site.yml              # Playbook master (executa todas as fases)
-    ├── 00-bootstrap.yml      # Repositórios, pacotes, SSH, /etc/hosts
-    ├── 01-storage.yml        # Montagem de discos e storage Proxmox
-    ├── 02-cluster.yml        # Criação e adesão ao cluster
-    ├── 03-sharing.yml        # Samba + NFS
-    ├── 04-tailscale.yml      # VPN mesh
-    ├── 05-lxc-deploy.yml     # Deploy de containers LXC
-    ├── 06-db-setup.yml       # PostgreSQL central
-    └── 07-openclaw-deploy.yml # Framework Openclaw
-docs/
-├── homelab-context.md        # Contexto e histórico do projeto
-├── setup_proxmox_lxc.md      # Guia detalhado de provisionamento
-└── openclaw-manual-config-log.md
-```
+## Serviços Principais
 
-## Pré-requisitos
+- **OpenClaw**: Framework de IA central (IP .10).
+- **Ollama**: Backend de LLM local (IP .10).
+- **Projetos de Código**: Centralizados em `~/Code/` no `lm-claw` com sincronização automática.
+- **AdGuard Home**: DNS local e bloqueio de ads (LXC no .50).
+- **PostgreSQL**: Banco de dados central (LXC no .50).
+- **Home Assistant**: Automação residencial (VM no .50).
 
-```bash
-python3 -m venv ~/ansible-venv
-source ~/ansible-venv/bin/activate
-pip install ansible proxmoxer requests
-cd ansible
-ansible-galaxy collection install -r requirements.yml
-```
-
-## Uso
-
-```bash
-source ~/ansible-venv/bin/activate
-cd ansible
-
-# Deploy completo
-ansible-playbook playbooks/site.yml
-
-# Fase específica
-ansible-playbook playbooks/05-lxc-deploy.yml
-
-# Limitar a um host
-ansible-playbook playbooks/00-bootstrap.yml --limit pve-optiplex
-
-# Tag específica
-ansible-playbook playbooks/05-lxc-deploy.yml --tags adguard
-```
-
-## Secrets
-
-Senhas e tokens devem ser definidos via Ansible Vault. Crie o arquivo `ansible/inventory/group_vars/all/vault.yml` (ignorado pelo Git) com as variáveis:
-
-```yaml
-vault_lxc_password: "..."
-vault_db_password: "..."
-```
-
-Execute com `--ask-vault-pass` ou configure o arquivo `.vault_pass` (também ignorado pelo Git).
+---
+*Última atualização: 15/05/2026 — Migração Bare-Metal concluída.*

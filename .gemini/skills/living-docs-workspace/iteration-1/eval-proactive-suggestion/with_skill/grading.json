@@ -1,0 +1,24 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-proactive-suggestion",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Includes an unprompted suggestion to update the documentation at the end of the response",
+      "passed": true,
+      "evidence": "Ends with: '📄 Quer que eu atualize a documentação viva? Os arquivos homelab-implementation-report.html, docs/homelab-context.md, homelab-inventory-audit.md e optiplex-openclaw-report.md parecem desatualizados...'"
+    },
+    {
+      "text": "Names specific documentation files that should be updated",
+      "passed": true,
+      "evidence": "Names 4 specific files: homelab-implementation-report.html, docs/homelab-context.md, homelab-inventory-audit.md, optiplex-openclaw-report.md"
+    },
+    {
+      "text": "Asks if the user wants the docs updated rather than updating them automatically",
+      "passed": true,
+      "evidence": "'Quer que eu atualize' — explicit question, not an action"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "Proactive suggestion is clearly formatted with 📄 separator and concise rationale. Matches prescribed format in skill."
+}

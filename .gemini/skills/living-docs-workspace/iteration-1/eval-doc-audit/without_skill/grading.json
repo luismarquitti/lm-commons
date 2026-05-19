@@ -1,0 +1,29 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-doc-audit",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Examines at least 3 different documentation files",
+      "passed": true,
+      "evidence": "Examined 8 files: README.md, homelab-context.md, homelab-inventory-audit.md, homelab-network-docs.md, setup_proxmox_lxc.md, optiplex-openclaw-report.md, homelab-implementation-report.html, openclaw-manual-config-log.md"
+    },
+    {
+      "text": "Cross-references ansible/inventory/hosts.yml or CLAUDE.md as source of truth",
+      "passed": true,
+      "evidence": "Header: 'Fonte de verdade: ansible/inventory/hosts.yml + ansible/inventory/group_vars/all.yml + CLAUDE.md'"
+    },
+    {
+      "text": "Lists specific outdated content with concrete examples",
+      "passed": true,
+      "evidence": "Table-format discrepancies per file with before/after values; identified IP conflict on .11 (n8n vs moto-edge-60), MAC conflict on pve-inspiron"
+    },
+    {
+      "text": "Organizes findings in a useful way",
+      "passed": true,
+      "evidence": "Priority table (ALTA/MEDIA/BAIXA/OK), per-file sections, and a thematic 'Principais Divergências Recorrentes' section that groups by type"
+    }
+  ],
+  "pass_rate": 1.0,
+  "notes": "More thorough than with_skill — found 8 files vs 5. Discovered README.md and setup_proxmox_lxc.md which skill excluded. Also caught the .11 IP conflict (n8n vs moto-edge-60) which skill missed. Thematic divergences section was a particularly useful addition."
+}

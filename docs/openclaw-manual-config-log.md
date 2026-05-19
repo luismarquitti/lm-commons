@@ -1,6 +1,6 @@
 # OpenClaw Manual Configuration Log
 
-Este documento registra as alterações manuais realizadas na instância `openclaw-prod` para posterior automação via Ansible.
+Este documento registra as alterações manuais realizadas na instância `lm-claw` para posterior automação via Ansible.
 
 ---
 
@@ -63,7 +63,15 @@ Removeu 1 entrada sem transcript. Resultado: 7 sessões válidas.
   - `nvm install --lts && nvm use --lts`
   - Criar symlinks em `/usr/local/bin` e `/usr/bin` para node/npm/npx
 
-### 2. Homebrew
+### 2. Obsidian Vault (PKM)
+
+- **Descrição:** Clonagem do repositório de notas (PKM) para servir de contexto ao OpenClaw.
+- **Status:** Automatizado via Playbook `07-openclaw-deploy.yml`.
+- **Detalhes Técnicos:**
+  - Repositório: `https://github.com/luismarquitti/obsidian-vault.git`
+  - Destino: `~/.openclaw/workspace/obsidian-vault`
+
+### 3. Homebrew
 
 - **Descrição:** Instalação do Homebrew para gerenciamento de pacotes adicionais.
 - **Status:** Pendente (Aguardando inclusão no Playbook).
@@ -73,7 +81,7 @@ Removeu 1 entrada sem transcript. Resultado: 7 sessões válidas.
 
 ### 3. Tailscale dentro do LXC
 
-- **Situação atual:** `tailscaled.service` não roda dentro do LXC `openclaw-prod`. O openclaw registra erro ao tentar publicar a porta via `tailscale serve`, mas o gateway continua funcional (apenas sem exposição Tailscale direta).
+- **Situação atual:** `tailscaled.service` não roda dentro do LXC `lm-claw`. O openclaw registra erro ao tentar publicar a porta via `tailscale serve`, mas o gateway continua funcional (apenas sem exposição Tailscale direta).
 - **Status:** Pendente — investigar se LXC precisa de `nesting=1` ou `keyctl=1` para suportar tailscaled, ou se a exposição via Tailscale do host Proxmox é suficiente.
 - **Detalhes Técnicos:**
   - Instalar via script oficial: `curl -fsSL https://tailscale.com/install.sh | sh`

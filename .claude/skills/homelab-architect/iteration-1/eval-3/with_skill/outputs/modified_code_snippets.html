@@ -1,0 +1,32 @@
+<!-- Snippet 1: Seção 02 - Plano de Endereçamento -->
+<pre>
+...
+192.168.3.12    memos                <span class="c-dim"># LXC — notas</span>
+<span class="c-teal">192.168.3.15    paperless            </span><span class="c-dim"># LXC — gestão de documentos (ngx)</span>
+192.168.3.14    luis-laptop          <span class="c-dim"># Lenovo (reserva DHCP)</span>
+...
+</pre>
+
+<!-- Snippet 2: Seção 04 - Stack de Serviços (Tool Grid) -->
+<div class="tool-card">
+  <div class="tool-icon" style="background:rgba(74,85,104,0.1);color:var(--text-secondary)">PX</div>
+  <div class="tool-info">
+    <div class="tool-name">Paperless-ngx</div>
+    <div class="tool-desc">Gestão documental inteligente com OCR e indexação automática</div>
+    <div class="tool-repo">paperless-ngx/paperless-ngx</div>
+  </div>
+</div>
+
+<!-- Snippet 3: Seção 05 - Deploy -->
+<pre>
+...
+<span class="c-dim"># Paperless-ngx LXC (Deploy via Playbook 05-lxc-deploy.yml)</span>
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/paperless-ngx.sh)"
+</pre>
+
+<!-- Snippet 4: Seção 06 - DNS Rewrites -->
+<pre>
+...
+paperless.lan     → <span class="c-teal">192.168.3.15</span>
+...
+</pre>

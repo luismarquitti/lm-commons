@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Home lab infrastructure-as-code for a two-node Proxmox cluster running on Dell Optiplex 7040 and Dell Inspiron 14R. All provisioning is handled by Ansible playbooks executed from the development machine (Lenovo laptop via WSL).
+Home lab infrastructure-as-code for a single-node Proxmox setup (Dell Inspiron 14R) plus a bare-metal Debian server (Dell Optiplex 7040 — `lm-claw`). All provisioning is handled by Ansible playbooks executed from the development machine (Lenovo laptop via WSL).
 
 Documentation lives in `docs/` — `homelab-context.md` contains the most current infrastructure state, decisions, and migration plan.
 
@@ -50,12 +50,12 @@ pip install proxmoxer requests
 
 ### Inventory structure
 
-`inventory/hosts.yml` defines two Proxmox hosts and all LXC/VM children:
+`inventory/hosts.yml` defines the Proxmox host, bare-metal host, and all LXC/VM children:
 
-- **pve-optiplex** (`192.168.3.10`) — primary node; hosts AdGuard, Nginx Proxy Manager, Openclaw-Prod
-- **pve-inspiron** (`192.168.3.50`) — secondary node; hosts PostgreSQL, Coolify, Uptime Kuma, n8n, Memos, Home Assistant VM
+- **pve-inspiron** (`192.168.3.50`) — sole Proxmox node; hosts AdGuard, Nginx Proxy Manager, Uptime Kuma, PostgreSQL, Home Assistant VM; HDD 1TB shared via Samba
+- **lm-claw** (`192.168.3.10`) — Dell Optiplex bare-metal Debian; runs OpenClaw + Ollama directly on hardware
 
-`inventory/group_vars/all.yml` holds all shared variables: subnet (`192.168.3.0/24`), cluster name (`mqt-homelab`), storage names, Tailscale subnet routing, Samba/NFS paths, and LXC defaults.
+`inventory/group_vars/all.yml` holds all shared variables: subnet (`192.168.3.0/24`), cluster name (`mqt-homelab`), storage names, Tailscale subnet routing, Samba paths, and LXC defaults.
 
 ### Playbook sequencing
 
@@ -64,31 +64,32 @@ pip install proxmoxer requests
 ### Networking
 
 - Network: `192.168.3.0/24`, gateway `.1` (Mercusys Halo mesh)
-- Tailscale VPN provides remote access (`tail2a8138.ts.net`), subnet routing enabled on both Proxmox nodes
+- Tailscale VPN provides remote access (`tail2a8138.ts.net`), subnet routing enabled on pve-inspiron and lm-claw
 - AdGuard (`.5`) handles local DNS; DHCP reservations are static via router config
 
 ### Proxmox API usage
 
 Playbook `05-lxc-deploy.yml` uses the `community.proxmox` module via `proxmoxer` Python library to create containers through the Proxmox REST API. API credentials should be stored as Ansible vault vars or environment variables — never in plaintext inventory.
 
-### Storage layout (Optiplex)
+### Storage layout
 
-- 240 GB SSD → OS + `local` storage
-- 320 GB HDD → `pve-storage` (VMs, LXCs, ISOs, templates)
-- 1 TB HDD → `/mnt/data` (personal data, Samba share)
+**lm-claw (Optiplex — bare-metal):**
+- NVMe 238 GB → OS + OpenClaw
+- HDD 298 GB → `/mnt/openclaw-storage` (OpenClaw workspace/models)
+
+**pve-inspiron:**
+- SSD 224 GB → OS + `local-lvm` (LXC disks, VM disks)
+- HDD 1 TB → `/mnt/data` (personal data, Samba share `\\192.168.3.50\data`)
 
 ### Key service ports
 
 | Service       | IP              | Port  |
 |---------------|-----------------|-------|
-| Proxmox (opt) | 192.168.3.10    | 8006  |
 | Proxmox (ins) | 192.168.3.50    | 8006  |
 | AdGuard       | 192.168.3.5     | 3000  |
 | Uptime Kuma   | 192.168.3.6     | 3001  |
 | Nginx Proxy   | 192.168.3.7     | 81    |
-| Coolify       | 192.168.3.8     | 8000  |
 | Home Assistant| 192.168.3.22    | 8123  |
 | PostgreSQL    | 192.168.3.20    | 5432  |
-| n8n           | 192.168.3.11    | 5678  |
-| Memos         | 192.168.3.12    | 5230  |
-| Openclaw-Prod | 192.168.3.30    | varies|
+| lm-claw       | 192.168.3.10    | varies|
+| Ollama        | 192.168.3.10    | 11434 |

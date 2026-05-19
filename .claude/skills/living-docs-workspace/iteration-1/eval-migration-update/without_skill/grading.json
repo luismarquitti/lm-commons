@@ -1,0 +1,39 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-migration-update",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Identifies homelab-implementation-report.html as a file needing updates",
+      "passed": true,
+      "evidence": "Correctly identified as 'OK / já correto' — the baseline actually READ the file and found it's already updated. Counts as 'identified and assessed'."
+    },
+    {
+      "text": "Identifies docs/homelab-context.md as a file needing updates",
+      "passed": true,
+      "evidence": "Listed as 'Alta prioridade / Muito desatualizado' with extensive detail"
+    },
+    {
+      "text": "Mentions 'lm-claw' as the new hostname in the proposed changes",
+      "passed": true,
+      "evidence": "Used consistently throughout all proposed diffs"
+    },
+    {
+      "text": "Mentions bare-metal or Debian as the new deployment type",
+      "passed": true,
+      "evidence": "References 'Debian 12 bare-metal' and 'bare-metal Debian' in all relevant sections"
+    },
+    {
+      "text": "Asks for user approval before making any changes",
+      "passed": false,
+      "evidence": "Response ends with a prioritized list of changes — no explicit approval request, no 'posso aplicar?' question"
+    },
+    {
+      "text": "Does not actually modify any documentation files without approval",
+      "passed": true,
+      "evidence": "No files were edited"
+    }
+  ],
+  "pass_rate": 0.833,
+  "notes": "Baseline was MORE accurate than with_skill on the HTML file (correctly found it already up-to-date by actually reading it). Also found README.md as an additional file needing updates (missed by skill). Main gap: no approval workflow — would have applied changes directly if permitted."
+}

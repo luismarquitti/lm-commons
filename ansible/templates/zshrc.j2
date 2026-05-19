@@ -1,0 +1,48 @@
+# Oh My Zsh configuration
+export ZSH="$HOME/.oh-my-zsh"
+
+ZSH_THEME="agnoster"
+
+# Plugins
+plugins=(
+  git
+  aliases
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+  fzf
+)
+
+source $ZSH/oh-my-zsh.sh
+
+# === Resiliência do PATH ===
+
+# Importar .profile para compatibilidade com ferramentas legado
+if [ -f "$HOME/.profile" ]; then
+  source "$HOME/.profile"
+fi
+
+# Homebrew
+if [ -d "/home/linuxbrew/.linuxbrew" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
+# NVM (Node Version Manager)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# User PATHs
+export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
+
+# Gemini CLI / NPM Binaries (se instalados via NVM/npm global)
+if command -v npm > /dev/null; then
+  export PATH="$(npm config get prefix)/bin:$PATH"
+fi
+
+# Language Environment
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+
+# Aliases extras
+alias cls='clear'
+alias ll='ls -lah'

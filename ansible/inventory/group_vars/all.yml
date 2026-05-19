@@ -10,31 +10,28 @@ network_cidr: "/24"
 network_dns_primary: "8.8.8.8"      # Temporário até AdGuard estar pronto
 network_dns_adguard: "192.168.3.5"  # DNS definitivo
 
-# Cluster Proxmox
+# Proxmox — único nó restante após migração bare-metal
+# (Optiplex removido do cluster em favor de bare-metal OpenClaw)
 cluster_name: "mqt-homelab"
-cluster_primary_ip: "192.168.3.10"
+cluster_primary_ip: "192.168.3.50"
 
 # Hosts para /etc/hosts
 etc_hosts_entries:
-  - ip: "192.168.3.10"
-    names: "pve-optiplex pve-optiplex.lan"
   - ip: "192.168.3.50"
     names: "pve-inspiron pve-inspiron.lan"
+  - ip: "192.168.3.10"
+    names: "lm-claw lm-claw.lan"
 
 
 # Tailscale
 tailscale_advertise_routes: "192.168.3.0/24"
 tailscale_accept_routes: true
 
-# Samba — compartilhamento do HDD 1TB
+# Samba — HDD 1TB no pve-inspiron, acessível via \\192.168.3.50\data
+samba_share_host: "192.168.3.50"
 samba_share_name: "data"
 samba_share_path: "/mnt/data"
 samba_user: "root"
-
-# NFS — compartilhamento entre nós Proxmox
-nfs_export_path: "/mnt/pve-storage"
-nfs_allowed_network: "192.168.3.0/24"
-nfs_mount_point: "/mnt/optiplex-storage"
 
 # Pacotes base para todos os nós Proxmox
 base_packages:
@@ -44,14 +41,20 @@ base_packages:
   - git
   - net-tools
   - samba
-  - nfs-kernel-server
-  - nfs-common
   - ntfs-3g
   - python3-proxmoxer  # Necessário para módulo Ansible proxmox
   - python3-pexpect    # Necessário para o módulo expect do Ansible (cluster join)
 
 # Proxmox VE Helper Scripts base URL
 pve_helper_scripts_url: "https://github.com/community-scripts/ProxmoxVE/raw/main/ct"
+
+# OpenClaw / PKM (Obsidian Vault)
+obsidian_vault_repo: "https://github.com/luismarquitti/obsidian-vault.git"
+obsidian_vault_dest: "/home/luismarquitti/.openclaw/workspace/obsidian-vault"
+
+# Git Identity
+git_user_name: "Luis Marquitti"
+git_user_email: "luismarquitti@gmail.com"
 
 # LXC defaults
 lxc_default_gateway: "192.168.3.1"
