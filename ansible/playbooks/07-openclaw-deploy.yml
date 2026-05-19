@@ -117,6 +117,21 @@
       args:
         creates: /usr/local/bin/ollama
 
+    - name: Criar diretório de override para o serviço Ollama
+      ansible.builtin.file:
+        path: /etc/systemd/system/ollama.service.d
+        state: directory
+        mode: '0755'
+
+    - name: Configurar Ollama para escutar em todas as interfaces
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/ollama.service.d/override.conf
+        content: |
+          [Service]
+          Environment="OLLAMA_HOST=0.0.0.0"
+        mode: '0644'
+      notify: Reiniciar Ollama
+
     - name: Garantir serviço Ollama está habilitado
       ansible.builtin.systemd:
         name: ollama
@@ -129,6 +144,13 @@
       register: ollama_pull
       changed_when: "'success' in (ollama_pull.stdout | default(''))"
       become: false
+
+  handlers:
+    - name: Reiniciar Ollama
+      ansible.builtin.systemd:
+        name: ollama
+        state: restarted
+        daemon_reload: true
 
 
 - name: OpenClaw — Instalar e Configurar Tailscale

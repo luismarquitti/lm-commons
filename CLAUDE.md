@@ -53,7 +53,7 @@ pip install proxmoxer requests
 `inventory/hosts.yml` defines the Proxmox host, bare-metal host, and all LXC/VM children:
 
 - **pve-inspiron** (`192.168.3.50`) — sole Proxmox node; hosts AdGuard, Nginx Proxy Manager, Uptime Kuma, PostgreSQL, Home Assistant VM; HDD 1TB shared via Samba
-- **lm-claw** (`192.168.3.30`) — Dell Optiplex bare-metal Debian; runs OpenClaw + Ollama directly on hardware
+- **lm-claw** (`192.168.3.10`) — Dell Optiplex bare-metal Debian; runs OpenClaw + Ollama directly on hardware
 
 `inventory/group_vars/all.yml` holds all shared variables: subnet (`192.168.3.0/24`), cluster name (`mqt-homelab`), storage names, Tailscale subnet routing, Samba paths, and LXC defaults.
 
@@ -91,5 +91,5 @@ Playbook `05-lxc-deploy.yml` uses the `community.proxmox` module via `proxmoxer`
 | Nginx Proxy   | 192.168.3.7     | 81    |
 | Home Assistant| 192.168.3.22    | 8123  |
 | PostgreSQL    | 192.168.3.20    | 5432  |
-| lm-claw       | 192.168.3.30    | varies|
-| Ollama        | 192.168.3.30    | 11434 |
+| lm-claw       | 192.168.3.10    | varies|
+| Ollama        | 192.168.3.10    | 11434 |

@@ -1,5 +1,5 @@
 # Documentação de Rede — Home Lab
-**Última atualização:** 15/05/2026 (auditado às 18:00 BRT)
+**Última atualização:** 18/05/2026 (auditado às 18:00 BRT)
 **Ambiente:** MQT_Home · Subnet `192.168.3.0/24`
 
 ---
@@ -16,7 +16,7 @@ Modem do Provedor (192.168.0.1)
 Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
    │         └── Halo H60XS — SATÉLITE (192.168.3.250) ←── Quarto principal
    │
-   ├─[Cabeado]──► Dell Optiplex 7040 / lm-claw (192.168.3.30) — Bare-Metal Debian
+   ├─[Cabeado]──► Dell Optiplex 7040 / lm-claw (192.168.3.10) — Bare-Metal Debian
    │                   └── OpenClaw + Ollama (direto no hardware)
    │
    ├─[Cabeado]──► Dell Inspiron 14R / pve-inspiron (192.168.3.50) — Proxmox VE (único nó)
@@ -50,7 +50,7 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 
 | Campo | Valor |
 |---|---|
-| IP LAN | `192.168.3.30` |
+| IP LAN | `192.168.3.10` |
 | MAC | `74-86-7A-FA-8E-C8` |
 | SO | Debian 12 (bare-metal) |
 | Status | ✅ Ativa |
@@ -90,7 +90,7 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 .14   LUIS-LAPTOP (Lenovo Win11, cliente)
 .20   LXC: PostgreSQL                   ← Inspiron 14R (.50)
 .22   VM: Home Assistant                ← Inspiron 14R (.50)
-.30   lm-claw (Optiplex bare-metal AI)
+.10   lm-claw (Optiplex bare-metal AI)
 .50   pve-inspiron (Dell Inspiron, Proxmox host)
 .250  Mercusys Halo H60XS (satélite mesh)
 ```
