@@ -1,0 +1,24 @@
+{
+  "expectations": [
+    {
+      "text": "Verifica a existência de /skills",
+      "passed": true,
+      "evidence": "Report confirma a presença de 'skills'."
+    },
+    {
+      "text": "Verifica a existência de /agents",
+      "passed": true,
+      "evidence": "Report confirma a presença de 'agents'."
+    },
+    {
+      "text": "Verifica a existência de /instructions/rules",
+      "passed": true,
+      "evidence": "Report confirma a presença de 'instructions' (que contém rules)."
+    },
+    {
+      "text": "Verifica a existência de /stow-packages",
+      "passed": true,
+      "evidence": "Report confirma a presença de 'stow-packages'."
+    }
+  ]
+}

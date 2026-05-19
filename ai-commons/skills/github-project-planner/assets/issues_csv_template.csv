@@ -1,0 +1,6 @@
+title,body_file,labels,milestone,assignees,type
+"Recuperar senha por e-mail","bodies/recuperar-senha-email.md","type:user-story,area:auth,size:m,priority:p1","sprint-01","","user-story"
+"Reset de MFA com código de backup","bodies/reset-mfa-backup.md","type:user-story,area:auth,size:l,priority:p2","sprint-02","","user-story"
+"Desbloquear conta após 5 tentativas","bodies/desbloquear-conta.md","type:user-story,area:auth,size:s,priority:p2","sprint-02","","user-story"
+"Recuperação de conta sem suporte humano","bodies/epic-recuperacao.md","type:epic,area:auth","","" ,"epic"
+"Configurar pipeline de CI no GitHub Actions","bodies/setup-ci.md","type:task,area:infra,size:m","sprint-01","","task"

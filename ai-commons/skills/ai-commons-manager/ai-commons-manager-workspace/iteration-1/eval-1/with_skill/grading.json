@@ -1,0 +1,19 @@
+{
+  "expectations": [
+    {
+      "text": "A pasta professional-proofreader existe no destino",
+      "passed": true,
+      "evidence": "Agent confirmou que a pasta foi migrada para C:\\devWorkspace\\.ai-commons\\skills\\."
+    },
+    {
+      "text": "O arquivo SKILL.md está presente no destino",
+      "passed": true,
+      "evidence": "Agent confirmou a presença de SKILL.md no destino."
+    },
+    {
+      "text": "O agente seguiu a lógica de SSOT (deduplicação)",
+      "passed": true,
+      "evidence": "O agente com skill notou a existência prévia e explicou a lógica de SSOT."
+    }
+  ]
+}

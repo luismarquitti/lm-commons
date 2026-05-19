@@ -1,0 +1,71 @@
+title,body,labels,milestone,assignees,type
+"[CI] Executar testes e lint no pipeline (#43)","## User Story
+Como desenvolvedor, quero que o CI execute testes e lint automaticamente, para garantir que novas alterações não quebrem funcionalidades existentes nem degradem a qualidade do código.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** que um PR é aberto
+  - **Quando** o pipeline de CI é acionado
+  - **Então** ele deve executar `yarn lint`, `yarn build` e `yarn test` em ordem.
+  - **E** se algum teste falhar, o build deve ser marcado como falho e o merge bloqueado.
+
+## Definition of Done
+- [ ] Serviços PostgreSQL e Redis configurados no `.github/workflows/ci.yml`.
+- [ ] Steps de `yarn lint` e `yarn test` adicionados.
+- [ ] Variáveis de ambiente de teste (`DATABASE_URL`, `REDIS_URL`) configuradas no workflow.
+- [ ] PR verificado com falha simulada para confirmar bloqueio.","area:infra,priority:p1,type:task",Sprint 01,,task
+"[FEAT] Script de seed robusto e idempotente (#48)","## User Story
+Como desenvolvedor, quero um script de seed que popule o banco com dados realistas, para que eu possa testar a aplicação em um ambiente próximo do real imediatamente após o setup.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** que o comando `yarn db:seed` é executado
+  - **Quando** o banco está vazio ou já possui dados
+  - **Então** ele deve popular/atualizar o banco com usuários, contas, categorias e transações de teste sem duplicar registros.
+  - **E** deve utilizar a biblioteca `papaparse` para ler os dados do CSV de forma robusta.
+
+## Definition of Done
+- [ ] `packages/database/prisma/seed.ts` refatorado para usar `papaparse`.
+- [ ] Seed inclui criação de usuário, contas variadas e >50 transações.
+- [ ] Script `db:reset` na raiz que limpa o banco e roda o seed.
+- [ ] Instruções atualizadas no `ONBOARDING.md`.","area:backend,priority:p2,type:task",Sprint 01,,task
+"[TEST] Cobertura de integração para Resolvers Financeiros (#46)","## User Story
+Como QA/Dev, quero testes de integração para todos os resolvers financeiros, para garantir que as operações de negócio (listagem, filtros, upload) funcionem corretamente fim-a-fim.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** um usuário autenticado
+  - **Quando** ele solicita a query `transactions` com filtros de data
+  - **Então** apenas as transações do período solicitado e pertencentes ao usuário devem ser retornadas.
+
+## Definition of Done
+- [ ] Testes de integração para `transactions`, `accounts`, `categories` e `financialSummary`.
+- [ ] Validação de isolamento de dados (usuário A não vê dados do usuário B).
+- [ ] Cobertura de backend aumentada para no mínimo 70%.","area:backend,priority:p2,type:task",Sprint 02,,task
+"[FEAT] Logging estruturado com Pino e Correlation ID (#45)","## User Story
+Como engenheiro de SRE, quero logs estruturados em formato JSON e com Correlation ID, para facilitar o rastreamento de erros e monitoramento do fluxo de dados entre backend e worker.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** uma requisição GraphQL
+  - **Quando** um log é gerado em qualquer nível (info/error)
+  - **Então** ele deve conter `timestamp`, `level`, `service`, `correlationId` e `userId`.
+
+## Definition of Done
+- [ ] Biblioteca `pino` integrada no backend e worker.
+- [ ] Middleware para gerar e propagar `correlationId` em todas as requisições.
+- [ ] Logger centralizado em um pacote compartilhado.
+- [ ] Remoção de `console.log` diretos.","area:backend,area:worker,priority:p2,type:task",Sprint 02,,task
+"[SECURITY] Rate Limiting e Query Complexity (#44)","## User Story
+Como administrador do sistema, quero limitar a taxa de requisições e a complexidade das queries, para proteger a infraestrutura contra abusos e ataques DoS.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** um IP que excede 20 tentativas de login em 15 minutos
+  - **Quando** ele tenta logar novamente
+  - **Então** a API deve retornar erro 429 (Too Many Requests).
+
+## Definition of Done
+- [ ] `express-rate-limit` configurado com limites globais e específicos para auth.
+- [ ] `graphql-query-complexity` implementado para evitar queries aninhadas infinitas.
+- [ ] Headers de rate limit visíveis nas respostas da API.","area:security,priority:p2,type:task",Sprint 02,,task

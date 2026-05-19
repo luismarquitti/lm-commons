@@ -1,0 +1,53 @@
+title,body,labels,milestone,assignees,type
+"[FEAT] Global Error Handling e UI Feedback no Frontend","## User Story
+Como usuário, quero receber feedback visual claro quando ocorre um erro (ex: falha na conexão, erro de validação), para entender o que aconteceu e como proceder.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** que uma mutação GraphQL falha com erro de rede
+  - **Quando** o usuário clica em 'Enviar'
+  - **Então** um alerta (Toast/Snackbar) deve aparecer com uma mensagem amigável.
+
+## Definition of Done
+- [ ] Provider de notificação (ex: `notistack` ou MUI Lab Alert) configurado.
+- [ ] Error Boundary global para capturar crashes do React.
+- [ ] Interceptor/Link do Apollo para capturar erros globais de GraphQL.","area:frontend,priority:p2,type:user-story",Sprint 03,,user-story
+"[FEAT] Padronização do Design System e MUI Theme","## User Story
+Como desenvolvedor frontend, quero um tema MUI configurado e componentes base padronizados, para garantir consistência visual e acelerar o desenvolvimento de novas telas.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** que o tema global está configurado
+  - **Quando** eu uso um componente `Button` padrão
+  - **Então** ele deve seguir as cores e tipografia da marca IntelliFinance sem customização manual.
+
+## Definition of Done
+- [ ] `theme.ts` configurado com cores, tipografia e espaçamentos.
+- [ ] Componentes base (Button, TextField, Card) com estilos padrão definidos.
+- [ ] Documentação básica dos tokens de design no `design-system/README.md`.","area:frontend,priority:p2,type:task",Sprint 01,,task
+"[TEST] Testes de Componentes e Hooks no Frontend","## User Story
+Como desenvolvedor, quero que os componentes e hooks críticos do frontend tenham testes automatizados, para evitar regressões visuais e de lógica de estado.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** o componente de listagem de transações
+  - **Quando** os dados são carregados do Apollo Client
+  - **Então** ele deve renderizar a quantidade correta de linhas.
+
+## Definition of Done
+- [ ] Vitest e React Testing Library configurados.
+- [ ] Testes para os hooks de busca de dados (Apollo Mocks).
+- [ ] Testes para componentes críticos (Formulários, Gráficos).","area:frontend,priority:p2,type:task",Sprint 02,,task
+"[FEAT] Fluxo de Recuperação de Senha","## User Story
+Como usuário que esqueceu a senha, quero poder recuperá-la via e-mail, para não perder acesso à minha conta.
+
+## Acceptance Criteria
+- **Gherkin:**
+  - **Dado** um e-mail válido cadastrado
+  - **Quando** o usuário solicita 'Recuperar Senha'
+  - **Então** um token temporário deve ser gerado e enviado para o e-mail.
+
+## Definition of Done
+- [ ] Endpoint de `forgotPassword` no backend.
+- [ ] Mock de envio de e-mail (usando `nodemailer` + Mailtrap/Ethereal).
+- [ ] Tela de 'Redefinir Senha' no frontend.","area:backend,area:frontend,priority:p3,type:user-story",Sprint 03,,user-story

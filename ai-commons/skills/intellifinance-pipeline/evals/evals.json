@@ -1,0 +1,89 @@
+{
+  "skill_name": "intellifinance-pipeline",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Quero normalizar o extrato 'Finance/Extratos/itau_luis_extrato_012026.pdf' para CSV. Processa esse arquivo e me mostre quantas transações ficaram sem categoria (Outros) e quais são as 5 maiores despesas do período.",
+      "expected_output": "Deve: (1) rodar normalize_extrato.py via bash no caminho correto, (2) reportar número de transações 'Outros', (3) listar as 5 maiores despesas com data, descrição e valor em R$.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "usa_script_existente",
+          "description": "Usa o script normalize_extrato.py já existente em Finance/scripts/ (não reescreve do zero)",
+          "type": "qualitative"
+        },
+        {
+          "name": "reporta_outros",
+          "description": "Informa quantas transações ficaram como 'Outros' e qual % isso representa",
+          "type": "qualitative"
+        },
+        {
+          "name": "lista_top5_despesas",
+          "description": "Lista pelo menos 5 transações com data, descrição e valor monetário em BRL",
+          "type": "qualitative"
+        },
+        {
+          "name": "caminho_bash_correto",
+          "description": "Usa o caminho /sessions/bold-modest-hopper/mnt/Google_Drive_Files/ no bash, não caminho Windows diretamente",
+          "type": "qualitative"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Com base nos dados do extrato já normalizado (Finance/Normalizado/itau_luis_extrato_012026.csv), me dê uma análise consolidada: total de receitas vs despesas por mês, e quais categorias consumiram mais em março de 2026. Apresente a análise de forma clara.",
+      "expected_output": "Deve: (1) ler o CSV existente, (2) agregar receitas e despesas por mês (Jan-Mai 2026), (3) detalhar as categorias de despesa de março/2026 com valores, (4) apresentar de forma legível (tabelas ou listas organizadas).",
+      "files": [],
+      "assertions": [
+        {
+          "name": "le_csv_existente",
+          "description": "Lê o CSV de Finance/Normalizado/ sem reprocessar o PDF",
+          "type": "qualitative"
+        },
+        {
+          "name": "agrega_por_mes",
+          "description": "Apresenta receitas e despesas para cada um dos 5 meses (2026-01 a 2026-05)",
+          "type": "qualitative"
+        },
+        {
+          "name": "detalha_marco",
+          "description": "Lista as categorias de despesa de março/2026 com valores individuais",
+          "type": "qualitative"
+        },
+        {
+          "name": "valores_em_brl",
+          "description": "Valores monetários estão no formato brasileiro (R$ X.XXX,XX)",
+          "type": "qualitative"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Preciso atualizar o dashboard de Finance/Dashboards/index.html para que ele carregue automaticamente tanto o extrato do Luis quanto o da Eluma quando disponíveis. Atualiza a lista de arquivos no dashboard e confirma que o design segue os tokens do IntelliFinance.",
+      "expected_output": "Deve: (1) ler o index.html existente, (2) adicionar eluma_itau_extrato_012026.csv na lista candidates do JavaScript, (3) manter os tokens CSS do design system, (4) não quebrar funcionalidades existentes.",
+      "files": [],
+      "assertions": [
+        {
+          "name": "le_dashboard_existente",
+          "description": "Lê o index.html antes de editar, não reescreve do zero desnecessariamente",
+          "type": "qualitative"
+        },
+        {
+          "name": "adiciona_eluma_csv",
+          "description": "O arquivo resultante contém 'eluma_itau_extrato_012026.csv' na lista de candidates",
+          "type": "qualitative"
+        },
+        {
+          "name": "preserva_design_tokens",
+          "description": "O HTML mantém as variáveis CSS --if-brand, --if-expense, --if-income e tokens do design system",
+          "type": "qualitative"
+        },
+        {
+          "name": "preserva_funcionalidades",
+          "description": "Filtros, gráficos, tabela e paginação continuam presentes no HTML final",
+          "type": "qualitative"
+        }
+      ]
+    }
+  ]
+}

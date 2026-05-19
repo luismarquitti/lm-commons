@@ -1,0 +1,19 @@
+{
+  "eval_id": 3,
+  "eval_name": "documentation-sync",
+  "prompt": "Acabei de rodar o playbook `05-lxc-deploy.yml` para criar um novo container 'Paperless-ngx' no IP 192.168.3.15. Como devo atualizar o arquivo `homelab-implementation-report.html` para refletir essa mudança?",
+  "assertions": [
+    {
+      "name": "identifies-html-table",
+      "description": "O agente deve mencionar a atualização da tabela de hardware/IPs no HTML."
+    },
+    {
+      "name": "mentions-arch-diagram",
+      "description": "O agente deve mencionar a atualização do diagrama de arquitetura (tags arch-node)."
+    },
+    {
+      "name": "suggests-correct-ip",
+      "description": "O agente deve usar o IP 192.168.3.15 nas instruções de atualização."
+    }
+  ]
+}

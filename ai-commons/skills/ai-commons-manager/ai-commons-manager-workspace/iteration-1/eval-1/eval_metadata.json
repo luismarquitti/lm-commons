@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "skill-migration-test",
+  "prompt": "Migre a skill 'professional-proofreader' localizada em 'C:\\devWorkspace\\agents-squad\\adapt-v2\\skills\\professional-proofreader' para o repositório central .ai-commons/skills/. Verifique se a migração foi bem sucedida.",
+  "assertions": [
+    "A pasta professional-proofreader existe no destino",
+    "O arquivo SKILL.md está presente no destino",
+    "O agente seguiu a lógica de SSOT (deduplicação)"
+  ]
+}

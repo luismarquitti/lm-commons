@@ -1,0 +1,80 @@
+{
+  "title": "REPLACE — Roadmap do Produto",
+  "owner": "REPLACE-owner",
+  "owner_type": "user",
+  "short_description": "Descrição curta do project — sprints atuais e horizonte.",
+  "fields": [
+    {
+      "name": "Priority",
+      "type": "SINGLE_SELECT",
+      "options": ["P0", "P1", "P2", "P3"]
+    },
+    {
+      "name": "Size",
+      "type": "NUMBER",
+      "description": "Story points (1, 2, 3, 5, 8, 13)"
+    },
+    {
+      "name": "Sprint",
+      "type": "ITERATION",
+      "duration_days": 14,
+      "iterations": [
+        {"title": "sprint-01", "start_date": "REPLACE-YYYY-MM-DD"},
+        {"title": "sprint-02", "start_date": "REPLACE-YYYY-MM-DD"},
+        {"title": "sprint-03", "start_date": "REPLACE-YYYY-MM-DD"}
+      ]
+    },
+    {
+      "name": "Epic",
+      "type": "SINGLE_SELECT",
+      "options": ["REPLACE-Epico-A", "REPLACE-Epico-B"]
+    },
+    {
+      "name": "Area",
+      "type": "SINGLE_SELECT",
+      "options": ["auth", "billing", "infra", "docs"]
+    }
+  ],
+  "views": [
+    {
+      "name": "Board",
+      "layout": "BOARD_LAYOUT",
+      "group_by": "Status",
+      "description": "Kanban diário durante o sprint."
+    },
+    {
+      "name": "Sprint Backlog",
+      "layout": "TABLE_LAYOUT",
+      "filter": "sprint:@current status:!=Done",
+      "sort": [
+        {"field": "Priority", "direction": "DESC"},
+        {"field": "Size", "direction": "ASC"}
+      ],
+      "description": "Itens do sprint atual, ordenados por prioridade."
+    },
+    {
+      "name": "All Backlog",
+      "layout": "TABLE_LAYOUT",
+      "filter": "status:!=Done",
+      "group_by": "Epic",
+      "description": "Backlog completo, agrupado por épico."
+    },
+    {
+      "name": "Roadmap",
+      "layout": "ROADMAP_LAYOUT",
+      "x_axis": "Sprint",
+      "group_by": "Epic",
+      "description": "Timeline de épicos por sprint."
+    },
+    {
+      "name": "My items",
+      "layout": "BOARD_LAYOUT",
+      "filter": "assignee:@me status:!=Done",
+      "description": "Filtro pessoal por assignee."
+    }
+  ],
+  "auto_add": {
+    "repos": ["REPLACE-owner/REPLACE-repo"],
+    "filter": "is:issue is:open"
+  }
+}

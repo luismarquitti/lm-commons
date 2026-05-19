@@ -1,0 +1,75 @@
+{
+  "skill_name": "github-project-planner",
+  "evals": [
+    {
+      "id": 1,
+      "name": "greenfield_saas_roadmap",
+      "prompt": "Vou começar um projeto novo: um SaaS para personal trainers gerenciarem alunos e treinos. Sou solo founder, quero entregar v1 em 3 meses, e o público são personals autônomos que hoje usam planilha + WhatsApp. As 3 capacidades centrais da v1 são: (1) cadastro de aluno com anamnese e medidas, (2) montar treino semanal e enviar pro aluno via link público, (3) registrar e visualizar progresso (cargas, frequência). Me ajuda a montar o plano no GitHub — roadmap, épicos, primeiras issues do sprint 1, esquema de labels e a config de um Project board. Output em arquivos numa pasta `treinapp-planning/`. Não execute nada no GitHub, só gere os arquivos.",
+      "expected_output": "Arquivos roadmap.md, labels.yml, milestones.yml, issues.csv (ou .json) com pelo menos 5-8 issues do sprint 1 detalhadas, e project_v2_config.json. Roadmap deve ter fases com outcomes mensuráveis, épicos com escopo claro e out-of-scope, e fora-de-escopo explícito. Issues do sprint 1 devem ter user stories no formato Como/quero/para com critérios em Gherkin e story points estimados.",
+      "expectations": [
+        "Foi criado um arquivo roadmap.md (ou similar) com fases e outcomes por fase",
+        "Foi criado um arquivo labels.yml (ou .json) com categorias type:*, priority:*, size:* e area:* customizadas pro domínio fitness",
+        "Foi criado um arquivo project_v2_config.json com fields Priority, Size, Sprint, Epic, Area",
+        "Foi criado um arquivo de issues (CSV ou JSON) com ao menos 5 issues do sprint 1",
+        "As user stories usam o formato 'Como [persona], quero [ação], para [valor]' no corpo",
+        "As user stories têm critérios de aceite em formato Gherkin (Dado/Quando/Então)",
+        "As issues têm story points estimados em escala Fibonacci (1,2,3,5,8,13)",
+        "O roadmap inclui uma seção explícita de 'fora de escopo' ou 'out of scope'",
+        "Pelo menos uma issue tem label type:epic e pelo menos uma tem type:user-story",
+        "Os arquivos foram salvos na pasta treinapp-planning/ (ou caminho que termina com isso)"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "user_stories_recuperacao_conta",
+      "prompt": "Tenho um épico chamado 'Recuperação de conta sem suporte humano' no meu repo `acme/saas-financas`. Personas são clientes finais (PFs) que esqueceram a senha, perderam acesso ao MFA, ou tiveram a conta bloqueada por muitas tentativas. Me escreve 5-6 user stories prontas pra refinamento, com critérios de aceite em Gherkin, story points estimados, e labels apropriadas. Cospe num CSV importável pelo `gh issue create` (uma issue por linha). Salva como `stories-recuperacao-conta.csv` na pasta atual.",
+      "expected_output": "Arquivo stories-recuperacao-conta.csv com 5-6 linhas, cada uma representando uma user story com title, body em markdown, labels (incluindo type:user-story, area:auth, size:* e priority:*), e milestone. Bodies devem ter seções História, Critérios de aceite (Gherkin) e Definition of Done.",
+      "expectations": [
+        "Foi gerado um arquivo CSV (ou JSON) com pelo menos 5 user stories",
+        "Cada story tem um title no formato verbo + objeto (não 'Como usuário...' no título)",
+        "Cada story tem corpo com seção 'História' no formato 'Como [persona], quero [ação], para [valor]'",
+        "Cada story tem critérios de aceite em Gherkin com Dado/Quando/Então",
+        "Cada story tem story points estimados em escala Fibonacci",
+        "Cada story tem label type:user-story e area:auth (ou similar)",
+        "Os critérios de aceite descrevem o que o usuário percebe, não detalhes de implementação técnica",
+        "Pelo menos uma story cobre cenário de erro (não só caminho feliz)",
+        "O arquivo é importável: tem colunas title, body (ou body_file), labels"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "batch_issues_labels_project_ecommerce",
+      "prompt": "Recebi essa lista do meu PM, transforma em issues estruturadas pra mim:\n- pagina de checkout esta lenta em mobile\n- precisamos de export de pedidos em CSV\n- bug: cupom de desconto duplica quando aplica e depois remove\n- onboarding novo com tour interativo\n- migrar log de erros pro datadog\n- refatorar modulo de pagamentos\n- redesign do dashboard de admin (figma pronto)\n\nDepois disso, me dá um esquema de labels pra esse projeto (é um e-commerce B2C, foco em mobile) e a config de um Project v2 com sprints de 2 semanas começando 25 de maio de 2026. Repo é `lojinha/store-front`, owner é organização `lojinha`. Salva tudo em `lojinha-planning/`. Não execute nada no GitHub, só gere os arquivos.",
+      "expected_output": "Pasta lojinha-planning/ com issues.csv (7 issues categorizadas corretamente como bug/user-story/task/tech-debt), labels.yml com áreas customizadas para e-commerce (checkout, payments, admin, mobile, etc.), milestones.yml com sprints de 2 semanas a partir de 25/05/2026, e project_v2_config.json com owner_type:org.",
+      "expectations": [
+        "Foi gerado um arquivo issues.csv (ou .json) com as 7 issues",
+        "A issue 'cupom duplica' está classificada como type:bug",
+        "A issue 'refatorar modulo de pagamentos' está classificada como type:task ou type:tech-debt (não type:user-story)",
+        "A issue 'onboarding novo com tour' está classificada como type:user-story",
+        "Foi gerado um arquivo labels.yml com áreas customizadas para e-commerce (ex: area:checkout, area:payments, area:admin, area:mobile)",
+        "Foi gerado um arquivo milestones.yml com sprints de 2 semanas iniciando em 2026-05-25",
+        "Foi gerado um project_v2_config.json com owner_type:org (não user)",
+        "O project_v2_config tem fields Priority, Size, Sprint (iteration) e Status",
+        "Pelo menos uma issue ('pagina de checkout lenta') tem label de performance ou área:checkout",
+        "Os arquivos foram salvos em lojinha-planning/ (ou caminho que termina com isso)"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "quebrar_story_grande_admin_panel",
+      "prompt": "Tenho essa user story que ficou em 13 pontos e óbvio que ninguém quer pegar: 'Implementar painel administrativo para gerenciar usuários, planos, faturas, suporte e relatórios financeiros'. Persona é o admin interno (suporte + billing). Quebra isso em histórias de até 5 pontos cada, com critérios de aceite em Gherkin, e me dá num CSV pronto pra importar. Repo `acme/saas-financas`, epic pai `epic:admin-panel`. Salva como `stories-admin-panel.csv`.",
+      "expected_output": "Arquivo stories-admin-panel.csv com 5-8 histórias decompostas, cada uma com no máximo 5 story points, escopo independente (testável sozinha), critérios Gherkin claros, e label epic:admin-panel + area:admin (ou similar).",
+      "expectations": [
+        "Foi gerado um arquivo CSV (ou JSON) com pelo menos 4 histórias decompostas",
+        "Nenhuma história tem story points maior que 5",
+        "Cada história tem um título com verbo + objeto (não 'Implementar X' genérico)",
+        "Cada história cobre uma capacidade específica do admin panel (ex: gerenciar usuários, ver faturas, etc.)",
+        "Cada história tem corpo com 'Como [persona], quero [ação], para [valor]'",
+        "Cada história tem critérios de aceite em Gherkin",
+        "Cada história tem label que vincule ao épico pai (epic:admin-panel ou label similar)",
+        "As histórias são independentes entre si (testáveis e entregáveis sozinhas)",
+        "A persona admin interno aparece nas histórias (não 'usuário' genérico)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "initial-bootstrap",
+  "prompt": "Verifique a estrutura de pastas em C:\\devWorkspace\\.ai-commons e certifique-se de que todos os diretórios mandatórios da 'Organização Universal' estão presentes. Se algo estiver faltando, crie.",
+  "assertions": [
+    "Verifica a existência de /skills",
+    "Verifica a existência de /agents",
+    "Verifica a existência de /instructions/rules",
+    "Verifica a existência de /stow-packages"
+  ]
+}

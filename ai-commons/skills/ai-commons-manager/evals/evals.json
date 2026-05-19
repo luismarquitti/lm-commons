@@ -1,0 +1,19 @@
+{
+  "skill_name": "ai-commons-manager",
+  "evals": [
+    {
+      "id": 0,
+      "name": "initial-bootstrap",
+      "prompt": "Verifique a estrutura de pastas em C:\\devWorkspace\\.ai-commons e certifique-se de que todos os diretórios mandatórios da 'Organização Universal' estão presentes. Se algo estiver faltando, crie.",
+      "expected_output": "Confirmação de que as pastas /skills, /agents, /instructions/rules, /instructions/workflows, /memory-templates, /config, /scripts e /stow-packages existem.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "skill-migration-test",
+      "prompt": "Migre a skill 'professional-proofreader' localizada em 'C:\\devWorkspace\\agents-squad\\adapt-v2\\skills\\professional-proofreader' para o repositório central .ai-commons/skills/. Verifique se a migração foi bem sucedida.",
+      "expected_output": "A pasta professional-proofreader deve existir em C:\\devWorkspace\\.ai-commons\\skills\\ e conter o SKILL.md original.",
+      "files": []
+    }
+  ]
+}
