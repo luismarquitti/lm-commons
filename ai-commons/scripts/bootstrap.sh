@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-BASE_DIR=\$(cd "\$(dirname "\$0")/../.." && pwd)
-SCRIPTS_DIR="\$BASE_DIR/ai-commons/scripts"
+BASE_DIR=$(cd "$(dirname "$0")/../.." && pwd)
+SCRIPTS_DIR="$BASE_DIR/ai-commons/scripts"
 
 echo "=== lm-commons Bootstrap ==="
 
@@ -14,15 +14,15 @@ fi
 
 # 2. Apply Stow packages
 echo "Applying Stow packages..."
-cd "\$BASE_DIR/ai-commons/stow-packages"
-stow -t "\$HOME" claude agents gemini
+cd "$BASE_DIR/ai-commons/stow-packages"
+stow -t "$HOME" claude agents gemini
 
 # 3. Regenerate tool configs
 echo "Regenerating tool configs..."
-python3 "\$SCRIPTS_DIR/sync-mcp.py"
+python3 "$SCRIPTS_DIR/sync-mcp.py"
 
 # 4. Run verification
 echo "Running environment verification..."
-bash "\$SCRIPTS_DIR/verify-env.sh"
+bash "$SCRIPTS_DIR/verify-env.sh"
 
 echo "=== Bootstrap Complete ==="
