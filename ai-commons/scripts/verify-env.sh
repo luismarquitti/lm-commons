@@ -3,10 +3,17 @@ BASE_DIR=$(cd "$(dirname "$0")/../.." && pwd)
 
 echo "=== Environment Verification ==="
 
-# Check for broken symlinks in $HOME
+# Check for broken symlinks in $HOME and tool directories
 echo "Checking symlinks..."
 find "$HOME" -maxdepth 1 -xtype l -name ".*" | while read -r link; do
     echo "Broken symlink found: $link"
+done
+for dir in "$HOME/.claude" "$HOME/.agents" "$HOME/.gemini"; do
+    if [[ -d "$dir" ]]; then
+        find "$dir" -xtype l | while read -r link; do
+            echo "Broken symlink found: $link"
+        done
+    fi
 done
 
 # Check if master_config has plaintext keys (quick grep for ctx7sk-)

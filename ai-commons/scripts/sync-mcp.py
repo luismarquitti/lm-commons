@@ -47,7 +47,8 @@ def sync_mcp():
     home = Path.home()
     targets = [
         home / ".claude.json",
-        home / ".gemini" / "settings.json"
+        home / ".gemini" / "settings.json",
+        home / ".gemini" / "antigravity" / "mcp_config.json"
     ]
 
     for target_path in targets:

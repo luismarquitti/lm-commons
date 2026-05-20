@@ -13,9 +13,37 @@ function secrets_get() {
         return 1
     fi
 
+    local env_file
+    env_file=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)/.env
+    
+    # Normalize secret_id to environment variable format (e.g. Context7_API_Key -> CONTEXT7_API_KEY)
+    local env_var_name
+    env_var_name=$(echo "$secret_id" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+
+    # 1. Try to read from environment variable
+    if [[ -n "${!env_var_name}" ]]; then
+        echo -n "${!env_var_name}"
+        return 0
+    fi
+
+    # 2. Try to read from .env file
+    if [[ -f "$env_file" ]]; then
+        local value
+        value=$(grep -E "^${env_var_name}=" "$env_file" | cut -d'=' -f2-)
+        if [[ -n "$value" ]]; then
+            # Remove potential surrounding quotes
+            value="${value%\"}"
+            value="${value#\"}"
+            value="${value%\'}"
+            value="${value#\'}"
+            echo -n "$value"
+            return 0
+        fi
+    fi
+
     # Check if bw CLI is available
     if ! command -v bw &> /dev/null; then
-        echo "Error: Bitwarden CLI ('bw') not found in PATH." >&2
+        echo "Error: Bitwarden CLI ('bw') not found in PATH and '$secret_id' not found in env/.env." >&2
         return 1
     fi
 
