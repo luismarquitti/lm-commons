@@ -173,6 +173,11 @@ def main():
         "--project",
         help="Linear Project ID (optional)."
     )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Dry run mode. Generate mock IDs and skip API calls."
+    )
     args = parser.parse_args()
     
     task_dir = Path(args.dir)
@@ -180,24 +185,35 @@ def main():
         print(f"Error: Directory {args.dir} does not exist.", file=sys.stderr)
         sys.exit(1)
         
-    try:
-        api_key = resolve_api_key()
-    except Exception as e:
-        print(f"Error: {e}", file=sys.stderr)
-        sys.exit(1)
-        
-    try:
-        state_map = get_team_states(args.team, api_key)
-    except Exception as e:
-        print(f"Error fetching team states: {e}", file=sys.stderr)
-        sys.exit(1)
+    api_key = None
+    state_map = {}
+    
+    if not args.dry_run:
+        try:
+            api_key = resolve_api_key()
+        except Exception as e:
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+            
+        try:
+            state_map = get_team_states(args.team, api_key)
+        except Exception as e:
+            print(f"Error fetching team states: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        print("Running in DRY-RUN mode. Linear API calls will be mocked.")
+        state_map = {
+            "unstarted": "mock_unstarted_state",
+            "started": "mock_started_state",
+            "completed": "mock_completed_state"
+        }
         
     task_files = sorted(list(task_dir.glob("task_*.md")))
     if not task_files:
         print("No task files (task_*.md) found to sync.")
         return
         
-    for task_file in task_files:
+    for idx, task_file in enumerate(task_files, start=1):
         print(f"Processing {task_file.name}...")
         try:
             frontmatter, body_text = parse_task_file(task_file)
@@ -221,73 +237,82 @@ def main():
         if not issue_id:
             # Create Issue
             print(f"  Creating new issue: '{title}'...")
-            query = """
-            mutation IssueCreate($input: IssueCreateInput!) {
-              issueCreate(input: $input) {
-                success
-                issue {
-                  id
-                  identifier
-                  title
+            if args.dry_run:
+                new_id = f"{args.team}-MOCK-{idx:02d}"
+                frontmatter["linear_issue_id"] = new_id
+                write_task_file(task_file, frontmatter, body_text)
+                print(f"  [DRY-RUN] Successfully simulated issue creation: {new_id}")
+            else:
+                query = """
+                mutation IssueCreate($input: IssueCreateInput!) {
+                  issueCreate(input: $input) {
+                    success
+                    issue {
+                      id
+                      identifier
+                      title
+                    }
+                  }
                 }
-              }
-            }
-            """
-            variables = {
-              "input": {
-                "title": title,
-                "description": description,
-                "teamId": args.team,
-                "stateId": state_id
-              }
-            }
-            if args.project:
-                variables["input"]["projectId"] = args.project
-                
-            try:
-                res = call_linear_api(query, variables, api_key)
-                create_res = res.get("issueCreate", {})
-                if create_res.get("success"):
-                    new_issue = create_res.get("issue", {})
-                    new_id = new_issue.get("identifier")
-                    frontmatter["linear_issue_id"] = new_id
-                    write_task_file(task_file, frontmatter, body_text)
-                    print(f"  Successfully created issue: {new_id}")
-                else:
-                    print("  Failed to create issue in Linear.", file=sys.stderr)
-            except Exception as e:
-                print(f"  API error: {e}", file=sys.stderr)
+                """
+                variables = {
+                  "input": {
+                    "title": title,
+                    "description": description,
+                    "teamId": args.team,
+                    "stateId": state_id
+                  }
+                }
+                if args.project:
+                    variables["input"]["projectId"] = args.project
+                    
+                try:
+                    res = call_linear_api(query, variables, api_key)
+                    create_res = res.get("issueCreate", {})
+                    if create_res.get("success"):
+                        new_issue = create_res.get("issue", {})
+                        new_id = new_issue.get("identifier")
+                        frontmatter["linear_issue_id"] = new_id
+                        write_task_file(task_file, frontmatter, body_text)
+                        print(f"  Successfully created issue: {new_id}")
+                    else:
+                        print("  Failed to create issue in Linear.", file=sys.stderr)
+                except Exception as e:
+                    print(f"  API error: {e}", file=sys.stderr)
         else:
             # Update Issue
             print(f"  Updating issue {issue_id}: '{title}'...")
-            query = """
-            mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
-              issueUpdate(id: $id, input: $input) {
-                success
-                issue {
-                  id
-                  identifier
+            if args.dry_run:
+                print(f"  [DRY-RUN] Successfully simulated issue update for {issue_id}")
+            else:
+                query = """
+                mutation IssueUpdate($id: String!, $input: IssueUpdateInput!) {
+                  issueUpdate(id: $id, input: $input) {
+                    success
+                    issue {
+                      id
+                      identifier
+                    }
+                  }
                 }
-              }
-            }
-            """
-            variables = {
-              "id": issue_id,
-              "input": {
-                "title": title,
-                "description": description,
-                "stateId": state_id
-              }
-            }
-            try:
-                res = call_linear_api(query, variables, api_key)
-                update_res = res.get("issueUpdate", {})
-                if update_res.get("success"):
-                    print(f"  Successfully updated issue {issue_id}")
-                else:
-                    print(f"  Failed to update issue {issue_id} in Linear.", file=sys.stderr)
-            except Exception as e:
-                print(f"  API error: {e}", file=sys.stderr)
+                """
+                variables = {
+                  "id": issue_id,
+                  "input": {
+                    "title": title,
+                    "description": description,
+                    "stateId": state_id
+                  }
+                }
+                try:
+                    res = call_linear_api(query, variables, api_key)
+                    update_res = res.get("issueUpdate", {})
+                    if update_res.get("success"):
+                        print(f"  Successfully updated issue {issue_id}")
+                    else:
+                        print(f"  Failed to update issue {issue_id} in Linear.", file=sys.stderr)
+                except Exception as e:
+                    print(f"  API error: {e}", file=sys.stderr)
 
 if __name__ == "__main__":
     main()
