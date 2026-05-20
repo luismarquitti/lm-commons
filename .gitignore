@@ -2,3 +2,6 @@
 *.local
 .DS_Store
 ansible/generated/
+__pycache__/
+*.pyc
+*.pyo
