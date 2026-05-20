@@ -1,54 +1,54 @@
 ---
 name: openclaw-expert
-description: Especialista na implantação, configuração e manutenção do OpenClaw no MQT_Home Lab. Esta skill deve ser usada para gerenciar o nó `lm-claw` (Dell Optiplex 7040), executar playbooks de deploy, configurar canais de mensageria (WhatsApp, Telegram, Slack), gerenciar modelos no Ollama, orquestrar fluxos multi-agente e fluxos OpenProse. Se a documentação local for insuficiente para erros complexos ou novas features, acione o MCP context7 para consultar a documentação oficial mais recente do OpenClaw.
+description: Specialist in deploying, configuring, and maintaining OpenClaw in the MQT_Home Lab. This skill should be used to manage the `lm-claw` node (Dell Optiplex 7040), run deployment playbooks, configure messaging channels (WhatsApp, Telegram, Slack), manage models in Ollama, orchestrate multi-agent flows and OpenProse flows. If local documentation is insufficient for complex errors or new features, trigger the context7 MCP to search the most recent official OpenClaw documentation.
 ---
 
 # OpenClaw Expert Skill
 
-Esta skill fornece expertise técnica avançada para operar o OpenClaw no MQT_Home Lab.
+This skill provides advanced technical expertise to operate OpenClaw in the MQT_Home Lab.
 
-## 🏗️ Contexto da Infraestrutura
+## 🏗️ Infrastructure Context
 
-- **Host Principal:** `lm-claw` (Dell Optiplex 7040)
-- **Sistema Operacional:** Debian 13.4.0 (Bare-metal)
-- **IP Local:** `192.168.3.10`
-- **Usuário SSH:** `luismarquitti`
-- **Portas:** Gateway na `18789`, Ollama na `11434`.
+- **Primary Host:** `lm-claw` (Dell Optiplex 7040)
+- **Operating System:** Debian 13.4.0 (Bare-metal)
+- **Local IP:** `192.168.3.10`
+- **SSH User:** `luismarquitti`
+- **Ports:** Gateway on `18789`, Ollama on `11434`.
 
-## 🚀 Implantação e Manutenção
+## 🚀 Deployment and Maintenance
 
-A skill possui scripts utilitários para facilitar operações comuns:
+The skill features utility scripts to facilitate common operations:
 
-- **Verificar Status:** `./scripts/check_status.sh` (Roda status, doctor e ollama ps remotamente).
-- **Backup de Config:** `./scripts/backup_config.sh` (Cria backup datado do config.json5 no lm-claw).
-- **Atualizar Sistema:** `./scripts/update_openclaw.sh` (Executa o playbook Ansible com tags corretas).
+- **Check Status:** `./scripts/check_status.sh` (Runs status, doctor, and ollama ps remotely).
+- **Config Backup:** `./scripts/backup_config.sh` (Creates a dated backup of config.json5 in lm-claw).
+- **Update System:** `./scripts/update_openclaw.sh` (Runs the Ansible playbook with correct tags).
 
-## ⚙️ Configuração Avançada
+## ⚙️ Advanced Configuration
 
-### Gerenciamento de Canais e Roteamento
-As configurações residem em `/home/luismarquitti/.openclaw/config.json5`.
+### Channel Management and Routing
+Configurations reside in `/home/luismarquitti/.openclaw/config.json5`.
 
-#### Multi-Agentes e Bindings
-Para rotear mensagens para agentes específicos, use o array `bindings` associando `agentId` ao `match` de canal e peer ID.
+#### Multi-Agents and Bindings
+To route messages to specific agents, use the `bindings` array, associating `agentId` with channel and peer ID matches.
 
-### 🌊 Workflows e OpenProse
-- Use `openclaw agents add <name>` para novos ambientes de agentes.
-- Valide rotas com `openclaw agents list --bindings`.
-- Consulte `references/cli_cheat_sheet.md` para uma lista rápida de comandos.
+### 🌊 Workflows and OpenProse
+- Use `openclaw agents add <name>` for new agent environments.
+- Validate routes with `openclaw agents list --bindings`.
+- Consult `references/cli_cheat_sheet.md` for a quick list of commands.
 
-## 🧠 Modelos de IA (Ollama)
+## 🧠 AI Models (Ollama)
 
-O OpenClaw utiliza o Ollama para inferência local.
-- **Modelos:** `gemma4:e2b`, `qwen3:8b`, `deepseek-coder-v2:16b`.
-- **Configuração:** Ajuste em `agents.defaults.model.primary` no `config.json5`.
+OpenClaw uses Ollama for local inference.
+- **Models:** `gemma4:e2b`, `qwen3:8b`, `deepseek-coder-v2:16b`.
+- **Configuration:** Adjusted in `agents.defaults.model.primary` in `config.json5`.
 
-## 📚 Pesquisa de Documentação e Resolução de Erros
+## 📚 Documentation Search and Error Resolution
 
-Se encontrar erros desconhecidos:
-1. **Logs Locais:** `tail -f ~/.openclaw/logs/gateway.log` no `lm-claw`.
-2. **Diagnóstico:** `openclaw doctor`.
-3. **Deep Dive (Context7):** SEMPRE use o MCP `context7` para buscar a documentação oficial mais recente (Library ID: `/openclaw/openclaw`).
+If you encounter unknown errors:
+1. **Local Logs:** `tail -f ~/.openclaw/logs/gateway.log` on `lm-claw`.
+2. **Diagnosis:** `openclaw doctor`.
+3. **Deep Dive (Context7):** ALWAYS use the `context7` MCP to search the most recent official documentation (Library ID: `/openclaw/openclaw`).
 
-## 🛠️ Recursos Adicionais
-- `references/cli_cheat_sheet.md`: Guia rápido de comandos CLI.
-- `scripts/`: Scripts de automação para tarefas frequentes.
+## 🛠️ Additional Resources
+- `references/cli_cheat_sheet.md`: CLI commands quick sheet.
+- `scripts/`: Automation scripts for frequent tasks.
