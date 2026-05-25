@@ -1,0 +1,666 @@
+.homelab {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.homelab__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.homelab__title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.homelab__description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.homelab__refresh-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 12px;
+  color: var(--text-muted);
+  gap: 4px;
+}
+
+.homelab__refresh-badge {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-mono);
+}
+
+/* Tabs Navigation */
+.homelab__tabs {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1px;
+}
+
+.homelab__tab-btn {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  border-bottom: none;
+  transition: all var(--transition-fast);
+  margin-bottom: -1px;
+}
+
+.homelab__tab-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.homelab__tab-btn--active {
+  color: var(--color-primary-hover);
+  background-color: var(--bg-panel);
+  border-color: var(--border-color);
+  border-bottom: 1px solid var(--bg-main);
+  box-shadow: 0 -4px 12px rgba(99, 102, 241, 0.05);
+}
+
+/* Topology Diagram Layout */
+.homelab__topology-container {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  min-height: 480px;
+}
+
+@media (max-width: 1024px) {
+  .homelab__topology-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.homelab__diagram-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 16px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.homelab__diagram-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.homelab__svg {
+  width: 100%;
+  height: 100%;
+  max-height: 450px;
+  display: block;
+}
+
+/* SVG Elements styling */
+.homelab__link-line {
+  stroke-width: 2;
+  transition: stroke var(--transition-normal), stroke-width var(--transition-fast);
+}
+
+.homelab__link-line--cable {
+  stroke: rgba(99, 102, 241, 0.3);
+}
+
+.homelab__link-line--wifi {
+  stroke: rgba(6, 182, 212, 0.35);
+  stroke-dasharray: 6 4;
+}
+
+.homelab__link-line--virtual {
+  stroke: rgba(16, 185, 129, 0.25);
+  stroke-dasharray: 3 3;
+}
+
+/* Animated pulses */
+.homelab__link-line--active {
+  animation: pulse-link-flow 8s linear infinite;
+}
+
+@keyframes pulse-link-flow {
+  to {
+    stroke-dashoffset: -40;
+  }
+}
+
+/* Node Elements */
+.homelab__node {
+  cursor: pointer;
+  outline: none;
+}
+
+.homelab__node-circle {
+  fill: #161d2f;
+  stroke: var(--border-color);
+  stroke-width: 2;
+  transition: all var(--transition-fast);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.homelab__node:hover .homelab__node-circle {
+  fill: #1e2942;
+  stroke: var(--color-primary);
+  filter: drop-shadow(0 0 10px var(--color-primary-glow));
+}
+
+.homelab__node--selected .homelab__node-circle {
+  fill: #1e2942;
+  stroke: var(--color-primary-hover);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.4));
+}
+
+/* Node Icon & Labels */
+.homelab__node-icon {
+  pointer-events: none;
+  font-size: 20px;
+  user-select: none;
+}
+
+.homelab__node-text {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+.homelab__node-subtext {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--text-muted);
+  text-anchor: middle;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Node status glow ring */
+.homelab__node-status-ring {
+  stroke-width: 2;
+  fill: none;
+}
+
+.homelab__node-status-ring--online {
+  stroke: var(--color-success);
+  opacity: 0.8;
+}
+
+.homelab__node-status-ring--offline {
+  stroke: var(--color-danger);
+  opacity: 0.8;
+}
+
+/* Info Side Panel */
+.homelab__info-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.homelab__info-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-align: center;
+  gap: 12px;
+  padding: 24px;
+}
+
+.homelab__info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.homelab__info-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.homelab__info-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.homelab__info-badge--host {
+  background: var(--color-primary-glow);
+  color: var(--color-primary-hover);
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.homelab__info-badge--vm {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--color-info);
+  border-color: rgba(6, 182, 212, 0.3);
+}
+
+.homelab__info-badge--lxc {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.homelab__info-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.homelab__status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.homelab__status-indicator--online {
+  background-color: var(--color-success);
+  box-shadow: 0 0 8px var(--color-success);
+}
+
+.homelab__status-indicator--offline {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 8px var(--color-danger);
+}
+
+.homelab__info-description {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.homelab__info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.homelab__info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.homelab__info-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.homelab__info-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.homelab__info-value--mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.homelab__info-services {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.homelab__info-service-tag {
+  font-size: 11px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+}
+
+/* Inventory Tab Layout */
+.homelab__inventory {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.homelab__table-wrapper {
+  overflow-x: auto;
+}
+
+.homelab__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.homelab__table th {
+  padding: 12px 16px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+  letter-spacing: 0.5px;
+}
+
+.homelab__table td {
+  padding: 16px;
+  font-size: 13.5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.homelab__table tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.homelab__table-name {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.homelab__table-vmid {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Documentation Tab Layout */
+.homelab__docs {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .homelab__docs {
+    grid-template-columns: 1fr;
+  }
+}
+
+.homelab__docs-menu {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 16px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.homelab__docs-menu-title {
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  letter-spacing: 0.5px;
+}
+
+.homelab__docs-menu-btn {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: var(--border-radius-md);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.homelab__docs-menu-btn:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.homelab__docs-menu-btn--active {
+  color: var(--color-primary-hover);
+  background-color: var(--color-primary-glow);
+  font-weight: 600;
+}
+
+.homelab__docs-content {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 32px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Styled document formatting */
+.homelab__doc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.homelab__doc-h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+}
+
+.homelab__doc-h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 12px;
+}
+
+.homelab__doc-p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.homelab__doc-table-wrapper {
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+.homelab__doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.homelab__doc-table th {
+  background-color: rgba(0, 0, 0, 0.15);
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+}
+
+.homelab__doc-table td {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+/* Loading & error indicators */
+.homelab__loading, .homelab__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  gap: 16px;
+}
+
+.homelab__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Shortcuts section at the bottom of the page */
+.homelab__shortcuts {
+  margin-top: 32px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.homelab__shortcuts-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.homelab__shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.homelab__shortcut-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.homelab__shortcut-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary-hover);
+  background-color: var(--bg-panel-hover);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.1);
+}
+
+.homelab__shortcut-icon {
+  font-size: 20px;
+  background-color: rgba(255, 255, 255, 0.03);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+
+.homelab__shortcut-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.homelab__shortcut-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.homelab__shortcut-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

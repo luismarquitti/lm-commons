@@ -1,0 +1,104 @@
+.daily-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.daily-plan__header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+.daily-plan__title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.daily-plan__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.daily-plan__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.daily-plan__summary {
+  background: var(--color-primary-glow);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.daily-plan__sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .daily-plan__sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+.daily-plan__section {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 24px;
+  box-shadow: var(--box-shadow-panel);
+  backdrop-filter: var(--backdrop-blur);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.daily-plan__section:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-color-hover);
+}
+
+.daily-plan__section-heading {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.daily-plan__section-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.daily-plan__section-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.daily-plan__section-bullet {
+  color: var(--color-primary);
+  font-weight: bold;
+  user-select: none;
+}

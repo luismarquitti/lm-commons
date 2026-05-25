@@ -1,4 +1,4 @@
-export type TemplateId = 'DailyPlan' | 'LinearTaskBoard' | 'AgentStatus';
+export type TemplateId = 'DailyPlan' | 'LinearTaskBoard' | 'AgentStatus' | 'CompozyTasks' | 'Wiki';
 
 export interface Page {
   id: string;

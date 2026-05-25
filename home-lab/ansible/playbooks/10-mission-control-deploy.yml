@@ -1,0 +1,121 @@
+---
+# ============================================================
+# Playbook 10 — Deploy Mission Control (Home Lab Portal)
+# ============================================================
+# Provisiona e implanta o portal Mission Control no lm-claw.
+# ============================================================
+
+- name: Mission Control — Build and Deploy Application
+  hosts: lm-claw
+  gather_facts: true
+  tags: [deploy, app]
+
+  tasks:
+    # ── Build application in development workspace (as user luismarquitti) ──
+    - name: Executar npm install no repositório de desenvolvimento
+      ansible.builtin.command:
+        cmd: /usr/local/bin/npm install
+        chdir: /home/luismarquitti/Code/lm-commons/mission-control
+      become: false
+
+    - name: Executar npm run build no repositório de desenvolvimento
+      ansible.builtin.command:
+        cmd: /usr/local/bin/npm run build
+        chdir: /home/luismarquitti/Code/lm-commons/mission-control
+      become: false
+
+    # ── Set up production directories (as root) ──
+    - name: Garantir diretórios de produção
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: luismarquitti
+        group: luismarquitti
+        mode: "0755"
+      loop:
+        - /var/lib/mission-control
+        - /var/lib/mission-control/bundles
+      become: true
+
+    # ── Copy built artifacts to production folder (as root) ──
+    - name: Limpar diretório dist de produção anterior
+      ansible.builtin.file:
+        path: /var/lib/mission-control/dist
+        state: absent
+      become: true
+
+    - name: Copiar pasta dist para produção
+      ansible.builtin.copy:
+        src: /home/luismarquitti/Code/lm-commons/mission-control/dist
+        dest: /var/lib/mission-control/
+        remote_src: true
+        owner: luismarquitti
+        group: luismarquitti
+        mode: "0755"
+      become: true
+
+    - name: Copiar package.json e package-lock.json para produção
+      ansible.builtin.copy:
+        src: "/home/luismarquitti/Code/lm-commons/mission-control/{{ item }}"
+        dest: "/var/lib/mission-control/{{ item }}"
+        remote_src: true
+        owner: luismarquitti
+        group: luismarquitti
+        mode: "0644"
+      loop:
+        - package.json
+        - package-lock.json
+      become: true
+
+    # ── Install production dependencies (as luismarquitti) ──
+    - name: Executar npm ci --production na pasta de produção
+      ansible.builtin.command:
+        cmd: /usr/local/bin/npm ci --production
+        chdir: /var/lib/mission-control
+      become: false
+
+    # ── Install systemd service unit (as root) ──
+    - name: Copiar arquivo de serviço systemd
+      ansible.builtin.copy:
+        src: /home/luismarquitti/Code/lm-commons/mission-control/deploy/mission-control.service
+        dest: /etc/systemd/system/mission-control.service
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0644"
+      become: true
+      notify: Reload systemd daemon
+
+    - name: Habilitar e iniciar serviço mission-control
+      ansible.builtin.systemd:
+        name: mission-control
+        enabled: true
+        state: restarted
+        daemon_reload: true
+      become: true
+
+  handlers:
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+      become: true
+
+
+- name: Mission Control — Uptime Kuma Monitoring
+  hosts: uptime-kuma
+  gather_facts: false
+  tags: [monitor, kuma]
+
+  tasks:
+    - name: Adicionar monitor HTTP para Mission Control no Uptime Kuma
+      community.general.uptime_kuma_monitor:
+        api_url: "http://localhost:3001"
+        api_username: "{{ uptime_kuma_api_username | default('admin') }}"
+        api_password: "{{ uptime_kuma_api_password | default('admin') }}"
+        name: "Mission Control"
+        type: "http"
+        url: "http://192.168.3.10:3001"
+        interval: 60
+        retry: 3
+        state: present
+      ignore_errors: true

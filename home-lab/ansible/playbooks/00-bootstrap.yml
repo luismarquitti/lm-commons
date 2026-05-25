@@ -7,7 +7,7 @@
 #
 # Uso:
 #   ansible-playbook playbooks/00-bootstrap.yml
-#   ansible-playbook playbooks/00-bootstrap.yml --limit pve-optiplex
+#   ansible-playbook playbooks/00-bootstrap.yml --limit pve-inspiron
 # ============================================================
 
 - name: Bootstrap — Configuração pós-instalação do Proxmox

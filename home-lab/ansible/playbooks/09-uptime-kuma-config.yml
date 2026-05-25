@@ -1,0 +1,163 @@
+---
+# ============================================================
+# Playbook 09 — Configuração de Monitores do Uptime Kuma
+# ============================================================
+# Adiciona os monitores de serviços do Home Lab no Uptime Kuma.
+#
+# Uso:
+#   ansible-playbook playbooks/09-uptime-kuma-config.yml
+# ============================================================
+
+- name: Uptime Kuma — Configurar Monitores de Status
+  hosts: uptime-kuma
+  gather_facts: false
+  vars:
+    kuma_user: "{{ uptime_kuma_api_username | default('admin') }}"
+    kuma_pass: "{{ uptime_kuma_api_password | default('admin') }}"
+    kuma_url: "http://localhost:3001"
+  tasks:
+    - name: Adicionar monitor: Mercusys Halo Principal
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Mercusys Halo Principal"
+        type: "ping"
+        hostname: "192.168.3.1"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Mercusys Halo Satélite
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Mercusys Halo Satélite"
+        type: "ping"
+        hostname: "192.168.3.250"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: lm-claw (Host Optiplex)
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "lm-claw (Host Optiplex)"
+        type: "ping"
+        hostname: "192.168.3.10"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Ollama API (lm-claw)
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Ollama API (lm-claw)"
+        type: "http"
+        url: "http://192.168.3.10:11434"
+        interval: 30
+        retry: 2
+        state: present
+
+    - name: Adicionar monitor: Portal Mission Control
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Mission Control"
+        type: "http"
+        url: "http://192.168.3.10:3001"
+        interval: 30
+        retry: 2
+        state: present
+
+    - name: Adicionar monitor: pve-inspiron (Host Proxmox)
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "pve-inspiron (Host Proxmox)"
+        type: "ping"
+        hostname: "192.168.3.50"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Proxmox Web UI
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Proxmox Web UI"
+        type: "http"
+        url: "https://192.168.3.50:8006"
+        tls_ignore_check: true
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Home Assistant
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Home Assistant"
+        type: "http"
+        url: "http://192.168.3.22:8123"
+        interval: 30
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: PostgreSQL DB (Porta 5432)
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "PostgreSQL DB"
+        type: "port"
+        hostname: "192.168.3.20"
+        port: 5432
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: AdGuard Home
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "AdGuard Home"
+        type: "http"
+        url: "http://192.168.3.5"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Nginx Proxy Manager
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Nginx Proxy Manager"
+        type: "http"
+        url: "http://192.168.3.7:81"
+        interval: 60
+        retry: 3
+        state: present
+
+    - name: Adicionar monitor: Conectividade Externa (Google DNS)
+      community.general.uptime_kuma_monitor:
+        api_url: "{{ kuma_url }}"
+        api_username: "{{ kuma_user }}"
+        api_password: "{{ kuma_pass }}"
+        name: "Internet WAN (Google DNS)"
+        type: "ping"
+        hostname: "8.8.8.8"
+        interval: 30
+        retry: 3
+        state: present

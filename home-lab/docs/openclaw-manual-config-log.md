@@ -79,14 +79,15 @@ Removeu 1 entrada sem transcript. Resultado: 7 sessões válidas.
   - Instalar via script oficial: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`.
   - Adicionar Homebrew ao PATH no `.bashrc` ou `.zshrc`.
 
-### 3. Tailscale dentro do LXC
+### 3. Tailscale no lm-claw
 
-- **Situação atual:** `tailscaled.service` não roda dentro do LXC `lm-claw`. O openclaw registra erro ao tentar publicar a porta via `tailscale serve`, mas o gateway continua funcional (apenas sem exposição Tailscale direta).
-- **Status:** Pendente — investigar se LXC precisa de `nesting=1` ou `keyctl=1` para suportar tailscaled, ou se a exposição via Tailscale do host Proxmox é suficiente.
+- **Situação atual:** Resolvido pela transição para Bare-Metal. O `tailscaled.service` agora roda diretamente no hardware do Optiplex.
+- **Status:** ✅ Resolvido / Concluído
 - **Detalhes Técnicos:**
-  - Instalar via script oficial: `curl -fsSL https://tailscale.com/install.sh | sh`
-  - Autenticar com `tailscale up`
-  - Pode exigir features adicionais no LXC (verificar `pct config 200`)
+  - Tailscale instalado no Debian 13 bare-metal
+  - IP Tailscale ativo: `100.65.65.92`
+  - Gateway OpenClaw respondendo normalmente na rede VPN mesh
+
 
 ### 4. Renovação de token Google (manual recorrente)
 
@@ -95,4 +96,4 @@ Removeu 1 entrada sem transcript. Resultado: 7 sessões válidas.
 - **Não automatizável** via Ansible (requer fluxo OAuth interativo no browser).
 
 ---
-*Última atualização: 15/05/2026*
+*Última atualização: 25/05/2026*

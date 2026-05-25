@@ -20,13 +20,12 @@
       failed_when: dl.rc != 0 and 'already exists' not in dl.stdout
 
 - name: LXC Deploy — Criar contêineres
-  hosts: lxc_optiplex, lxc_inspiron
+  hosts: lxc_inspiron
   gather_facts: false
   connection: local
   vars:
-    # Escolhe o nó e storage baseado no grupo do host
-    target_node: "{{ 'pve-optiplex' if inventory_hostname in groups['lxc_optiplex'] else 'pve-inspiron' }}"
-    target_storage: "{{ 'pve-storage' if inventory_hostname in groups['lxc_optiplex'] else 'local' }}"
+    target_node: pve-inspiron
+    target_storage: local
     target_api_host: "{{ hostvars[target_node]['ansible_host'] }}"
 
   tasks:

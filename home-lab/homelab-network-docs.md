@@ -102,9 +102,9 @@ Mercusys Halo H60XR — PRINCIPAL (192.168.3.1)  ←── Office
 | IP Tailscale | Hostname | Dispositivo | Status |
 |---|---|---|---|
 | `100.105.115.103` | luis-laptop | Lenovo | 🟢 Online |
-| `100.71.89.124` | openclaw-proxmox | Inspiron (.50) | 🟢 Online |
-| `100.101.44.15` | lm-claw | Optiplex (.30) | 🟢 Online |
+| `100.92.32.71` | pve-inspiron | Inspiron (.50) | 🟢 Online |
+| `100.65.65.92` | lm-claw | Optiplex (.10) | 🟢 Online |
 
 ---
 
-*Documentação gerada em 15/05/2026 — Home Lab · Luis Eduardo*
+*Documentação gerada em 25/05/2026 — Home Lab · Luis Eduardo*

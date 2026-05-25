@@ -1,0 +1,222 @@
+---
+# ============================================================
+# Playbook 08 — Configuração de Serviços Core (pve-inspiron)
+# ============================================================
+# Provisiona e instala no pve-inspiron os serviços core do Home Lab:
+# AdGuard Home, Nginx Proxy Manager e Uptime Kuma.
+#
+# Uso:
+#   ansible-playbook playbooks/08-services-setup.yml
+#   ansible-playbook playbooks/08-services-setup.yml --tags adguard
+#   ansible-playbook playbooks/08-services-setup.yml --tags nginx
+#   ansible-playbook playbooks/08-services-setup.yml --tags kuma
+# ============================================================
+
+- name: Inspiron — Instalar e Configurar AdGuard Home
+  hosts: adguard
+  become: true
+  tags: [adguard]
+  tasks:
+    - name: Garantir que dependências básicas estão instaladas
+      ansible.builtin.apt:
+        name:
+          - curl
+          - tar
+        state: present
+        update_cache: true
+
+    - name: Baixar e extrair AdGuard Home
+      ansible.builtin.unarchive:
+        src: https://github.com/AdguardTeam/AdGuardHome/releases/latest/download/AdGuardHome_linux_amd64.tar.gz
+        dest: /opt
+        remote_src: true
+        creates: /opt/AdGuardHome/AdGuardHome
+
+    - name: Criar arquivo de serviço systemd para AdGuard Home
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/AdGuardHome.service
+        content: |
+          [Unit]
+          Description=AdGuard Home: Network-level blocker
+          ConditionFileIsExecutable=/opt/AdGuardHome/AdGuardHome
+          After=syslog.target network-online.target
+
+          [Service]
+          StartLimitInterval=5
+          StartLimitBurst=10
+          ExecStart=/opt/AdGuardHome/AdGuardHome "-s" "run"
+          WorkingDirectory=/opt/AdGuardHome
+          StandardOutput=file:/var/log/AdGuardHome.out
+          StandardError=file:/var/log/AdGuardHome.err
+          Restart=always
+          RestartSec=10
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: "0644"
+
+    - name: Garantir serviço AdGuard está habilitado e rodando
+      ansible.builtin.systemd:
+        name: AdGuardHome
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Informar URL de configuração
+      ansible.builtin.debug:
+        msg: >
+          AdGuard Home instalado. Acesse http://192.168.3.5:3000 para
+          configuração inicial. Configure DNS Rewrites para os serviços da rede.
+
+
+- name: Inspiron — Instalar e Configurar Nginx Proxy Manager
+  hosts: nginx-proxy
+  become: true
+  tags: [nginx]
+  tasks:
+    - name: Baixar script de funções auxiliares do Proxmox VE Helper Scripts
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/core.func
+        dest: /tmp/core.func
+        mode: '0755'
+
+    - name: Baixar instalador do Nginx Proxy Manager
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/install/nginxproxymanager-install.sh
+        dest: /tmp/npm-install.sh
+        mode: '0755'
+
+    - name: Adaptar instalador do Nginx Proxy Manager para execução interna no container
+      ansible.builtin.replace:
+        path: /tmp/npm-install.sh
+        regexp: 'source /dev/stdin <<<\s*"\$FUNCTIONS_FILE_PATH"'
+        replace: 'source /tmp/core.func'
+
+    - name: Executar script instalador adaptado
+      ansible.builtin.shell: |
+        export STD=""
+        export FUNCTIONS_FILE_PATH="$(cat /tmp/core.func)"
+        bash /tmp/npm-install.sh
+      args:
+        creates: /lib/systemd/system/npm.service
+
+    - name: Informar URL de configuração
+      ansible.builtin.debug:
+        msg: >
+          Nginx Proxy Manager instalado. Acesse http://192.168.3.7:81
+          Credenciais padrão: admin@example.com / changeme
+          Configure proxy hosts para lm-claw (.10), homeassistant (.22),
+          pve-inspiron (.50), adguard (.5), uptime-kuma (.6).
+
+
+- name: Inspiron — Instalar e Configurar Uptime Kuma
+  hosts: uptime-kuma
+  become: true
+  tags: [kuma]
+  tasks:
+    - name: Garantir dependências de sistema instaladas
+      ansible.builtin.apt:
+        name:
+          - curl
+          - git
+          - gnupg
+          - ca-certificates
+          - chromium
+        state: present
+        update_cache: true
+
+    - name: Adicionar repositório oficial do Node.js 22.x
+      ansible.builtin.shell: |
+        curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+      args:
+        creates: /etc/apt/sources.list.d/nodesource.list
+
+    - name: Instalar Node.js
+      ansible.builtin.apt:
+        name: nodejs
+        state: present
+
+    - name: Clonar repositório do Uptime Kuma (versão estável 1.23.13)
+      ansible.builtin.git:
+        repo: https://github.com/louislam/uptime-kuma.git
+        dest: /opt/uptime-kuma
+        version: "1.23.13"
+        force: true
+
+    - name: Executar instalação das dependências (npm ci)
+      ansible.builtin.command:
+        cmd: npm ci --omit dev
+        chdir: /opt/uptime-kuma
+      args:
+        creates: /opt/uptime-kuma/node_modules
+
+    - name: Compilar assets de distribuição
+      ansible.builtin.command:
+        cmd: npm run download-dist
+        chdir: /opt/uptime-kuma
+      args:
+        creates: /opt/uptime-kuma/dist
+
+    - name: Criar link simbólico para Chromium usado em capturas
+      ansible.builtin.file:
+        src: /usr/bin/chromium
+        dest: /opt/uptime-kuma/chromium
+        state: link
+
+    - name: Criar arquivo de serviço systemd para Uptime Kuma
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/uptime-kuma.service
+        content: |
+          [Unit]
+          Description=Uptime Kuma
+          After=network.target
+
+          [Service]
+          Type=simple
+          Restart=always
+          User=root
+          WorkingDirectory=/opt/uptime-kuma
+          ExecStart=/usr/bin/npm start
+
+          [Install]
+          WantedBy=multi-user.target
+        mode: "0644"
+
+    - name: Garantir serviço Uptime Kuma está habilitado e rodando
+      ansible.builtin.systemd:
+        name: uptime-kuma
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Informar URL de configuração
+      ansible.builtin.debug:
+        msg: "Uptime Kuma instalado. Acesse http://192.168.3.6:3001 para configuração inicial."
+
+
+- name: Inspiron — Verificar capacidade de RAM após inicialização dos serviços
+  hosts: pve-inspiron
+  become: true
+  tags: [verify]
+  tasks:
+    - name: Checar uso de memória do host
+      ansible.builtin.command: free -h
+      register: mem_status
+      changed_when: false
+
+    - name: Exibir status de memória
+      ansible.builtin.debug:
+        msg: "{{ mem_status.stdout_lines }}"
+
+    - name: Listar todos os LXCs e VMs
+      ansible.builtin.command: "{{ item }}"
+      loop:
+        - pct list
+        - qm list
+      register: vm_list
+      changed_when: false
+
+    - name: Exibir inventário de containers
+      ansible.builtin.debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ vm_list.results }}"

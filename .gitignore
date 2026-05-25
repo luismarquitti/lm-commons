@@ -5,3 +5,7 @@ ansible/generated/
 __pycache__/
 *.pyc
 *.pyo
+
+# Build & Dependencies
+node_modules/
+dist/

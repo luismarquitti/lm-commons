@@ -27,6 +27,8 @@
 
 # ── Inspiron: serviços
 - import_playbook: 06-db-setup.yml
+- import_playbook: 08-services-setup.yml
 
 # ── Optiplex: bare-metal OpenClaw
 - import_playbook: 07-openclaw-deploy.yml
+- import_playbook: 10-mission-control-deploy.yml

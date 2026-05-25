@@ -1,0 +1,15 @@
+[Unit]
+Description=Mission Control Home Lab Portal
+After=network.target
+
+[Service]
+Type=simple
+User=luismarquitti
+WorkingDirectory=/var/lib/mission-control
+Environment=NODE_ENV=production PORT=3001 DB_PATH=/var/lib/mission-control/data.db
+ExecStart=/usr/bin/node dist/server/index.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

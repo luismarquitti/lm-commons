@@ -3,8 +3,8 @@ import type { TemplateId, Page, CreatePageRequest, CreatePageResponse } from './
 
 describe('shared types', () => {
   it('accepts valid TemplateId values', () => {
-    const ids: TemplateId[] = ['DailyPlan', 'LinearTaskBoard', 'AgentStatus']
-    expect(ids).toHaveLength(3)
+    const ids: TemplateId[] = ['DailyPlan', 'LinearTaskBoard', 'AgentStatus', 'CompozyTasks']
+    expect(ids).toHaveLength(4)
   })
 
   it('CreatePageRequest accepts all required fields', () => {

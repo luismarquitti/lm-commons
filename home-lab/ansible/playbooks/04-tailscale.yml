@@ -77,7 +77,7 @@
       ansible.builtin.debug:
         msg: >
           AÇÃO MANUAL: Acesse https://login.tailscale.com/admin →
-          Machines → pve-optiplex → Edit Route Settings →
+          Machines → pve-inspiron → Edit Route Settings →
           Approve 192.168.3.0/24
       when: pve_is_primary | bool
       run_once: true

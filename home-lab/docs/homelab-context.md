@@ -80,8 +80,8 @@
 | IP Tailscale | Hostname | SO | Status |
 |---|---|---|---|
 | `100.105.115.103` | luis-laptop | Windows | Online |
-| `100.71.89.124` | openclaw-proxmox | Linux (Inspiron) | Online |
-| `100.101.44.15` | lm-claw | Linux (Bare-metal) | Online |
+| `100.92.32.71` | pve-inspiron | Linux (Inspiron) | Online |
+| `100.65.65.92` | lm-claw | Linux (Bare-metal) | Online |
 
 ---
 
@@ -151,4 +151,4 @@ ESTADO ATUAL
 
 ---
 
-*Última atualização: 15/05/2026 — Pós-migração Bare-Metal*
+*Última atualização: 25/05/2026 — Alinhamento de IPs e automação de serviços*
