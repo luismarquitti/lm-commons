@@ -7,7 +7,7 @@
         "-y",
         "@upstash/context7-mcp",
         "--api-key",
-        "PLACEHOLDER_CONTEXT7"
+        ""
       ],
       "env": {}
     },

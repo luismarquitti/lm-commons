@@ -32,7 +32,7 @@ quality gate before anything merges.
 
 ## User Stories
 
-**Developer (orchestrator)**
+### Developer (orchestrator)
 
 - As the developer, I want to turn a feature idea into a PRD, TechSpec, and task breakdown
   through one guided process, so that work is well-specified before coding starts.
@@ -45,14 +45,14 @@ quality gate before anything merges.
 - As the developer, I want the workflow documented, so that any agent — or future me — can
   follow it without ambiguity.
 
-**Developer agent**
+### Developer agent
 
 - As a developer agent, I want a clear definition of done and a PR target for an assigned
   issue, so that I can deliver a reviewable change.
 - As a developer agent, I want to know when a PR has requested changes, so that I can apply
   them and request a new review.
 
-**Reviewer agent**
+### Reviewer agent
 
 - As a reviewer agent, I want to review an open PR and post a structured verdict — request
   changes or approve — so that quality issues are caught before merge.
@@ -139,13 +139,27 @@ These are boundaries, not implementation prescriptions.
 
 ### MVP (Phase 1) — Local human+agent SDD workflow, piloted on IntelliFinance
 
+> **Status as of 2026-05-20:** Infrastructure complete. End-to-end pilot pending.
+
 - Core features: Spec Pipeline, Linear Task Registry, Isolated Parallel Workspaces, PR-Based
   Development Loop, Agent Review Gate, Human Merge Gate, Workflow Playbook.
 - Every transition is triggered manually by the developer.
-- **Success criteria to proceed to Phase 2:** at least one real IntelliFinance feature taken
-  from idea to merged PR through the workflow with no ad-hoc deviation; the developer and an
-  agent demonstrably working two issues in parallel without conflict; the Workflow Playbook
-  documented and followed.
+- **Infrastructure built (tasks 01–06):**
+  - Centralized PLAYBOOK.md and per-repository AGENTS.md — documented and versioned.
+  - `sync-compozy-tasks.py` — syncs Compozy task files to Linear; includes dry-run mode and a
+    unit test suite.
+  - `worktree-manager.sh` — creates and cleans up isolated sibling worktrees.
+  - Linear skill extended for SDD integration; all workspace skills translated to English.
+- **Remaining gate (task 07):** Run a new, scoped IntelliFinance feature end-to-end through the
+  complete workflow — idea → `cy-create-prd` → `cy-create-techspec` → `cy-create-tasks` →
+  `sync-compozy-tasks.py` → Linear → worktree → implementation → PR → `/cy-review-round` →
+  human merge — with no ad-hoc deviation. The developer agent runs locally via Claude Code
+  inside the isolated worktree. The pilot feature must be a new greenfield feature not
+  previously started. (See ADR-011.)
+- **Success criteria to proceed to Phase 2:** The pilot feature is merged with a complete,
+  unbroken chain (spec artifacts ↔ Linear issue ↔ PR ↔ review verdict); the developer and an
+  agent demonstrably work two issues in parallel without conflict; the PLAYBOOK is followed
+  without deviation.
 
 ### Phase 2 — Event-driven automation and second project
 
@@ -206,6 +220,11 @@ These are boundaries, not implementation prescriptions.
   repository consolidation from this initiative.
 - [ADR-004: Adopt an existing open-source dashboard in Phase 3](adrs/adr-004.md) — Adopt a
   proven open-source command center instead of building one.
+- [ADR-011: Pilot the workflow on a new greenfield IntelliFinance feature](adrs/adr-011.md) —
+  A greenfield feature validates the full pipeline including spec creation; a retrofit of
+  existing work would skip the most important steps.
+
+*(ADR-005 through ADR-010 are TechSpec-level decisions documented in `_techspec.md`.)*
 
 ## Open Questions
 
@@ -216,3 +235,10 @@ These are boundaries, not implementation prescriptions.
 - Which provider or mechanism backs cloud agent execution in Phase 2.
 - Whether the OpenClaw RAM constraint on node `lm-claw` must be resolved before Phase 3
   autonomous orchestration can begin.
+- `ai-commons/instructions/role.pm.md` still contains Portuguese content — needs translation
+  to comply with the English-only policy (task_01 incomplete).
+- `ai-commons/instructions/workflows/cliniccare/agile-spec-factory.workflow.md` is still fully
+  in Portuguese — needs either translation to English or an explicit decision to exclude it
+  from the English-only policy for this initiative.
+- The specific greenfield IntelliFinance feature for the end-to-end pilot (task_07) has not
+  yet been selected — to be determined at the start of task_07 execution.
