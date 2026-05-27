@@ -19,6 +19,21 @@ def get_secret(secret_id):
         print(f"Warning: Failed to retrieve secret '{secret_id}': {e.stderr}")
         return None
 
+def convert_to_opencode_format(mcp_servers):
+    """Convert master_config MCP servers to opencode format."""
+    opencode_servers = {}
+    for name, config in mcp_servers.items():
+        cmd = [config["command"]] + config.get("args", [])
+        svr = {
+            "type": "local",
+            "command": cmd,
+            "enabled": True,
+            "env": config.get("env", {}),
+        }
+        opencode_servers[name] = svr
+    return opencode_servers
+
+
 def sync_mcp():
     # Use repo-relative paths instead of fixed $HOME/.ai-commons
     base_dir = Path(__file__).parent.parent.parent.resolve()
@@ -48,7 +63,7 @@ def sync_mcp():
     targets = [
         home / ".claude.json",
         home / ".gemini" / "settings.json",
-        home / ".gemini" / "antigravity" / "mcp_config.json"
+        home / ".gemini" / "antigravity" / "mcp_config.json",
     ]
 
     for target_path in targets:
@@ -72,6 +87,33 @@ def sync_mcp():
             print(f"Successfully synced MCP config to {target_path}")
         except Exception as e:
             print(f"Error syncing to {target_path}: {e}")
+
+    # --- opencode specific sync ---
+    opencode_config_path = home / ".config" / "opencode" / "opencode.jsonc"
+    if opencode_config_path.parent.exists():
+        try:
+            target_data = {}
+            if opencode_config_path.exists():
+                with open(opencode_config_path, "r") as f:
+                    target_data = json.load(f)
+
+            # Convert to opencode format and update mcp block
+            # Preserve existing enabled/disabled state per server
+            existing_mcp = target_data.get("mcp", {})
+            opencode_mcp = convert_to_opencode_format(mcp_servers)
+            for name, svr in opencode_mcp.items():
+                if name in existing_mcp:
+                    svr["enabled"] = existing_mcp[name].get("enabled", True)
+            target_data["mcp"] = opencode_mcp
+
+            # Save as JSON (opencode accepts .jsonc but writing strict JSON is safe)
+            with open(opencode_config_path, "w") as f:
+                json.dump(target_data, f, indent=2)
+                f.write("\n")
+
+            print(f"Successfully synced MCP config to {opencode_config_path}")
+        except Exception as e:
+            print(f"Error syncing to {opencode_config_path}: {e}")
 
 if __name__ == "__main__":
     sync_mcp()
